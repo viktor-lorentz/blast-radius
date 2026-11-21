@@ -1,5 +1,37 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~03:40 PST) — runner, not yet the server score
+Safe runner is local, 0 misses. It runs a selected set only when that is cheaper than its
+scheduled cost, and only when every edited file is Python under sqlglot/ or a test file the
+selection already imports. Fixture edits and any other non-Python file keep the static set.
+A crash, timeout, or unittest error keeps the test.
+
+Measured (python 3.13, .cache/fp): sample 108.0 (was 115.0) oracle 94.4 misses 0.
+c1 3036.7 (static 3138.2) oracle 1211.6 misses 0.
+c2 2172.9 (static 2215.2) oracle 986.7 misses 0.
+c4 2195.5 (static 2271.0) oracle 1071.7 misses 0.
+c5 6.6 (static 12.7) oracle 4.2 misses 0.
+Do not shrink a commit whose patch touches a fixture or a test module we do not import:
+that false-passed 19 c1 commits (the unpatched test passed). Best server score is still
+v2c 175.6 (sim 172.712). Leader on the board was team 67 at 130.8, #2 1212 at 136.1.
+
+Next, in order, only if the new corpora stay at 0 misses:
+1. Read this submission's server sim. If sim does not fall, the hidden set has few all-pass
+   worker-fee commits; do not pile more CPU on the same idea.
+2. Install duckdb and pandas in the image so executor/optimizer tests can actually run.
+   5y72 (2.5s) and the rest of 2qn5 stay selected today because those imports error.
+3. Spend the 90s run budget on generator_memory first (native ~0.7s vs recorded 6.7s),
+   then other heavy tests, and stop with time left. Never turn a fail-rate into a
+   kind-of-edit → test list.
+4. ALL-narrowing for a syntax error in one dialect module is still unsafe (c3). Do not ship it
+   unless a new corpus of syntax commits stays at 0 misses.
+
+Submit path: real Brave, profile ~/.buildathon-brave, port 9222, tools/brave_debug.sh,
+tools/submit_brave.py. The hand-in fields are input[name=repo] and input[name=commit].
+One submit per hour. Never force-push.
+
+
+
 State (2026-11-20 ~21:30 ET): v1 submitted (7a83571, tag best-submitted; placed 59th).
 v2 = import-time semantic diff: sample 165.2 s, 0 misses, amd64 CPU 1.2 s/30 commits.
 Corpus c1 (dev, 400 mutants) found 5 misses -> fixed in the map builder (cache isolation, class-valued attrs,

@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -18,6 +19,7 @@ sys.path.insert(0, str(HERE))
 
 from blast import astdiff  # noqa: E402
 from blast import patch as P  # noqa: E402
+from blast import runner  # noqa: E402
 from blast.maps import Maps  # noqa: E402
 from blast.semantic import NeedAll, Semantic  # noqa: E402
 from blast.split import split  # noqa: E402
@@ -179,11 +181,40 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         return set(all_tests)
 
 
+def patched_sources(patch_text: str, numbers: set, id_of: dict) -> dict | None:
+    """Text of every Python file this patch edits, or None when a run would not match pytest.
+
+    None means: do not drop anything. That covers a diff we cannot apply, a non-Python file
+    (fixtures are read from disk), and a test-module edit for a file this selection does not import.
+    """
+    try:
+        files = P.parse(patch_text)
+    except P.PatchError:
+        return None
+    out = {}
+    selected_files = {id_of[n].split("::")[0] for n in numbers if n in id_of}
+    for fp in files:
+        py = fp.path.endswith(".py") and fp.old_path == fp.new_path
+        if not py or not (fp.path.startswith("sqlglot/") or fp.path.startswith("tests/")):
+            return None
+        # pytest loads every edited test module. Running only the selected file would miss that.
+        if fp.path.startswith("tests/") and fp.path not in selected_files:
+            return None
+        try:
+            out[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
+        except (P.PatchError, OSError, UnicodeError):
+            return None
+    return out
+
+
 def main() -> None:
     tests = json.loads((DATA / "tests.json").read_text())["tests"]
     ms = {t["number"]: round(t["seconds"] * 1000) for t in tests}
     all_tests = set(ms)
     id_to_number = {t["id"]: t["number"] for t in tests}
+    number_to_id = {t["number"]: t["id"] for t in tests}
+    run_tests = os.environ.get("BR_RUN", "1") != "0"
+    deadline = time.monotonic() + runner._BATCH_CAP_S
     maps = None
     sem = None
     try:
@@ -204,11 +235,19 @@ def main() -> None:
     for pf in sorted((DATA / "commits").glob("*.patch")):
         if debug:
             c0 = _cpu()
+        text = pf.read_text()
         try:
-            nums = select(pf.read_text(), maps, all_tests, sem)
+            nums = select(text, maps, all_tests, sem)
         except Exception as e:  # never crash: fall back to everything
             log("select crashed:", pf.stem, repr(e))
             nums = set(all_tests)
+        if run_tests:
+            try:
+                patched = patched_sources(text, nums, number_to_id)
+                if patched is not None:
+                    nums = runner.shrink(SRC, patched, nums, number_to_id, ms, deadline)
+            except Exception as e:  # a bad run keeps the static selection
+                log("run skipped:", pf.stem, repr(e))
         print(json.dumps({"commit": pf.stem, "workers": split(nums, ms)}))
         if debug:
             log(f"cpu {pf.stem} {_cpu() - c0:.3f}")
