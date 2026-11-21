@@ -42,6 +42,38 @@ def _hook(event, args):
 sys.addaudithook(_hook)
 
 
+# --- run process-pool work in-process so coverage/contexts/opens are attributed to the calling test
+import concurrent.futures as _cf  # noqa: E402
+
+
+class _SyncExecutor:
+    def __init__(self, *a, **k):
+        pass
+
+    def submit(self, fn, *a, **k):
+        f = _cf.Future()
+        try:
+            f.set_result(fn(*a, **k))
+        except BaseException as e:  # noqa: BLE001
+            f.set_exception(e)
+        return f
+
+    def map(self, fn, *iterables, **k):
+        return [fn(*args) for args in zip(*iterables)]
+
+    def shutdown(self, *a, **k):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+_cf.ProcessPoolExecutor = _SyncExecutor
+
+
 import pytest  # noqa: E402
 
 
