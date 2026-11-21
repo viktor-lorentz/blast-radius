@@ -1,0 +1,16 @@
+name: build-maps
+on: workflow_dispatch
+jobs:
+  maps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build maps inside the pinned image
+        run: |
+          docker run --rm -v "$PWD:/repo" python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90 \
+            python /repo/tools/build_maps.py /repo /repo/maps
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maps
+          path: maps/
