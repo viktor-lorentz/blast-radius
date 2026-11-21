@@ -476,6 +476,10 @@ def _plain_keyword_words(files) -> set[str] | None:
             return None
         old = (SRC / fp.path).read_text()
         new = P.apply(old, fp)
+        # The dict's name is an identifier. A file that never spells it has no
+        # KEYWORDS entry, so the parse would only reject the patch.
+        if "KEYWORDS" not in old and "KEYWORDS" not in new:
+            return None
         try:
             old_ds = _keyword_dicts(ast.parse(old))
             new_ds = _keyword_dicts(ast.parse(new))
@@ -713,6 +717,15 @@ def _vocabulary_words(files) -> set[str] | None:
             pairs.extend(zip(removed, added, old_nos[-len(removed):]))
         if not pairs:
             return None
+        # A SQL spelling change is a quoted identifier whose surrounding code
+        # is unchanged. Anything else leaves the coverage set alone, and the
+        # AST walk below is wasted on it.
+        idents = []
+        for old_line, new_line, lineno in pairs:
+            changed = _changed_idents(old_line, new_line)
+            if not changed:
+                return None
+            idents.append((changed, lineno))
         try:
             tree = ast.parse(old_text)
         except SyntaxError:
@@ -725,10 +738,7 @@ def _vocabulary_words(files) -> set[str] | None:
         for n in ast.walk(tree):
             if isinstance(n, ast.Constant) and isinstance(n.value, str):
                 by_line.setdefault(n.lineno, []).append(n)
-        for old_line, new_line, lineno in pairs:
-            changed = _changed_idents(old_line, new_line)
-            if not changed:
-                return None
+        for changed, lineno in idents:
             nodes = by_line.get(lineno, [])
             for word in changed:
                 hits = [n for n in nodes if n.value == word and _vocab_site(n, par)]
@@ -778,6 +788,11 @@ def _only_redundant_assignments(files) -> bool:
     A repeat that reads the name (`klass = prefix + klass`) is a different value and
     is left to the normal selector.
     """
+    # Consecutive duplicate statements show up as added lines that copy a
+    # context line, with nothing deleted. Every other patch fails the AST
+    # proof below, so do not parse it.
+    if not files or not all(_inserted_duplicate(fp) for fp in files):
+        return False
     saw = False
     for fp in files:
         if fp.special or fp.old_path != fp.new_path or not fp.path.endswith(".py"):
