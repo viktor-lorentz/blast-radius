@@ -1,5 +1,8 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~10:15 PST) — BB-83E9C695 scored 179.4, not pinned
+44d263e scored 179.4 as BB-83E9C695. Runs: 172.712 sim / 6.64 CPU / 0 miss, 172.712 / 5.38 / 0, 172.712 / 6.75 / 0. Simulated seconds are identical to v2c. The TPC-DS frame check and the max_nodes count check did not remove a charged test on the hidden batch. CPU is about 2.5s above v2c. Do not pin. Do not resubmit 44d263e, 25d3142, b474bd2, bab8cbe, or 47fae13. Best remains BB-8F41C77F at 175.6. Next slot ~11:09 AM PST. A commit that does not change the hidden schedule cannot beat 175.6. Local, 0 misses: sample 108.5; c1 2579.5 (was 2701.9); c2 1741.3; c3 1995.1; c4 1884.9; c5 12.7. That local save did not transfer.
+
 ## STATE (2026-11-21 ~08:27 PST) — BB-DB13FA9F scored, not pinned
 Best server score is still v2c 175.6 (BB-8F41C77F). b474bd2 scored 179.6 as BB-DB13FA9F (sim 172.711 x3, CPU 7.07/6.88/6.88, 0 misses). Do not pin it. Do not resubmit b474bd2, bab8cbe, or 47fae13. Server sim is unchanged from v2c; the tight runner only added about 4s CPU and did not drop a hidden full suite. Aqua 126.1, team 67 130.3, benchmaster 143.3, Overcooked 175.6. Slot is closed until 9:08 AM PST. A CPU-only change cannot beat 130.3. One avoided full suite on the hidden set (~27s) is still the gap that matters. Need more than 10s under Aqua before Sun 8:00 AM PST. Runner stays off until a change actually moves hidden sim.
 
