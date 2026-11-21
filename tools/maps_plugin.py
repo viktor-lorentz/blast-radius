@@ -51,15 +51,21 @@ class _SyncExecutor:
         pass
 
     def submit(self, fn, *a, **k):
+        # Same semantics as a real process pool: arguments and the result cross a pickle boundary
+        # (which is where e.g. sqlglot.serde runs), but everything executes inside the calling test.
+        import pickle
+
         f = _cf.Future()
         try:
-            f.set_result(fn(*a, **k))
+            fn2, a2, k2 = pickle.loads(pickle.dumps((fn, a, k)))
+            res = fn2(*a2, **k2)
+            f.set_result(pickle.loads(pickle.dumps(res)))
         except BaseException as e:  # noqa: BLE001
             f.set_exception(e)
         return f
 
     def map(self, fn, *iterables, **k):
-        return [fn(*args) for args in zip(*iterables)]
+        return [self.submit(fn, *args).result() for args in zip(*iterables)]
 
     def shutdown(self, *a, **k):
         pass
