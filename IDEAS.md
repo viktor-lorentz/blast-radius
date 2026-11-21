@@ -5,6 +5,12 @@ Submitted e6080ac as BB-AD82E23D. Slot is used until 4:41 AM PST (2026-11-21 12:
 Do not submit again before then. Do not pin it as the final entry unless its score beats 175.6.
 Best remains v2c BB-8F41C77F at 175.6 (sim 172.712). Leader on the board was team 67 at 130.8.
 
+Next commit on top, not yet submitted: a docstring the scored suite never runs no longer
+falls back to every test. tests/test_docs.py is absent from tests.json. Local, with the runner:
+c1 2963.1 (was 3036.7), c2 2136.0 (was 2172.9), c4 2195.5, sample 108.0, all 0 misses.
+That is two full-suite commits deleted on c1 (73.6s) and one on c2 (36.8s). Submit this sha
+next, but only if BB-AD82E23D did not miss. If it missed, drop the runner and keep this fix.
+
 ## STATE (2026-11-21 ~03:40 PST) — runner, local numbers
 Safe runner is local, 0 misses. It runs a selected set only when that is cheaper than its
 scheduled cost, and only when every edited file is Python under sqlglot/ or a test file the

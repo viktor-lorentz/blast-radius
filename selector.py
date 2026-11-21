@@ -124,8 +124,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
     out: set = set()
     for r in regions:
         if r.kind == "doc":
+            # tests/test_docs.py is not in the scored suite. No scored test reads __doc__.
             if r.doctest:
-                out |= {n for f in ("tests/test_docs.py",) for n in maps.file_tests(f)} or set(all_tests)
+                out |= {n for f in ("tests/test_docs.py",) for n in maps.file_tests(f)}
             continue
         if r.start == 0:
             raise All(f"module-level structural change: {path}")
