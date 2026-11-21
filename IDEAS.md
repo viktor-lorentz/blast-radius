@@ -28,3 +28,4 @@ Gate for any submission: sample 0 misses + c1 0 misses + c2 0 misses + bench wor
 - TODO before submitting v2d (slot frees 8:20 PM PST): c4 eval is INVALID (ran empty). Re-run:
   rm -rf .cache/truth_c4; gh run download 44860307402 -D .cache/truth_c4; python3 tools/mkeval.py corpus/c4 .cache/truth_c4 .cache/eval_c4; run selector, tools/breakdown.py. Need 0 misses.
 - Then check bench.yml green for HEAD, submit via Chrome (new tab), tag submitted-v2d (no force push), log results.tsv, push-notify.
+- v2e 3c4a227 submitted ~02:16 PST Nov 21; next slot ~03:16 PST. Read server score from the page, log it, push-notify.
