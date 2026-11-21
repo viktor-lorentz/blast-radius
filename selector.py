@@ -443,11 +443,85 @@ def _tests_mentioning(words: set[str], maps) -> set[int]:
     return hit
 
 
+def _stored_names(stmt) -> set[str]:
+    nodes = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+    return {n.id for t in nodes for n in ast.walk(t) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+
+
+def _loaded_names(node) -> set[str]:
+    if node is None:
+        return set()
+    return {n.id for n in ast.walk(node) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load)}
+
+
+def _pure_value(node) -> bool:
+    """A value with no calls. Reading it twice stores the same object."""
+    if node is None:
+        return True
+    if isinstance(node, (ast.Call, ast.Lambda, ast.ListComp, ast.SetComp, ast.DictComp,
+                         ast.GeneratorExp, ast.Await, ast.Yield, ast.YieldFrom, ast.NamedExpr)):
+        return False
+    return all(_pure_value(c) for c in ast.iter_child_nodes(node))
+
+
+def _redundant_assign(stmt) -> bool:
+    if isinstance(stmt, ast.Assign):
+        value, targets = stmt.value, stmt.targets
+    elif isinstance(stmt, ast.AnnAssign) and stmt.value is not None:
+        value, targets = stmt.value, [stmt.target]
+    else:
+        return False
+    if _stored_names(stmt) & _loaded_names(value):
+        return False  # `x = f(x)` twice is not the same as once
+    return _pure_value(value) and all(_pure_value(t) for t in targets)
+
+
+def _only_redundant_assignments(files) -> bool:
+    """The patch only repeats an assignment that does not read the name it writes.
+
+    `NAME = <no calls>` followed by the same statement stores the same object again.
+    A repeat that reads the name (`klass = prefix + klass`) is a different value and
+    is left to the normal selector.
+    """
+    saw = False
+    for fp in files:
+        if fp.special or fp.old_path != fp.new_path or not fp.path.endswith(".py"):
+            return False
+        old = (SRC / fp.path).read_text()
+        new = P.apply(old, fp)
+        try:
+            old_tree, new_tree = ast.parse(old), ast.parse(new)
+        except (SyntaxError, ValueError, RecursionError):
+            return False
+        removed = 0
+        for node in ast.walk(new_tree):
+            for field in ("body", "orelse", "finalbody"):
+                stmts = getattr(node, field, None)
+                if not isinstance(stmts, list) or not stmts or not isinstance(stmts[0], ast.stmt):
+                    continue
+                kept = []
+                for stmt in stmts:
+                    if kept and _redundant_assign(stmt) and _redundant_assign(kept[-1]) and ast.dump(stmt) == ast.dump(kept[-1]):
+                        removed += 1
+                        continue
+                    kept.append(stmt)
+                setattr(node, field, kept)
+        if removed == 0 or ast.dump(old_tree) != ast.dump(new_tree):
+            return False
+        saw = True
+    return saw
+
+
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
     try:
         files = P.parse(patch_text)
         if not files:
             raise All("empty patch")
+        try:
+            if _only_redundant_assignments(files):
+                return set()
+        except Exception as e:
+            log("redundant skip:", repr(e))
         out: set = set()
         semantic_needed: dict = {}
         for fp in files:

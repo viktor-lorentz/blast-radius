@@ -7,6 +7,8 @@ Plain KEYWORDS entries (a single identifier key, not a space or symbol key) keep
 
 A change inside a side-effecting test module narrows to coverage when the edited function does not write, spawn, or call a function that does. Module-level edits and leaking functions (test_sqlglotc, helpers) still run everything. 0 misses. Local save: c1 34.8, c2 34.8, c4 136.5.
 
+A repeated assignment whose value does not read the name it writes selects nothing. `x = f(x)` twice is not redundant. 0 misses. c2 m020047 36.8→0. c4 save 4.2. Sample unchanged.
+
 Do not ship a lazy import-closure for optimizer/typing syntax errors. It missed on c3 (typing.bigquery, qualify_columns, annotate_types, and others).
 
 ## STATE (2026-11-21 ~04:25 PST) — dialect load map, runner stays off
