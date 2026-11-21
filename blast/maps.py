@@ -56,3 +56,64 @@ class Maps:
                 seen_sets.add(si)
                 acc.update(sets[si])
         return self._nums(acc), imp, hit
+
+
+class _Lazy:
+    pass
+
+
+def _attach_semantic_maps():
+    """Adds attrs/names lookups to Maps (kept separate so the hot path stays lean)."""
+
+    def _attrs(self):
+        if not hasattr(self, "_attrs_cache"):
+            p = self.root / "attrs.json"
+            self._attrs_cache = json.loads(p.read_text()) if p.exists() else None
+        return self._attrs_cache
+
+    def attr_tests(self, key: str) -> Set[int]:
+        a = _attrs(self)
+        if a is None:
+            raise RuntimeError("attrs map missing")
+        si = a["a"].get(key)
+        return set() if si is None else self._nums(a["s"][si])
+
+    def attr_name_tests(self, attr: str) -> Set[int]:
+        a = _attrs(self)
+        if a is None:
+            raise RuntimeError("attrs map missing")
+        suffix = "|" + attr
+        acc: Set[int] = set()
+        for k, si in a["a"].items():
+            if k.endswith(suffix):
+                acc.update(a["s"][si])
+        return self._nums(acc)
+
+    def attr_unreliable(self) -> Set[int]:
+        a = _attrs(self)
+        if a is None or a.get("unreliable") is None:
+            raise RuntimeError("attrs reliability unknown")
+        return self._nums(a["unreliable"])
+
+    def name_tests(self, name: str) -> Set[int]:
+        if not hasattr(self, "_names_cache"):
+            self._names_cache = json.loads((self.root / "names.json").read_text())
+        acc: Set[int] = set()
+        for rel, lines in self._names_cache.get(name, {}).items():
+            c = self.cov(rel)
+            if c is None:
+                continue
+            sets, lmap = c["s"], c["l"]
+            for ln in lines:
+                code = lmap.get(str(ln))
+                if code is not None:
+                    acc.update(self._nums(sets[code >> 1]))
+        return acc
+
+    Maps.attr_tests = attr_tests
+    Maps.attr_name_tests = attr_name_tests
+    Maps.attr_unreliable = attr_unreliable
+    Maps.name_tests = name_tests
+
+
+_attach_semantic_maps()

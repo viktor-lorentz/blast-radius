@@ -19,11 +19,13 @@ sys.path.insert(0, str(HERE))
 from blast import astdiff  # noqa: E402
 from blast import patch as P  # noqa: E402
 from blast.maps import Maps  # noqa: E402
+from blast.semantic import NeedAll, Semantic  # noqa: E402
 from blast.split import split  # noqa: E402
 
 DATA = Path(os.environ.get("BR_DATA", "/data"))
 SRC = Path(os.environ.get("BR_SRC", "/opt/sqlglot"))
 MAPS_DIR = Path(os.environ.get("BR_MAPS", str(HERE / "maps")))
+FP_DIR = Path(os.environ.get("BR_FP", str(HERE / "fp")))
 
 CONFIG_BASENAMES = {
     "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
@@ -40,7 +42,7 @@ class All(Exception):
     """Raised when the conservative answer (run everything) is required."""
 
 
-def select_file(fp, maps, all_tests: set) -> set:
+def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
     path = fp.path
     if fp.special or fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
         raise All(f"special/new/deleted/renamed: {path}")
@@ -83,27 +85,43 @@ def select_file(fp, maps, all_tests: set) -> set:
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
         if r.kind == "rt":
-            if imp and not r.lam:
-                raise All(f"function body executed at import: {path}:{r.start}")
             out |= tests
+            if imp and not r.lam:  # function body that also runs at import time
+                if is_tests:
+                    out |= maps.file_tests(path)
+                else:
+                    semantic_needed[path] = new
         else:  # import-time code
             if not hit:
                 continue  # never executed: cannot affect any test
             if is_tests:
                 out |= maps.file_tests(path)
             else:
-                raise All(f"import-time change in {path}:{r.start}")
+                semantic_needed[path] = new
     return out
 
 
-def select(patch_text: str, maps, all_tests: set) -> set:
+def select(patch_text: str, maps, all_tests: set, sem) -> set:
     try:
         files = P.parse(patch_text)
         if not files:
             raise All("empty patch")
         out: set = set()
+        semantic_needed: dict = {}
         for fp in files:
-            out |= select_file(fp, maps, all_tests)
+            out |= select_file(fp, maps, all_tests, semantic_needed)
+        if semantic_needed:
+            if sem is None:
+                raise All("import-time change and no semantic diff available")
+            # every patched sqlglot module must be seen by the patched import, not only the import-time ones
+            patched = {}
+            for fp in files:
+                if fp.path.endswith(".py") and fp.path.startswith("sqlglot/"):
+                    patched[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
+            try:
+                out |= sem.tests_for(patched)
+            except (NeedAll, RuntimeError, ValueError, OSError) as e:
+                raise All(f"semantic: {e}")
         return out
     except All as e:
         log("ALL:", e)
@@ -119,13 +137,16 @@ def main() -> None:
     all_tests = set(ms)
     id_to_number = {t["id"]: t["number"] for t in tests}
     maps = None
+    sem = None
     try:
         maps = Maps(MAPS_DIR, id_to_number)
+        if (FP_DIR / "fp_base.json").exists() and (MAPS_DIR / "attrs.json").exists():
+            sem = Semantic(maps, FP_DIR, SRC)
     except Exception as e:
         log("maps unavailable:", repr(e))
     for pf in sorted((DATA / "commits").glob("*.patch")):
         try:
-            nums = select(pf.read_text(), maps, all_tests)
+            nums = select(pf.read_text(), maps, all_tests, sem)
         except Exception as e:  # never crash: fall back to everything
             log("select crashed:", pf.stem, repr(e))
             nums = set(all_tests)

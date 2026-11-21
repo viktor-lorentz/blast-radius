@@ -1,0 +1,4 @@
+commit	local_sample_score	submitted	server_score	notes
+fc57dda	994.1 (0 miss)	?		v0 AST no-op + optimal split
+7a83571	296.7 (0 miss)	? (asked user)		v1 coverage maps + fixture opens
+WIP	-	no		semantic diff wired, untested with new maps
