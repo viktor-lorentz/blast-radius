@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~13:30 PST) — slot left open
+No new submission. /tmp/blast-ready is no. The page still shows 1 of 2 left (next frees 2:18 PM PST) and BB-F7BB5F00 at 172.9 entered in the final. Do not click Pick. Do not resubmit 43a580e.
+
+Rechecked HEAD selector, runner and plan checks off: sample 108.5, c1 2709.5, c2 1972.0, c3 1833.1, c4 2066.7, c5 12.7, all 0 misses. Sample waste is still 14.1s, all oracle 0. Dropping test_execute_tpcds for every parser.py or typing edit is 0 misses on the commits that select it and do not fail it (c1 parser.py n=7, typing n=5), and dropping test_max_nodes for parser.py edits is the same shape (c1 not in the safe list, c2 n=3, c4 n=6). Those counts are too small to ship, and none of these areas change the sample. Hidden sim is stuck at 167.914. A corpus-only heavy-test drop will not open the ~51s gap to RoboM 121.8.
+
 ## STATE (2026-11-21 ~13:20 PST) — BB-F7BB5F00 scored 172.9 and is the final entry
 43a580e scored as BB-F7BB5F00. Runs: 167.914 sim / 5.11 CPU / 0 miss, 167.914 / 5.00 / 0, 167.914 / 4.96 / 0. Middle total 172.9. Simulated seconds are identical to ae1babf. CPU fell from 15.5 to 5.0 because a SQL-spelling check no longer parses every test file. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 43a580e. One slot remains this hour (1 of 2, next frees 2:18 PM PST). Use it only for a commit that is 0 misses on sample and c1–c5 and should score under 172.9.
 
