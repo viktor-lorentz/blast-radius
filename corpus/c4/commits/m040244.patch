@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1389,7 +1389,7 @@
+             meta = self.meta
+             meta["line"] = line
+             meta["col"] = col
+-            meta["start"] = start
++            meta["starG"] = start
+             meta["end"] = end
+         return self
+ 

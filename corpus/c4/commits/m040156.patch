@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2631,7 +2631,7 @@
+         elif pattern:
+             file_format = f" (PATTERN => {pattern})"
+ 
+-        ordinality = expression.args.get("ordinality") or ""
++        ordinality = expression.args.get("ordinality") and ""
+         if ordinality:
+             ordinality = f" WITH ORDINALITY{alias}"
+             alias = ""

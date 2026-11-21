@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -144,7 +144,7 @@
+     @property
+     def empty(self) -> bool:
+         """Returns whether the schema is empty."""
+-        return True
++        return False
+ 
+ 
+ class AbstractMappingSchema:

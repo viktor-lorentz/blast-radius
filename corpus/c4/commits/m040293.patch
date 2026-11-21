@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8784,7 +8784,7 @@
+     def _parse_on_condition(self) -> exp.OnCondition | None:
+         # MySQL uses "X ON EMPTY Y ON ERROR" (e.g. JSON_VALUE) while Oracle uses the opposite (e.g. JSON_EXISTS)
+         if self.dialect.ON_CONDITION_EMPTY_BEFORE_ERROR:
+-            empty = self._parse_on_handling("EMPTY", *self.ON_CONDITION_TOKENS)
++            empty = self._parse_on_handling("EMPTI", *self.ON_CONDITION_TOKENS)
+             error = self._parse_on_handling("ERROR", *self.ON_CONDITION_TOKENS)
+         else:
+             error = self._parse_on_handling("ERROR", *self.ON_CONDITION_TOKENS)

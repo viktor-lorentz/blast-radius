@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -85,7 +85,7 @@
+     COLUMN_OPERATORS = {
+         k: v
+         for k, v in parser.Parser.COLUMN_OPERATORS.items()
+-        if k not in (TokenType.ARROW, TokenType.DARROW)
++        if k in (TokenType.ARROW, TokenType.DARROW)
+     }
+ 
+     # ||, -> and ->> form a single left-associative precedence tier that binds tighter

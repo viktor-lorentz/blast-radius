@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -844,7 +844,6 @@
+         self.unsupported("MySQL does not support IGNORE NULLS.")
+         return self.sql(expression.this)
+ 
+-    @unsupported_args("this")
+     def currentschema_sql(self, expression: exp.CurrentSchema) -> str:
+         return self.func("SCHEMA")
+ 

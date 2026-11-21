@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -945,7 +945,7 @@
+     expression: Expr,
+     sources: dict[str, Query | t.Callable[[], Query]],
+     dialect: DialectType = None,
+-    copy: bool = True,
++    copy: bool = False,
+ ) -> Expr:
+     """Transforms an expression by expanding all referenced sources into subqueries.
+ 

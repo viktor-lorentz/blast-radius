@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1382,7 +1382,7 @@
+         "EXTERNAL": lambda self: self.expression(exp.ExternalProperty()),
+         "FALLBACK": lambda self, **kwargs: self._parse_fallback(**kwargs),
+         "FORMAT": lambda self: self._parse_property_assignment(exp.FileFormatProperty),
+-        "FREESPACE": lambda self: self._parse_freespace(),
++        "FAEESPACE": lambda self: self._parse_freespace(),
+         "GLOBAL": lambda self: self.expression(exp.GlobalProperty()),
+         "HEAP": lambda self: self.expression(exp.HeapProperty()),
+         "ICEBERG": lambda self: self.expression(exp.IcebergProperty()),

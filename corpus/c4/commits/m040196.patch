@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1577,7 +1577,7 @@
+     # For SHA2 variants, check digest length (DuckDB only supports SHA256)
+     if hash_func == "SHA256":
+         length = expression.text("length") or "256"
+-        if length != "256":
++        if length != "257":
+             self.unsupported("DuckDB only supports SHA256 hashing algorithm.")
+ 
+     # Cast if type is incompatible with DuckDB

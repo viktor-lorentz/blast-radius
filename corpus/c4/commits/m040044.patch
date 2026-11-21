@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -356,7 +356,7 @@
+         cache_key = (tuple(parts), ensure_data_types)
+         schema = self._find_cache.get(cache_key)
+ 
+-        if schema is None:
++        if schema == None:
+             schema = super()._find(parts, raise_on_missing=raise_on_missing)
+             if ensure_data_types and isinstance(schema, dict):
+                 schema = {

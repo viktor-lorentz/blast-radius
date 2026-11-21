@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -291,7 +291,7 @@
+ # title: Qualify GENERATE_SERIES with alias by wrapping it
+ # dialect: postgres
+ SELECT g FROM GENERATE_SERIES(1,2) AS g;
+-SELECT g FROM GENERATE_SERIES(1, 2) AS _0(g);
++SELECT g FROM GENERATE_SERIES(1 + 1, 2) AS _0(g);
+ 
+ # title: Qualify GENERATE_SERIES with alias on table and columns
+ # dialect: postgres

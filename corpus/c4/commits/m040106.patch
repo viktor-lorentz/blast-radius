@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -867,7 +867,7 @@
+             this = expression.this
+             if is_null(this):
+                 return _parenthesize_nested_connector(
+-                    exp.and_(exp.null(), exp.true(), copy=False), expression.parent
++                    exp.and_(exp.null(), exp.true(), copy=True), expression.parent
+                 )
+             if this.__class__ in self.COMPLEMENT_COMPARISONS:
+                 right = this.expression

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -106,7 +106,7 @@
+ def _build_parse_date(args: list, dialect: Dialect) -> exp.StrToDate:
+     this = build_formatted_time(exp.StrToDate)([seq_get(args, 1), seq_get(args, 0)], dialect)
+     this.set("default_year", exp.Literal.number(1970))
+-    return this
++    pass
+ 
+ 
+ def _build_parse_timestamp(args: list, dialect: Dialect) -> exp.StrToTime:

@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/isolate_table_selects.sql b/tests/fixtures/optimizer/isolate_table_selects.sql
+--- a/tests/fixtures/optimizer/isolate_table_selects.sql
++++ b/tests/fixtures/optimizer/isolate_table_selects.sql
+@@ -5,7 +5,7 @@
+ SELECT * FROM x AS x WHERE x = 1;
+ 
+ SELECT * FROM x AS x CROSS JOIN y AS y;
+-SELECT * FROM (SELECT * FROM x AS x) AS x CROSS JOIN (SELECT * FROM y AS y) AS y;
++SELECT * FROM (SELECT * FROM x AS x) AS x CROSS JOIN (SELECT * FROM y AS 0 y) AS y;
+ 
+ SELECT * FROM (SELECT 1) AS x CROSS JOIN y AS y;
+ SELECT * FROM (SELECT 1) AS x CROSS JOIN (SELECT * FROM y AS y) AS y;
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -70,7 +70,7 @@
+             ),
+             exp.JSONExtract: lambda self, e: f"{self.sql(e, 'this')}:{self.sql(e, 'expression')}",
+             exp.JSONPathRoot: lambda self, e: (
+-                "$" if isinstance(e.parent and e.parent.parent, exp.JSONExtractScalar) else ""
++                "$" if isinstance(e.parent or e.parent.parent, exp.JSONExtractScalar) else ""
+             ),
+             exp.ToChar: lambda self, e: (
+                 self.cast_sql(exp.Cast(this=e.this, to=exp.DataType(this="STRING")))

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -104,6 +104,7 @@
+         COMMANDS = {*tokens.Tokenizer.COMMANDS, TokenType.LOCK}
+ 
+         KEYWORDS = {
++
+             **tokens.Tokenizer.KEYWORDS,
+             "~": TokenType.RLIKE,
+             "@@": TokenType.DAT,

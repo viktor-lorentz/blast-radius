@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/dml.py b/sqlglot/expressions/dml.py
+--- a/sqlglot/expressions/dml.py
++++ b/sqlglot/expressions/dml.py
+@@ -168,7 +168,7 @@
+         "this": True,
+         "kind": True,
+         "files": False,
+-        "credentials": False,
++        "credEntials": False,
+         "format": False,
+         "params": False,
+     }

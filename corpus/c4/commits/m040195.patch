@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -308,7 +308,7 @@
+     def _literal_group_unmergeable(number_literal_aliases: set[str]) -> bool:
+         """
+         A numeric-literal projection referenced in GROUP BY can't be inlined, because a bare
+-        integer literal is positional. A reference that is itself a top-level GROUP BY item
++        integer literal is positional. A reference that is itself a top-level GROUP BY item (updated)
+         can merge as the ordinal of the outer projection that selects it; any other reference,
+         e.g., ROLLUP / CUBE / GROUPING SETS, tuples, expressions, etc, blocks the merge, since
+         ordinals aren't universally supported there, e.g., Presto / Trino only accept columns.

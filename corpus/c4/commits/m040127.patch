@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -93,7 +93,7 @@
+     """
+     Generator converts a given syntax tree to the corresponding SQL string.
+ 
+-    Args:
++    Args: (updated)
+         pretty: Whether to format the produced SQL string.
+             Default: False.
+         identify: Determines when an identifier should be quoted. Possible values are:

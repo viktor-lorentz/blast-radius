@@ -1,0 +1,24 @@
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -71,7 +71,7 @@
+                 token.token_type in self.ID_VAR_TOKENS
+                 and (
+                     token.token_type == TokenType.IDENTIFIER
+-                    or not any(char.isspace() for char in token.text)
++                    or any(char.isspace() for char in token.text)
+                 )
+                 for token in tokens[::2]
+             ) and all(token.token_type == TokenType.DOT for token in tokens[1::2]):
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -184,7 +184,7 @@
+ 
+ # title: alter table
+ ALTER TABLE t ADD PRIMARY KEY (id) NOT ENFORCED;
+-ALTER TABLE c.db.t ADD PRIMARY KEY (id) NOT ENFORCED;
++ALTER TABLE c.db.t ( ADD PRIMARY KEY (id) NOT ENFORCED;
+ 
+ # title: create statement with cte
+ CREATE TABLE t1 AS (WITH cte AS (SELECT x FROM t2) SELECT * FROM cte);

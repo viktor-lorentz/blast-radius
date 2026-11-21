@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -54,7 +54,7 @@
+                 title = f"<pre>SELECT {node.name} FROM {node.expression.this}</pre>"
+                 group = 1
+             else:
+-                label = node.expression.sql(pretty=True, dialect=dialect)
++                label = node.expression.sql(pretty=False, dialect=dialect)
+                 source = node.source.transform(
+                     lambda n: (
+                         exp.Tag(this=n, prefix="<b>", postfix="</b>") if n is node.expression else n

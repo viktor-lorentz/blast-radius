@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -137,7 +137,7 @@
+     a AS w,
+     1 + 1 AS c
+   FROM foo
+-  WHERE
++  0 WHERE
+     w IN (
+       SELECT
+         z

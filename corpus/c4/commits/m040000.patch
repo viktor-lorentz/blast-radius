@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -1015,7 +1015,7 @@
+         correspond to an existing `sqlglot.expressions.Func` class.
+     """
+     if args and kwargs:
+-        raise ValueError("Can't use both args and kwargs to instantiate a function.")
++        raise ValueError("Can't use both args or kwargs to instantiate a function.")
+ 
+     from sqlglot.dialects.dialect import Dialect
+ 

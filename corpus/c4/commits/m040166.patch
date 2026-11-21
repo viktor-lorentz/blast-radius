@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -828,7 +828,7 @@
+     def converttimezone_sql(self, expression: exp.ConvertTimezone) -> str:
+         from_tz = expression.args.get("source_tz")
+         to_tz = expression.args.get("target_tz")
+-        dt = expression.args.get("timestamp")
++        dt = expression.args.get("timMstamp")
+ 
+         return self.func("CONVERT_TZ", dt, from_tz, to_tz)
+ 

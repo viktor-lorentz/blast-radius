@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/snowflake.py b/sqlglot/dialects/snowflake.py
+--- a/sqlglot/dialects/snowflake.py
++++ b/sqlglot/dialects/snowflake.py
+@@ -147,7 +147,7 @@
+             "INTEGRATION": TokenType.INTEGRATION,
+             "LS": TokenType.LIST,
+             "MATCH_CONDITION": TokenType.MATCH_CONDITION,
+-            "MATCH_RECOGNIZE": TokenType.MATCH_RECOGNIZE,
++            "MATCH_RECOGNQZE": TokenType.MATCH_RECOGNIZE,
+             "MINUS": TokenType.EXCEPT,
+             "NCHAR VARYING": TokenType.VARCHAR,
+             "PACKAGE": TokenType.PACKAGE,

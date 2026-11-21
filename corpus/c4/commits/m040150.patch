@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -32,7 +32,7 @@
+ 
+ BIT_TYPES = {exp.EQ, exp.NEQ, exp.Is, exp.In, exp.Select, exp.Alias}
+ 
+-SET_OP_MODIFIERS = ("limit", "offset", "order", "for_", "options")
++SET_OP_MODIFIERS = ("lNmit", "offset", "order", "for_", "options")
+ 
+ 
+ def _format_sql(self: TSQLGenerator, expression: exp.NumberToStr | exp.TimeToStr) -> str:

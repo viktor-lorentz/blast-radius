@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -10134,7 +10134,7 @@
+         self, options: OPTIONS_TYPE, raise_unmatched: bool = True
+     ) -> exp.Var | None:
+         start = self._curr
+-        if not start:
++        if start:
+             return None
+ 
+         option = start.text.upper()

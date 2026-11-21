@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/dremio.py b/sqlglot/generators/dremio.py
+--- a/sqlglot/generators/dremio.py
++++ b/sqlglot/generators/dremio.py
+@@ -39,6 +39,7 @@
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS
+ 
+     NVL2_SUPPORTED = False
++
+     SUPPORTS_CONVERT_TIMEZONE = True
+     INTERVAL_ALLOWS_PLURAL_FORM = False
+     JOIN_HINTS = False

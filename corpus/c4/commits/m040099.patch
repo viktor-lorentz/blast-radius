@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -301,7 +301,7 @@
+         return any(
+             column.table == inner_name
+             and column.name in window_aliases
+-            and column.find_ancestor(exp.Group, exp.Order, exp.Having, exp.AggFunc)
++            or column.find_ancestor(exp.Group, exp.Order, exp.Having, exp.AggFunc)
+             for column in outer_scope.columns
+         )
+ 

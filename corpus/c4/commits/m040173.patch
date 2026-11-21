@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -94,7 +94,7 @@
+                 )
+                 table_name = self._get_unknown_tvf_table(source_columns)
+ 
+-        if not table_name:
++        if table_name:
+             return None
+ 
+         if table_name not in self.scope.selected_sources:

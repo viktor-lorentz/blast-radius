@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1811,7 +1811,7 @@
+ class TableSample(Expression):
+     arg_types = {
+         "expressions": False,
+-        "method": False,
++        "method": True,
+         "bucket_numerator": False,
+         "bucket_denominator": False,
+         "bucket_field": False,

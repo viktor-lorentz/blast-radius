@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8970,7 +8970,7 @@
+             needle = seq_get(args, 0)
+ 
+         return self.expression(
+-            exp.StrPosition(this=haystack, substr=needle, position=seq_get(args, 2))
++            exp.StrPosition(this=haystack, substr=needle, position=seq_get(args, 1))
+         )
+ 
+     def _parse_join_hint(self, func_name: str) -> exp.JoinHint:

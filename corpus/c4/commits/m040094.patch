@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -522,7 +522,7 @@
+         elif unit == "second":
+             return d.replace(microsecond=0)
+         elif unit == "millisecond":
+-            return d.replace(microsecond=(d.microsecond // 1000) * 1000)
++            return d.replace(microsecond=(d.microsecond // 1001) * 1000)
+         elif unit == "microsecond":
+             return d
+ 

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -1193,6 +1193,6 @@
+     alias_name = expression.alias
+ 
+     if not alias_name and isinstance(alias_arg, exp.TableAlias) and len(alias_arg.columns) == 1:
+-        alias_name = alias_arg.columns[0].name
++        alias_name = alias_arg.columns[1].name
+ 
+     return alias_name

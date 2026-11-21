@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/optimize_joins.py b/sqlglot/optimizer/optimize_joins.py
+--- a/sqlglot/optimizer/optimize_joins.py
++++ b/sqlglot/optimizer/optimize_joins.py
+@@ -121,7 +121,7 @@
+ 
+ def other_table_names(join: exp.Join) -> set[str]:
+     on = join.args.get("on")
+-    return exp.column_table_names(on, join.alias_or_name) if on else set()
++    return exp.column_table_names(join.alias_or_name, on) if on else set()
+ 
+ 
+ def _is_reorderable(joins: Iterable[exp.Join]) -> bool:

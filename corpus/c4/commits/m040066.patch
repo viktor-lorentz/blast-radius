@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -192,7 +192,7 @@
+         # The base render skips the lenient rewrite: a lax specifier pads back (e.g. %m -> MM),
+         # an explicit non-padded specifier (e.g. %-m) doesn't
+         padded_format = generator.Generator.format_time(self, expression)
+-        return padded_format in (HIVE_TIME_FORMAT, HIVE_DATE_FORMAT)
++        return padded_format not in (HIVE_TIME_FORMAT, HIVE_DATE_FORMAT)
+ 
+     return False
+ 

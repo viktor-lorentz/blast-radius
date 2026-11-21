@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/annotate_types.sql b/tests/fixtures/optimizer/annotate_types.sql
+--- a/tests/fixtures/optimizer/annotate_types.sql
++++ b/tests/fixtures/optimizer/annotate_types.sql
+@@ -319,7 +319,7 @@
+ INT;
+ 
+ # dialect: snowflake
+-BITSHIFTLEFT(X'FF', 4);
++BITSHIFTLEFT(X'FF', x 4);
+ BINARY;
+ 
+ # dialect: snowflake

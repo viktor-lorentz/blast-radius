@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -273,7 +273,7 @@
+         ),
+         "OCTET_LENGTH": exp.ByteLength.from_arg_list,
+         "TO_HEX": _build_to_hex,
+-        "PARSE_DATE": _build_parse_date,
++        "PARDE_DATE": _build_parse_date,
+         "PARSE_TIME": lambda args, dialect: build_formatted_time(exp.ParseTime)(
+             [seq_get(args, 1), seq_get(args, 0)], dialect
+         ),

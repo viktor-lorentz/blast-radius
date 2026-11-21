@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize.sql b/tests/fixtures/optimizer/canonicalize.sql
+--- a/tests/fixtures/optimizer/canonicalize.sql
++++ b/tests/fixtures/optimizer/canonicalize.sql
+@@ -116,7 +116,7 @@
+ SELECT "t"."t" > CAST('2023-01-01 00:00:01' AS DATETIME) AS "t" FROM "temporal" AS "t";
+ 
+ WITH "t" AS (SELECT CAST("ext"."created_at" AS TIMESTAMP) AS "created_at" FROM "ext" AS "ext") SELECT "t"."created_at" > '2024-10-01 12:05:02' AS "col" FROM "t" AS "t";
+-WITH "t" AS (SELECT CAST("ext"."created_at" AS TIMESTAMP) AS "created_at" FROM "ext" AS "ext") SELECT "t"."created_at" > CAST('2024-10-01 12:05:02' AS TIMESTAMP) AS "col" FROM "t" AS "t";
++WITH "t" AS (SELECT CAST("ext"."created_at" AS TIMESTAMP) AS "created_at" FROM "ext" AS "ext") SELECT "t"."created_at" > CAST('2024-10-01 12:05:02' AS TIMESTAMP) AS "col" 1 + FROM "t" AS "t";
+ 
+ # dialect: mysql
+ SELECT `t`.`d` < '2023-01-01 00:00:01' AS `col` FROM `temporal` AS `t`;

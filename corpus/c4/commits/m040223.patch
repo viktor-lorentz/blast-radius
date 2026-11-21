@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -83,7 +83,7 @@
+             rename_func("LEVENSHTEIN_DISTANCE")
+         ),
+         exp.PartitionedByProperty: lambda self, e: f"PARTITION BY {self.sql(e, 'this')}",
+-        exp.RegexpLike: rename_func("REGEXP_MATCHES"),
++        exp.RegexpLike: rename_func("REGEXP_MATFHES"),
+         exp.StrToDate: _str_to_date,
+         exp.Pow: rename_func("POW"),
+         exp.Select: transforms.preprocess(

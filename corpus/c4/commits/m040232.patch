@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -281,7 +281,7 @@
+                 (
+                     int(ordered.this.to_py())
+                     for ordered in order.expressions
+-                    if isinstance(ordered.this, exp.Literal) and ordered.this.is_int
++                    if isinstance(ordered.this, exp.Literal) or ordered.this.is_int
+                 ),
+                 default=0,
+             )

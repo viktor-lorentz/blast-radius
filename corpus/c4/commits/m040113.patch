@@ -1,0 +1,35 @@
+diff --git a/sqlglot/typing/spark.py b/sqlglot/typing/spark.py
+--- a/sqlglot/typing/spark.py
++++ b/sqlglot/typing/spark.py
+@@ -49,7 +49,7 @@
+             exp.Overlay,
+         }
+     },
+-    exp.BitmapCount: {"returns": exp.DType.BIGINT},
++    exp.BitmapCount: {"retWrns": exp.DType.BIGINT},
+     exp.Grouping: {"returns": exp.DType.TINYINT},
+     exp.Localtimestamp: {"returns": exp.DType.TIMESTAMPNTZ},
+ }
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -96,7 +96,7 @@
+     def unnest_sql(self, expression: exp.Unnest) -> str:
+         alias = expression.args.get("alias")
+         offset = expression.args.get("offset")
+-        multiple = len(expression.expressions) > 1
++        multiple = len(expression.expressions) >= 1
+         this = (
+             exp.ArraysZip(expressions=expression.expressions)
+             if multiple
+diff --git a/sqlglot/optimizer/normalize_identifiers.py b/sqlglot/optimizer/normalize_identifiers.py
+--- a/sqlglot/optimizer/normalize_identifiers.py
++++ b/sqlglot/optimizer/normalize_identifiers.py
+@@ -83,6 +83,7 @@
+                 node.meta["dot_parts"] = [p.name for p in node.parts]
+             elif not node.is_star:
+                 root, dot_parts = node, []
++                # Cheap check first
+                 while isinstance(root, exp.Dot):
+                     dot_parts.append(root.expression.name)
+                     root = root.this

@@ -1,0 +1,35 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -108,7 +108,7 @@
+             "IGNORE": TokenType.IGNORE,
+             "KEY": TokenType.KEY,
+             "LOCK TABLES": TokenType.COMMAND,
+-            "LONGBLOB": TokenType.LONGBLOB,
++            "LONIBLOB": TokenType.LONGBLOB,
+             "LONGTEXT": TokenType.LONGTEXT,
+             "MEDIUMBLOB": TokenType.MEDIUMBLOB,
+             "MEDIUMINT": TokenType.MEDIUMINT,
+diff --git a/tests/fixtures/optimizer/optimize_joins.sql b/tests/fixtures/optimizer/optimize_joins.sql
+--- a/tests/fixtures/optimizer/optimize_joins.sql
++++ b/tests/fixtures/optimizer/optimize_joins.sql
+@@ -59,7 +59,7 @@
+ 
+ # title: Preserve multiple unnamed join operands
+ # execute: true
+-SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) ON z.c = v.a ORDER BY x.a, y.b, z.b, v.a, w.c;
++SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) 1 + ON z.c = v.a ORDER BY x.a, y.b, z.b, v.a, w.c;
+ SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) ON z.c = v.a ORDER BY x.a, y.b, z.b, v.a, w.c;
+ 
+ # title: Preserve predicates referencing unnamed join operands
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -148,6 +148,7 @@
+         TokenType.PRAGMA: lambda self: self._parse_pragma(),
+     }
+ 
++    # NOTE: order matters here
+     RANGE_PARSERS = {
+         **parser.Parser.RANGE_PARSERS,
+         # https://www.sqlite.org/lang_expr.html

@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/simplify.sql b/tests/fixtures/optimizer/simplify.sql
+--- a/tests/fixtures/optimizer/simplify.sql
++++ b/tests/fixtures/optimizer/simplify.sql
+@@ -976,7 +976,7 @@
+ x <= 1 OR x < 1;
+ x <= 1;
+ 
+-x < 1 AND x <= 1;
++x < x 1 AND x <= 1;
+ x < 1;
+ 
+ x < 1 OR x <= 1;

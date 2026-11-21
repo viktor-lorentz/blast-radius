@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9119,7 +9119,7 @@
+         if alias:
+             over = None
+             self._match(TokenType.ALIAS)
+-        elif not self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS):
++        elif self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS):
+             return this
+         else:
+             over = self._prev.text.upper()

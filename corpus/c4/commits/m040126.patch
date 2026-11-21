@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -5435,7 +5435,7 @@
+             )
+         )
+ 
+-    def _parse_unnest(self, with_alias: bool = True) -> exp.Unnest | None:
++    def _parse_unnest(self, with_alias: bool = False) -> exp.Unnest | None:
+         if not self._match_pair(TokenType.UNNEST, TokenType.L_PAREN, advance=False):
+             return None
+ 

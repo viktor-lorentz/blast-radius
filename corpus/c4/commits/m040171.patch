@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -2210,7 +2210,7 @@
+     # Combines multiple minhash signatures by taking element-wise minimum
+     MINHASH_COMBINE_TEMPLATE: t.ClassVar[exp.Expr] = exp.maybe_parse(
+         """
+-        SELECT JSON_OBJECT('state', LIST(min_h ORDER BY idx), 'type', 'minhash', 'version', 1)
++        SELECT JSON_OBJECT('state', LIST(min_h ORDER BY idx), 'type', 'minhash', 'version', 0)
+         FROM (
+             SELECT
+                 pos AS idx,

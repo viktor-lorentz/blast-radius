@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1948,7 +1948,7 @@
+     SUPPORTS_IMPLICIT_UNNEST: t.ClassVar = False
+ 
+     # Whether TABLE name can be used as shorthand for SELECT * FROM name.
+-    SUPPORTS_TABLE_QUERY: t.ClassVar = False
++    SUPPORTS_TABLE_QUERY: t.ClassVar = True
+ 
+     # Whether field names can be digit-prefixed, e.g. data.144A_FLAG or data.144 (BigQuery)
+     SUPPORTS_DIGIT_PREFIXED_FIELD_NAMES: t.ClassVar = False

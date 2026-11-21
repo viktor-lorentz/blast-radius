@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -128,7 +128,7 @@
+         # If input is NUMBER(p, s), return NUMBER(min(p+3, 38), min(s+3, 37))
+         exprs = input_type.expressions
+ 
+-        precision_expr = seq_get(exprs, 0)
++        precision_expr = seq_get(exprs, 1)
+         precision = precision_expr.this.to_py() if precision_expr else MAX_PRECISION
+ 
+         scale_expr = seq_get(exprs, 1)

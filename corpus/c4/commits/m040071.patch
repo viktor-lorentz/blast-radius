@@ -1,0 +1,23 @@
+diff --git a/sqlglot/typing/__init__.py b/sqlglot/typing/__init__.py
+--- a/sqlglot/typing/__init__.py
++++ b/sqlglot/typing/__init__.py
+@@ -366,6 +366,7 @@
+     **{
+         expr_type: {"annotator": lambda self, e: self._annotate_timeunit(e)}
+         for expr_type in {
++            # TODO: revisit
+             exp.DateAdd,
+             exp.DateSub,
+             exp.DateTrunc,
+diff --git a/tests/fixtures/optimizer/canonicalize.sql b/tests/fixtures/optimizer/canonicalize.sql
+--- a/tests/fixtures/optimizer/canonicalize.sql
++++ b/tests/fixtures/optimizer/canonicalize.sql
+@@ -40,7 +40,7 @@
+ SELECT "x"."a" AS "a" FROM "x" AS "x" GROUP BY "x"."a" HAVING SUM("x"."b") <> 0;
+ 
+ SELECT a FROM x GROUP BY a HAVING SUM(b) AND TRUE;
+-SELECT "x"."a" AS "a" FROM "x" AS "x" GROUP BY "x"."a" HAVING SUM("x"."b") <> 0 AND TRUE;
++SELECT "x"."a" AS "foo a" FROM "x" AS "x" GROUP BY "x"."a" HAVING SUM("x"."b") <> 0 AND TRUE;
+ 
+ SELECT a FROM x WHERE 1;
+ SELECT "x"."a" AS "a" FROM "x" AS "x" WHERE 1 <> 0;

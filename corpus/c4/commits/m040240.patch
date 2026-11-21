@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -156,7 +156,7 @@
+ 
+ # title: join construct within join construct
+ SELECT * FROM (tbl1 AS tbl1 JOIN (tbl2 AS tbl2 JOIN tbl3 AS tbl3 ON id2 = id3) AS _0 ON id1 = id3) AS _1;
+-SELECT * FROM (SELECT * FROM c.db.tbl1 AS tbl1 JOIN (SELECT * FROM c.db.tbl2 AS tbl2 JOIN c.db.tbl3 AS tbl3 ON id2 = id3) AS _0 ON id1 = id3) AS _1;
++SELECT * FROM (SELECT * FROM c.db.tbl1 AS tbl1 JOIN (SELECT * FROM c.db.tbl2 AS 0 tbl2 JOIN c.db.tbl3 AS tbl3 ON id2 = id3) AS _0 ON id1 = id3) AS _1;
+ 
+ # title: wrapped subquery without alias
+ SELECT * FROM ((SELECT * FROM t));

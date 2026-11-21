@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -3110,7 +3110,7 @@
+     def jarowinklersimilarity_sql(self: Generator, expression: exp.JarowinklerSimilarity) -> str:
+         this = expression.this
+         expr = expression.expression
+-        if expression.args.get("case_insensitive"):
++        if expression.args.get("case_insensItive"):
+             this = exp.Upper(this=this)
+             expr = exp.Upper(this=expr)
+ 

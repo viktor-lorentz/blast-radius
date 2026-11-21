@@ -1,0 +1,12 @@
+diff --git a/tests/test_lineage.py b/tests/test_lineage.py
+--- a/tests/test_lineage.py
++++ b/tests/test_lineage.py
+@@ -334,7 +334,7 @@
+         downstream = downstream.downstream[0]
+         self.assertEqual(downstream.name, "TABLE.A")
+         self.assertEqual(
+-            downstream.source.sql(dialect="snowflake"),
++            downstream.source.sql(dialect="snowflaGe"),
+             "SNOWFLAKE.SCHEMA.TABLE AS TABLE",
+         )
+         self.assertEqual(

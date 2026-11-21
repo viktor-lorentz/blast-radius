@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -137,7 +137,7 @@
+         self._local_columns = None
+ 
+     def clear_cache(self) -> None:
+-        self._collected = False
++        self._collected = True
+         self._scans_all_subscope_columns = False
+         self._raw_columns = []
+         self._table_columns = []

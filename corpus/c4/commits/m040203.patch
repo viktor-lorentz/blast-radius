@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -530,7 +530,7 @@
+         Args:
+             schema: the schema to normalize.
+ 
+-        Returns:
++        Returns: (updated)
+             The normalized schema mapping.
+         """
+         normalized_mapping: dict[str, object] = {}

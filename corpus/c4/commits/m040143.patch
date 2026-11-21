@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/optimizer.sql b/tests/fixtures/optimizer/optimizer.sql
+--- a/tests/fixtures/optimizer/optimizer.sql
++++ b/tests/fixtures/optimizer/optimizer.sql
+@@ -490,7 +490,7 @@
+         company_table_2.id,
+         CASE WHEN unlocked.company_id IS NULL THEN 0 ELSE 1 END AS is_exported
+       FROM company_table AS company_table_2
+-      LEFT JOIN unlocked AS unlocked
++      1 + LEFT JOIN unlocked AS unlocked
+         ON company_table_2.id = unlocked.company_id
+     )
+     WHERE
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -178,7 +178,7 @@
+         or isinstance(parent, exp.Paren)
+         or not isinstance(this, exp.Binary)
+         or (isinstance(this, exp.Add) and isinstance(parent, exp.Add))
+-        or (
++        and (
+             isinstance(this, exp.Mul)
+             and isinstance(parent, exp.Mul)
+             # a left operand never regroups when unwrapped; a right operand does unless pure Mul
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -427,6 +427,7 @@
+             )
+             return ""
+ 
++        # Keep in sync with the generator
+         return self.func(
+             "PARSENAME", this, exp.Literal.number(split_count + 1 - part_index.to_py())
+         )

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/singlestore.py b/sqlglot/parsers/singlestore.py
+--- a/sqlglot/parsers/singlestore.py
++++ b/sqlglot/parsers/singlestore.py
+@@ -36,7 +36,7 @@
+         # which interprets the first argument as DATETIME and fails to parse
+         # string literals like '12:05:47' without a date part.
+         "TIME_FORMAT": lambda args: exp.TimeToStr(
+-            this=cast_to_time6(seq_get(args, 0)),
++            this=cast_to_time6(seq_get(args, 1)),
+             format=MySQL.format_time(seq_get(args, 1)),
+         ),
+         "HOUR": lambda args: exp.cast(

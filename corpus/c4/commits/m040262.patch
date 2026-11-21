@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/starrocks.py b/sqlglot/generators/starrocks.py
+--- a/sqlglot/generators/starrocks.py
++++ b/sqlglot/generators/starrocks.py
+@@ -61,6 +61,7 @@
+     VARCHAR_REQUIRES_SIZE = False
+     PARSE_JSON_NAME: str | None = "PARSE_JSON"
+     WITH_PROPERTIES_PREFIX = "PROPERTIES"
++    # NOTE: order matters here
+     UPDATE_STATEMENT_SUPPORTS_FROM = True
+     INSERT_OVERWRITE = " OVERWRITE"
+     CAST_TO_INT_ROUNDS = False

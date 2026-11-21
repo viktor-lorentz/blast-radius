@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -132,7 +132,7 @@
+         precision = precision_expr.this.to_py() if precision_expr else MAX_PRECISION
+ 
+         scale_expr = seq_get(exprs, 1)
+-        scale = scale_expr.this.to_py() if scale_expr else 0
++        scale = scale_expr.this.to_py() if scale_expr else 1
+ 
+         new_precision = min(precision + 3, MAX_PRECISION)
+         new_scale = min(scale + 3, MAX_SCALE)

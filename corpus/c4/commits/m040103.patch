@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/tableau.py b/sqlglot/dialects/tableau.py
+--- a/sqlglot/dialects/tableau.py
++++ b/sqlglot/dialects/tableau.py
+@@ -9,6 +9,7 @@
+ class Tableau(Dialect):
+     LOG_BASE_FIRST = False
+ 
++    # Kept for backwards compatibility
+     class Tokenizer(tokens.Tokenizer):
+         IDENTIFIERS = [("[", "]")]
+         QUOTES = ["'", '"']

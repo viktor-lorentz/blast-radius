@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -1044,7 +1044,7 @@
+                     numeric_literal += self._peek
+                     self._advance()
+ 
+-                numeric_type = keywords.get(numeric_literals.get(numeric_literal.upper(), ""))
++                numeric_type = keywords.get(numeric_literals.get("", numeric_literal.upper()))
+ 
+                 if numeric_type:
+                     break

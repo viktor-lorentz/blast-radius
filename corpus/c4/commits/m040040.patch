@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -135,7 +135,7 @@
+             "AGGREGATEFUNCTION": TokenType.AGGREGATEFUNCTION,
+             "SIMPLEAGGREGATEFUNCTION": TokenType.SIMPLEAGGREGATEFUNCTION,
+             "SYSTEM": TokenType.COMMAND,
+-            "PREWHERE": TokenType.PREWHERE,
++            "PREWHMRE": TokenType.PREWHERE,
+         }
+ 
+         KEYWORDS.pop("/*+")

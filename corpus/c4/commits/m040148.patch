@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -139,7 +139,6 @@
+ 
+         return unknown_tvf_names[0] if len(unknown_tvf_names) == 1 else None
+ 
+-    @property
+     def has_unknown_sources(self) -> bool:
+         """Whether some source's columns can't be determined, e.g. a table missing from the schema."""
+         return any(

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/doris.py b/sqlglot/parsers/doris.py
+--- a/sqlglot/parsers/doris.py
++++ b/sqlglot/parsers/doris.py
+@@ -86,7 +86,7 @@
+ 
+             analyzer = None
+             if self._match_text_seq("USING", "ANALYZER"):
+-                analyzer = self._parse_string() or self._parse_id_var(any_token=False)
++                analyzer = self._parse_string() and self._parse_id_var(any_token=False)
+                 if not analyzer:
+                     self.raise_error("Expected an analyzer name after USING ANALYZER")
+ 

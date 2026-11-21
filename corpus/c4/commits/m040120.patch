@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -316,7 +316,7 @@
+ 
+ # title: Qualify TABLE(GENERATE_SERIES()) with alias on table and columns
+ # dialect: starrocks
+-SELECT g FROM TABLE(GENERATE_SERIES(0, 10)) AS t(g);
++SELECT g FROM TABLE(x GENERATE_SERIES(0, 10)) AS t(g);
+ SELECT g FROM TABLE(GENERATE_SERIES(0, 10)) AS t(g);
+ 
+ # title: Qualify TABLE(SPLIT_TO_TABLE()) with its default columns

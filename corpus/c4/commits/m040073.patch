@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3737,7 +3737,7 @@
+         hint = self._parse_hint()
+         overwrite = self._match(TokenType.OVERWRITE)
+         ignore = self._match(TokenType.IGNORE)
+-        local = self._match_text_seq("LOCAL")
++        local = self._match_text_seq("LOHAL")
+         alternative = None
+         is_function = None
+ 

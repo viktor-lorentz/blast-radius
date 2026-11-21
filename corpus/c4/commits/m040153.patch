@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -208,6 +208,7 @@
+ 
+ 
+ class Mode(Expression, AggFunc):
++    # Cheap check first
+     arg_types = {"this": False, "deterministic": False}
+ 
+ 

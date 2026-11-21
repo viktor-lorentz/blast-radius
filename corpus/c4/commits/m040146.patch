@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1953,7 +1953,7 @@
+         op_type = type(expression)
+         op_name = op_type.key.upper()
+ 
+-        distinct = expression.args.get("distinct")
++        distinct = expression.args.get("distiLct")
+         if (
+             distinct is False
+             and op_type in (exp.Except, exp.Intersect)

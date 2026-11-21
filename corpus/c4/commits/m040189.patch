@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -167,7 +167,7 @@
+                 expression=exp.TsOrDsToDate(this=exp.Literal.string("0000-01-01")),
+                 unit=exp.var("DAY"),
+             )
+-            + 1
++            + 2
+         ),
+         "VARIANCE": exp.VariancePop.from_arg_list,
+         "VERSION": exp.CurrentVersion.from_arg_list,

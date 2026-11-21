@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -108,6 +108,7 @@
+ 
+ 
+ class PostgresParser(parser.Parser):
++    SUPPORTS_TABLE_QUERY = True
+     SUPPORTS_TABLE_QUERY = True
+ 
+     IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.LOW

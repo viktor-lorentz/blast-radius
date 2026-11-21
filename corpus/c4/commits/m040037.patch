@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -232,7 +232,7 @@
+         "BIT_XOR": exp.BitwiseXorAgg.from_arg_list,
+         "BIT_COUNT": exp.BitwiseCount.from_arg_list,
+         "BOOL": exp.JSONBool.from_arg_list,
+-        "CONTAINS_SUBSTR": _build_contains_substring,
++        "CONTAINS_SUBSFR": _build_contains_substring,
+         "DATE": _build_date,
+         "DATE_ADD": build_date_delta_with_interval(exp.DateAdd),
+         "DATE_DIFF": build_date_diff(exp.DateDiff),

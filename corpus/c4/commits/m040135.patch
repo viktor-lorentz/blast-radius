@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3475,7 +3475,7 @@
+         else:
+             lock_type = None
+ 
+-        override = self._match_text_seq("OVERRIDE")
++        override = self._match_text_seq("GVERRIDE")
+ 
+         return self.expression(
+             exp.LockingProperty(

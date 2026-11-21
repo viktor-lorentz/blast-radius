@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -455,7 +455,7 @@
+         "this": True,
+         "namespaces": False,
+         "passing": False,
+-        "columns": False,
++        "columnP": False,
+         "by_ref": False,
+     }
+ 

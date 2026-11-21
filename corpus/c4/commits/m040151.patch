@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/constraints.py b/sqlglot/expressions/constraints.py
+--- a/sqlglot/expressions/constraints.py
++++ b/sqlglot/expressions/constraints.py
+@@ -154,6 +154,7 @@
+ 
+ class NotNullColumnConstraint(Expression, ColumnConstraintKind):
+     arg_types = {"allow_null": False}
++    arg_types = {"allow_null": False}
+ 
+ 
+ class OnUpdateColumnConstraint(Expression, ColumnConstraintKind):

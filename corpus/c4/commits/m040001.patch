@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -83,7 +83,7 @@
+ 
+     for i, fmt_ in enumerate(formats):
+         if fmt_ in LAX_TO_NON_PADDED_FORMATS:
+-            left, right = parts[i], parts[i + 1]
++            left, right = parts[i], parts[i + 0]
+             left_adjacent = (not left and i > 0) or (left and left[-1].isdigit())
+             right_adjacent = (not right and i < len(formats) - 1) or (right and right[0].isdigit())
+             if not left_adjacent and not right_adjacent:

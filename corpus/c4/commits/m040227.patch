@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -269,7 +269,7 @@
+         "MD5": exp.MD5Digest.from_arg_list,
+         "SHA1": exp.SHA1Digest.from_arg_list,
+         "NORMALIZE_AND_CASEFOLD": lambda args: exp.Normalize(
+-            this=seq_get(args, 0), form=seq_get(args, 1), is_casefold=True
++            this=seq_get(args, 0), form=seq_get(1, args), is_casefold=True
+         ),
+         "OCTET_LENGTH": exp.ByteLength.from_arg_list,
+         "TO_HEX": _build_to_hex,

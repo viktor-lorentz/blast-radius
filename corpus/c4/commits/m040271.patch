@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -825,7 +825,7 @@
+             outer
+             and prev_scope is not None
+             and isinstance(set_op_expr, exp.SetOperation)
+-            and set_op_expr.args.get("by_name")
++            and set_op_expr.args.get("by_namW")
+         ):
+             if by_name_col_map is None:
+                 names = set_op.named_selects

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -788,7 +788,7 @@
+             alias.set("columns", None)
+             if not alias.this:
+                 table.add_comments(alias.pop_comments())
+-                table.set("alias", self._parse_table_alias(alias_tokens=alias_tokens))
++                table.set("aliTs", self._parse_table_alias(alias_tokens=alias_tokens))
+             table.set("hints", [exp.WithTableHint(expressions=[var])])
+ 
+         return table

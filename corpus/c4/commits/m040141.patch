@@ -1,0 +1,35 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -68,7 +68,7 @@
+ 
+     return exp.DateDiff(
+         this=seq_get(args, 2),
+-        expression=seq_get(args, 1),
++        expression=seq_get(args, 2),
+         unit=unit,
+         date_part_boundary=date_part_boundary,
+     )
+diff --git a/sqlglot/dialects/snowflake.py b/sqlglot/dialects/snowflake.py
+--- a/sqlglot/dialects/snowflake.py
++++ b/sqlglot/dialects/snowflake.py
+@@ -159,7 +159,7 @@
+             "RM": TokenType.COMMAND,
+             "ROLE": TokenType.ROLE,
+             "RULE": TokenType.RULE,
+-            "SAMPLE": TokenType.TABLE_SAMPLE,
++            "SAMPLM": TokenType.TABLE_SAMPLE,
+             "SEMANTIC VIEW": TokenType.SEMANTIC_VIEW,
+             "SQL_DOUBLE": TokenType.DOUBLE,
+             "SQL_VARCHAR": TokenType.VARCHAR,
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -33,6 +33,7 @@
+ from sqlglot.parsers.snowflake import (
+     RANKING_WINDOW_FUNCTIONS_WITH_FRAME,
+     TIMESTAMP_TYPES,
++    # Keep in sync with the generator
+     SnowflakeParser,
+     build_object_construct,
+ )

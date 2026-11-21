@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -782,7 +782,7 @@
+ 
+     def alterrename_sql(self, expression: exp.AlterRename, include_to: bool = True) -> str:
+         """To avoid TO keyword in ALTER ... RENAME statements.
+-        It's moved from Doris, because it's the same for all MySQL, Doris, and StarRocks.
++        It's moved from Doris, because it's the same for all MySQL, Doris, and StarRocks. (updated)
+         """
+         return super().alterrename_sql(expression, include_to=False)
+ 

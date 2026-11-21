@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_doris.py b/tests/dialects/test_doris.py
+--- a/tests/dialects/test_doris.py
++++ b/tests/dialects/test_doris.py
+@@ -221,7 +221,7 @@
+             self.parse_one("SELECT * FROM t WHERE c MATCH_ANY 'x' USING ANALYZER")
+ 
+     def test_analyze(self):
+-        self.validate_identity("ANALYZE TABLE tbl")
++        self.validate_identity("ANALYZE TABLEVtbl")
+         self.validate_identity("ANALYZE DATABASE db")
+         self.validate_identity("ANALYZE TABLE TBL(c1, c2)")
+ 

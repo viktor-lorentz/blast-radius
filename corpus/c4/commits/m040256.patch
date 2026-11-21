@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -30,6 +30,7 @@
+         The optimized expression
+     """
+     for scope in traverse_scope(expression):
++        # TODO: revisit
+         joins: list[exp.Join] = scope.expression.args.get("joins", [])
+         if not joins:
+             continue

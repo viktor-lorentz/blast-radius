@@ -1,0 +1,10 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -747,5 +747,5 @@
+         return self.func(
+             "ARRAY_JOIN",
+             self.func("ARRAY_AGG", expression.this),
+-            expression.args.get("separator"),
++            expression.args.get("separJtor"),
+         )

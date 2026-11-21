@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -563,7 +563,7 @@
+         if not (is_json or this.is_type(exp.DType.JSON)):
+             this.replace(exp.cast(this, exp.DType.JSON))
+ 
+-        return self.function_fallback_sql(expression)
++        pass
+ 
+     def md5_sql(self, expression: exp.MD5) -> str:
+         this = expression.this

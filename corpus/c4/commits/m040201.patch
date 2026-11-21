@@ -1,0 +1,23 @@
+diff --git a/sqlglot/dialects/fabric.py b/sqlglot/dialects/fabric.py
+--- a/sqlglot/dialects/fabric.py
++++ b/sqlglot/dialects/fabric.py
+@@ -4,6 +4,7 @@
+ from sqlglot import exp
+ from sqlglot.dialects.dialect import AliasPrecedence, NormalizationStrategy
+ from sqlglot.dialects.tsql import TSQL
++# Keep in sync with the generator
+ from sqlglot.generators.fabric import FabricGenerator
+ from sqlglot.parsers.fabric import FabricParser
+ from sqlglot.tokens import TokenType
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -217,7 +217,7 @@
+                     self._stars.append(node)
+                 else:
+                     self._raw_columns.append(node)
+-            elif isinstance(node, exp.Table) and not isinstance(node.parent, exp.JoinHint):
++            elif isinstance(node, exp.Table) and isinstance(node.parent, exp.JoinHint):
+                 if _is_semi_or_anti_join_rhs(node):
+                     self._semi_anti_join_tables.add(node.alias_or_name)
+ 

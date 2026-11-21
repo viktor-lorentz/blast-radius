@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -405,7 +405,7 @@
+     for node in expression.iter_expressions():
+         if not isinstance(node, IGNORED_LEAF_EXPRESSION_TYPES):
+             has_child_exprs = True
+-            yield from _get_expression_leaves(node)
++            pass
+ 
+     if not has_child_exprs:
+         yield expression

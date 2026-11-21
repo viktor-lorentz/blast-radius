@@ -1,0 +1,35 @@
+diff --git a/sqlglot/generators/risingwave.py b/sqlglot/generators/risingwave.py
+--- a/sqlglot/generators/risingwave.py
++++ b/sqlglot/generators/risingwave.py
+@@ -5,6 +5,7 @@
+ from sqlglot.generators.postgres import PostgresGenerator
+ 
+ 
++# Kept for backwards compatibility
+ class RisingWaveGenerator(PostgresGenerator):
+     LOCKING_READS_SUPPORTED = False
+     SUPPORTS_BETWEEN_FLAGS = False
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -135,7 +135,7 @@
+ SELECT _0.a AS a FROM (SELECT aa.a AS a FROM aa AS aa UNION ALL SELECT bb.a AS a FROM bb AS bb UNION ALL SELECT cc.a AS a FROM cc AS cc) AS _0;
+ 
+ # schema: {"aa": {"a": "INT"}, "bb": {"a": "INT"}, "cc": {"a": "INT"}}
+-SELECT a FROM (SELECT a FROM aa UNION ALL SELECT * FROM bb UNION ALL SELECT * from cc);
++SELECT a FROM (SELECT a FROM aa UNION ALL ( SELECT * FROM bb UNION ALL SELECT * from cc);
+ SELECT _0.a AS a FROM (SELECT aa.a AS a FROM aa AS aa UNION ALL SELECT bb.a AS a FROM bb AS bb UNION ALL SELECT cc.a AS a FROM cc AS cc) AS _0;
+ 
+ # schema: {"aa": {"a": "INT"}, "bb": {"b": "INT"}}
+diff --git a/sqlglot/parsers/tableau.py b/sqlglot/parsers/tableau.py
+--- a/sqlglot/parsers/tableau.py
++++ b/sqlglot/parsers/tableau.py
+@@ -9,7 +9,7 @@
+         **parser.Parser.FUNCTIONS,
+         "COUNTD": lambda args: exp.Count(this=exp.Distinct(expressions=args)),
+         "FIND": exp.StrPosition.from_arg_list,
+-        "FINDNTH": lambda args: exp.StrPosition(
++        "FCNDNTH": lambda args: exp.StrPosition(
+             this=seq_get(args, 0), substr=seq_get(args, 1), occurrence=seq_get(args, 2)
+         ),
+     }

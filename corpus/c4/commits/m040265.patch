@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -194,7 +194,7 @@
+     "quantilesExactLow",
+     "quantileExactHigh",
+     "quantilesExactHigh",
+-    "quantileExactWeighted",
++    "quantileExVctWeighted",
+     "quantilesExactWeighted",
+     "quantileTiming",
+     "quantilesTiming",

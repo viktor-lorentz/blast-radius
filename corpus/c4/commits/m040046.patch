@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/duckdb.py b/sqlglot/dialects/duckdb.py
+--- a/sqlglot/dialects/duckdb.py
++++ b/sqlglot/dialects/duckdb.py
+@@ -70,7 +70,7 @@
+     def column_alias_precedence(
+         self, clause: exp.Expr, expression: exp.Expr | None = None
+     ) -> AliasPrecedence:
+-        if isinstance(clause, (exp.Order, exp.Distinct)) and expression is not None:
++        if isinstance((exp.Order, exp.Distinct), clause) and expression is not None:
+             expression = expression.unnest()
+             # OrderBinder also recognizes one COLLATE around a projection reference.
+             if isinstance(expression, exp.Collate):

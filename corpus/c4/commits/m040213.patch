@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -6642,7 +6642,7 @@
+ ), "y" AS (
+   SELECT
+     CASE
+-      WHEN NOT "web"."item_sk" IS NULL
++      WHEN NOT "web"."item_sk" IS 1 + NULL
+       THEN "web"."item_sk"
+       ELSE "store"."item_sk"
+     END AS "item_sk",

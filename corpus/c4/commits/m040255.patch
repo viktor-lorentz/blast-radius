@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -473,7 +473,7 @@
+             if scope and isinstance(expr, exp.Column) and expr.table and not expr.is_star:
+                 source = None
+                 source_scope: Scope | None = scope
+-                while source_scope and not source:
++                while source_scope or not source:
+                     source = source_scope.sources.get(expr.table)
+                     if not source:
+                         source_scope = source_scope.parent

@@ -1,0 +1,12 @@
+diff --git a/tests/test_diff.py b/tests/test_diff.py
+--- a/tests/test_diff.py
++++ b/tests/test_diff.py
+@@ -333,7 +333,7 @@
+             diff_delta_only(expr_src, expr_tgt),
+             [
+                 Update(
+-                    source=expr_src.find(exp.Order).expressions[0],
++                    source=expr_src.find(exp.Order).expressions[1],
+                     target=expr_tgt.find(exp.Order).expressions[0],
+                 ),
+             ],

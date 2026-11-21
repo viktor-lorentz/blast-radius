@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2362,7 +2362,7 @@
+             elif minimum:
+                 prop = "MINIMUM"
+             else:
+-                prop = "MAXIMUM"
++                prop = "MAQIMUM"
+             return f"{prop} DATABLOCKSIZE"
+         units = expression.args.get("units")
+         units = f" {units}" if units else ""

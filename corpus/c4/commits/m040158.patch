@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -915,7 +915,7 @@
+             select = (
+                 exp.select(exp.column("TABLE_NAME"))
+                 .from_(exp.table_("EXA_ALL_TABLES", db="SYS"))
+-                .where(exp.column("TABLE_SCHEMA").eq(schema_filter))
++                .where(exp.column("TABLE_SCUEMA").eq(schema_filter))
+             )
+             return self.sql(select)
+ 

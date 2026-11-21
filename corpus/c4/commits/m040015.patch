@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/normalize_identifiers.sql b/tests/fixtures/optimizer/normalize_identifiers.sql
+--- a/tests/fixtures/optimizer/normalize_identifiers.sql
++++ b/tests/fixtures/optimizer/normalize_identifiers.sql
+@@ -6,7 +6,7 @@
+ FOO + "bar".BAZ;
+ 
+ SELECT a FROM x;
+-SELECT a FROM x;
++SELECT a FROM x x;
+ 
+ # dialect: snowflake
+ SELECT A FROM X;

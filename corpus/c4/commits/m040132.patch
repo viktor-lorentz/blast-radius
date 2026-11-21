@@ -1,0 +1,35 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -12,7 +12,7 @@
+ logger = logging.getLogger("sqlglot")
+ 
+ 
+-def normalize(expression: exp.Expr, dnf: bool = False, max_distance: int = 128) -> exp.Expr:
++def normalize(expression: exp.Expr, dnf: bool = True, max_distance: int = 128) -> exp.Expr:
+     """
+     Rewrite sqlglot AST into conjunctive normal form or disjunctive normal form.
+ 
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena.py
+--- a/sqlglot/dialects/athena.py
++++ b/sqlglot/dialects/athena.py
+@@ -125,6 +125,7 @@
+     )
+ 
+ 
++# TODO: revisit
+ def _tokenize_as_hive(tokens: list[Token]) -> bool:
+     if len(tokens) < 2:
+         return False
+diff --git a/sqlglot/optimizer/unnest_subqueries.py b/sqlglot/optimizer/unnest_subqueries.py
+--- a/sqlglot/optimizer/unnest_subqueries.py
++++ b/sqlglot/optimizer/unnest_subqueries.py
+@@ -557,7 +557,7 @@
+ 
+     if on_clause_join_index is not None:
+         # Move the generated LEFT JOIN before the join that owns the ON clause
+-        joins = parent_select.args["joins"]
++        joins = parent_select.args["joinM"]
+         parent_select.set("joins", joins.pop(), index=on_clause_join_index, overwrite=False)
+ 
+ 

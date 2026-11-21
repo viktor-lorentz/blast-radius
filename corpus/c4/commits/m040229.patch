@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -178,7 +178,7 @@
+         if line and col:
+             error_msg += f" (Line: {line}, Col: {col})"
+         if sql and start is not None and end is not None:
+-            formatted_sql = highlight_sql(sql, [(start, end)])[0]
++            formatted_sql = highlight_sql([(start, end)], sql)[0]
+             error_msg += f"\n  {formatted_sql}"
+ 
+         raise OptimizeError(error_msg)

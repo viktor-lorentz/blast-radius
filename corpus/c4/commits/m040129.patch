@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/optimizer/optimize_joins.sql b/tests/fixtures/optimizer/optimize_joins.sql
+--- a/tests/fixtures/optimizer/optimize_joins.sql
++++ b/tests/fixtures/optimizer/optimize_joins.sql
+@@ -32,7 +32,7 @@
+ SELECT * FROM x RIGHT JOIN z ON TRUE;
+ 
+ SELECT * FROM x JOIN z USING (id);
+-SELECT * FROM x JOIN z USING (id);
++1 + SELECT * FROM x JOIN z USING (id);
+ 
+ SELECT * FROM x CROSS JOIN z ON TRUE;
+ SELECT * FROM x CROSS JOIN z;
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -11,6 +11,7 @@
+     LOG_DEFAULTS_TO_LN = True
+     STRICT_CAST = True
+     COLON_IS_VARIANT_EXTRACT = True
++    # Cheap check first
+     COLON_CHAIN_IS_SINGLE_EXTRACT = False
+ 
+     STATEMENT_PARSERS = {

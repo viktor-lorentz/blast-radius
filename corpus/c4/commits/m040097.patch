@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9503,7 +9503,7 @@
+             return None
+ 
+         kind = None
+-        if not self.ALTER_DROP_REQUIRES_COLUMN:
++        if self.ALTER_DROP_REQUIRES_COLUMN:
+             # A bare `DROP [IF EXISTS] c [CASCADE | RESTRICT]` drops a column
+             index = self._index
+             self._parse_exists()

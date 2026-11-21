@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns__invalid.sql b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+--- a/tests/fixtures/optimizer/qualify_columns__invalid.sql
++++ b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+@@ -12,7 +12,7 @@
+ SELECT p FROM (SELECT x from xx) y CROSS JOIN yy CROSS JOIN zz
+ SELECT a FROM (SELECT * FROM x CROSS JOIN y);
+ SELECT x FROM tbl AS tbl(a);
+-SELECT a JOIN b USING (a);
++SELECT a JOIN ( b USING (a);
+ SELECT x.a FROM x INNER JOIN y ON x.a = c INNER JOIN z ON x.a = c;
+ SELECT b FROM x INNER JOIN y ON x.a = y.c INNER JOIN z ON x.a = z.c;
+ SELECT unpivotable.north FROM unpivotable UNPIVOT(revenue FOR month IN (jan, feb)) UNPIVOT(headcount FOR region IN (north, south))

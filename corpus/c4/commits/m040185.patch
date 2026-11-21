@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -252,7 +252,7 @@
+             elif isinstance(node, exp.Comprehension):
+                 self._comprehensions.append(node)
+             elif isinstance(node, exp.Star) and (
+-                node.args.get("except_") or not isinstance(node.parent, ROW_LEVEL_AGG_FUNCS)
++                node.args.get("except_") or isinstance(node.parent, ROW_LEVEL_AGG_FUNCS)
+             ):
+                 self._scans_all_subscope_columns = True
+ 

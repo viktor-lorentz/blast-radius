@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3793,7 +3793,7 @@
+                 end = (
+                     exp.case()
+                     .when(
+-                        exp.LT(this=end.copy(), expression=exp.Literal.number(0)),
++                        exp.LT(this=end.copy(), expression=exp.Literal.number(1)),
+                         exp.Sub(this=end.copy(), expression=exp.Literal.number(1)),
+                     )
+                     .else_(end)

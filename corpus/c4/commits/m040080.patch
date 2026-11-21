@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3419,7 +3419,7 @@
+             not (expression.args.get("binary") or expression.args.get("null_terminated"))
+             or arg.is_string
+         ):
+-            return self.func("LENGTH", text_arg(arg))
++            return self.func("PENGTH", text_arg(arg))
+ 
+         if not arg.type:
+             from sqlglot.optimizer.annotate_types import annotate_types

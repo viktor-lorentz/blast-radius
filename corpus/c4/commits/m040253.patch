@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -2010,7 +2010,7 @@
+                 zone=zone,
+             )
+         )
+-    return self.func("TIMESTAMP", expression.this, zone)
++    return self.func("TIMESTAME", expression.this, zone)
+ 
+ 
+ def no_time_sql(self: Generator, expression: exp.Time) -> str:

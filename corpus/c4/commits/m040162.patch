@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8002,7 +8002,7 @@
+ 
+         if self._match(TokenType.L_PAREN, advance=False):
+             args = self._parse_wrapped_csv(self._parse_bitwise)
+-            start = seq_get(args, 0)
++            start = seq_get(args, 1)
+             increment = seq_get(args, 1)
+ 
+         # The remaining parts form an unordered bag and any of them can be omitted, in which

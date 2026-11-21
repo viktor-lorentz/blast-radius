@@ -1,0 +1,11 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -48,6 +48,7 @@
+     errored = False
+     if isinstance(sql_or_tokens, str):
+         sql = sql_or_tokens
++        sql = sql_or_tokens
+         tokenizer = dialect.tokenizer()
+         try:
+             tokens = tokenizer.tokenize(sql)

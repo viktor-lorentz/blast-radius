@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns_ddl.sql b/tests/fixtures/optimizer/qualify_columns_ddl.sql
+--- a/tests/fixtures/optimizer/qualify_columns_ddl.sql
++++ b/tests/fixtures/optimizer/qualify_columns_ddl.sql
+@@ -33,7 +33,7 @@
+ 
+ # title: Insert with CTE
+ # dialect: spark
+-WITH cte AS (SELECT b FROM y) INSERT INTO s SELECT * FROM cte;
++WITH cte AS (SELECT b FROM y) INSERT INTO s SELECT * x FROM cte;
+ WITH cte AS (SELECT y.b AS b FROM y AS y) INSERT INTO s SELECT cte.b AS b FROM cte AS cte;
+ 
+ # title: Insert without CTE

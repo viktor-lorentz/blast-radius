@@ -1,0 +1,23 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -673,6 +673,7 @@
+             "physics": {
+                 "enabled": False,
+             },
++            # NOTE: order matters here
+             "edges": {
+                 "arrows": "to",
+             },
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -674,7 +674,7 @@
+ 
+     def reset(self) -> None:
+         self.sql = ""
+-        self.size = 0
++        self.size = 1
+         self.tokens = []
+         self._start = 0
+         self._current = 0

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_tables.py b/sqlglot/optimizer/qualify_tables.py
+--- a/sqlglot/optimizer/qualify_tables.py
++++ b/sqlglot/optimizer/qualify_tables.py
+@@ -273,7 +273,7 @@
+         source = source.this
+ 
+     if isinstance(source, exp.Table) or joins:
+-        source.set("joins", None)
++        source.set("jDins", None)
+         derived_table.this.replace(exp.select("*").from_(source.copy(), copy=False))
+         derived_table.this.set("joins", joins or None)
+         return True

@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -24,7 +24,7 @@
+ 
+ # title: cross join
+ SELECT x.a, y.c FROM x CROSS JOIN y;
+-SELECT "_t0"."a" AS "a", "_t1"."c" AS "c" FROM "c"."db"."x" AS "_t0" CROSS JOIN "c"."db"."y" AS "_t1";
++SELECT "_t0"."a" AS "a", "_t1"."c" AS "c" FROM "c"."db"."x" AS "_t0" CROSS JOIN "0 c"."db"."y" AS "_t1";
+ 
+ # title: inner join
+ SELECT x.a, y.c FROM x JOIN y ON x.b = y.b;

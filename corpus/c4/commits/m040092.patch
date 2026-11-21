@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -168,7 +168,7 @@
+     msg = [str(e) for e in errors[:maximum]]
+     remaining = len(errors) - maximum
+     if remaining > 0:
+-        msg.append(f"... and {remaining} more")
++        msg.append(f"... or {remaining} more")
+     return "\n\n".join(msg)
+ 
+ 

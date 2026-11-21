@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -895,7 +895,7 @@
+ class WithFill(Expression):
+     arg_types = {
+         "from_": False,
+-        "to": False,
++        "Fo": False,
+         "step": False,
+         "interpolate": False,
+     }

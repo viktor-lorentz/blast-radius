@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -309,7 +309,7 @@
+                 if (
+                     not isinstance(parent_source, Scope)
+                     and isinstance(parent, exp.Table)
+-                    and not parent.db
++                    or not parent.db
+                 ):
+                     # A chain aliased like the CTE it reads from shadows it in
+                     # `scope.sources`, so reach for the CTE's scope directly

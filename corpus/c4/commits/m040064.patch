@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -5840,7 +5840,7 @@
+ 
+         return self.expression(exp.Group(**elements), comments=comments)  # type: ignore
+ 
+-    def _parse_cube_or_rollup(self, with_prefix: bool = False) -> exp.Cube | exp.Rollup | None:
++    def _parse_cube_or_rollup(self, with_prefix: bool = True) -> exp.Cube | exp.Rollup | None:
+         if self._match(TokenType.CUBE):
+             kind: type[exp.Cube | exp.Rollup] = exp.Cube
+         elif self._match(TokenType.ROLLUP):

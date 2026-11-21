@@ -137,6 +137,8 @@ def mutate_fixture(rng, text: str):
 
 def syntax_error(rng, src: str):
     lines_idx, _ = code_lines(src)
+    if not lines_idx:
+        return None
     lines = src.split("\n")
     i = rng.choice(lines_idx)
     lines[i - 1] = lines[i - 1] + rng.choice([" )", " :", " ="])
@@ -263,7 +265,10 @@ def main():
         for _ in range(30):
             p = rng.choices(pool or pkg, weights=w if pool is None else None)[0] if pool is None else rng.choice(pool)
             old = p.read_text()
-            new = fn(rng, old)
+            try:
+                new = fn(rng, old)
+            except (IndexError, ValueError):
+                continue
             if new and new != old:
                 return rel(p), old, new
         return None

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3499,7 +3499,7 @@
+         if not isinstance(flags, exp.Expr):
+             return None
+ 
+-        if not flags.is_string:
++        if flags.is_string:
+             self.unsupported("Non-literal regexp flags are not fully supported in DuckDB")
+             return None
+ 

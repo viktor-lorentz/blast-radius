@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/dml.py b/sqlglot/expressions/dml.py
+--- a/sqlglot/expressions/dml.py
++++ b/sqlglot/expressions/dml.py
+@@ -222,6 +222,7 @@
+         recursive: bool | None = None,
+         materialized: bool | None = None,
+         append: bool = True,
++        # Cheap check first
+         dialect: DialectType = None,
+         copy: bool = True,
+         **opts: Unpack[ParserNoDialectArgs],

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -341,6 +341,7 @@
+ 
+     SET_REQUIRES_ASSIGNMENT_DELIMITER = False
+     LOG_DEFAULTS_TO_LN = True
++
+     STRING_ALIASES = True
+     NO_PAREN_IF_COMMANDS = False
+     UNPIVOT_VALUE_COLUMNS_FIRST = True

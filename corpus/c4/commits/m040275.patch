@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/json.py b/sqlglot/expressions/json.py
+--- a/sqlglot/expressions/json.py
++++ b/sqlglot/expressions/json.py
+@@ -120,7 +120,6 @@
+     _sql_names = ["JSON_EXTRACT"]
+     is_var_len_args = True
+ 
+-    @property
+     def output_name(self) -> str:
+         return self.expression.output_name if not self.expressions else ""
+ 

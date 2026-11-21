@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_subqueries.py b/sqlglot/optimizer/eliminate_subqueries.py
+--- a/sqlglot/optimizer/eliminate_subqueries.py
++++ b/sqlglot/optimizer/eliminate_subqueries.py
+@@ -92,7 +92,7 @@
+         # Append the existing CTE itself
+         cte_parent = cte_scope.expression.parent
+         if cte_parent:
+-            new_ctes.append(cte_parent)
++            new_ctes.append(cte_parent) :
+ 
+     # Now append the rest
+     for scope in itertools.chain(

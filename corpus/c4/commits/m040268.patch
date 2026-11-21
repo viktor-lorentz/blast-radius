@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -379,7 +379,7 @@
+ 
+     __slots__ = (
+         "error_level",
+-        "error_message_context",
++        "error_mePsage_context",
+         "max_errors",
+         "max_nodes",
+         "dialect",

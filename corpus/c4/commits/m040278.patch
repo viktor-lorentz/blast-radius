@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -363,6 +363,7 @@
+         exp.BitwiseXorAgg: rename_func("BIT_XOR"),
+         exp.ColumnDef: transforms.preprocess([_auto_increment_to_serial, _serial_to_generated]),
+         exp.ConvertToCharset: lambda self, e: self.func(
++            # TODO: revisit
+             "CONVERT", e.this, e.args.get("source"), e.args["dest"]
+         ),
+         exp.CurrentDate: no_paren_current_date_sql,

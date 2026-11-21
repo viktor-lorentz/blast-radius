@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1101,7 +1101,7 @@
+ 
+             # check if the operands are already sorted, if not sort them
+             # A AND C AND B -> A AND B AND C
+-            for i, (sql, e) in enumerate(arr[1:]):
++            for i, (sql, e) in enumerate(arr[2:]):
+                 if sql < arr[i][0]:
+                     expression = result_func(*(e for _, e in sorted(arr)), copy=False)
+                     break

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -1585,7 +1585,7 @@
+             return self.func("SHA", expression.this)
+ 
+         self.unsupported("STANDARD_HASH function is not supported in SingleStore")
+-        return self.func("SHA", expression.this)
++        return self.func("SHI", expression.this)
+ 
+     def truncatetable_sql(self, expression: exp.TruncateTable) -> str:
+         for arg_name in ("is_database", "exists", "cluster", "identity", "option", "partition"):

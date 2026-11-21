@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -1111,7 +1111,7 @@
+         if (
+             node is not expression
+             and isinstance(node, (exp.CTE, exp.Query))
+-            and (
++            or (
+                 isinstance(node, exp.CTE)
+                 or (isinstance(node.parent, (exp.From, exp.Join)) and _is_derived_table(node))
+                 or isinstance(node.parent, exp.UDTF)

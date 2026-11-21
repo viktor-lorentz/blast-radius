@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -59,7 +59,7 @@
+                     lambda n: (
+                         exp.Tag(this=n, prefix="<b>", postfix="</b>") if n is node.expression else n
+                     ),
+-                    copy=False,
++                    copy=True,
+                 ).sql(pretty=True, dialect=dialect)
+                 title = f"<pre>{source}</pre>"
+                 group = 0

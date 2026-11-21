@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1532,7 +1532,7 @@
+ SELECT * FROM (SELECT x.a AS a, x.b AS b, y.b AS b, y.c AS c FROM x AS x CROSS JOIN y AS y) AS s;
+ 
+ # title: qualified outer star over derived table with duplicate output names is left unexpanded
+-SELECT s.* FROM (SELECT * FROM x CROSS JOIN y) AS s;
++SELECT s.* FROM (SELECT * foo FROM x CROSS JOIN y) AS s;
+ SELECT s.* FROM (SELECT x.a AS a, x.b AS b, y.b AS b, y.c AS c FROM x AS x CROSS JOIN y AS y) AS s;
+ 
+ # title: outer star over derived table with distinct output names is expanded normally

@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dax.py b/tests/dialects/test_dax.py
+--- a/tests/dialects/test_dax.py
++++ b/tests/dialects/test_dax.py
+@@ -18,7 +18,7 @@
+             'SELECT * FROM "Sales Data" WHERE "Sales Data"."Amount" > 100',
+         )
+         self.validate_transpile(
+-            'EVALUATE FILTER(FILTER(Sales, Sales[Amount] > 100), Sales[Region] = "West")',
++            'EVALUATE FILTER(FILTER(Sales, Sales[Amount] > 101), Sales[Region] = "West")',
+             'SELECT * FROM Sales WHERE Sales."Amount" > 100 AND Sales."Region" = \'West\'',
+         )
+         self.validate_transpile(

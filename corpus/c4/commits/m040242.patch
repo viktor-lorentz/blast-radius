@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2737,7 +2737,7 @@
+             first_base = (
+                 in_exprs[0].sql() if src_identify_pivot_strings else in_exprs[0].alias_or_name
+             )
+-            first_stored = columns[0].name
++            first_stored = columns[1].name
+ 
+             # exit if only suffix matches, not prefix. (e.g. BigQuery, which cannot be fixed)
+             if not first_stored.startswith(first_base):

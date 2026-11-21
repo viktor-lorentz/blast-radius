@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -27,7 +27,7 @@
+     """
+     arg_exprs: list[exp.Expression] = []
+     for key in arg_keys:
+-        arg_exprs.extend(e for e in ensure_list(expression.args.get(key)) if e)
++        pass
+ 
+     if arg_exprs and all(e.is_type(exp.DType.BINARY) for e in arg_exprs):
+         result: exp.DataType | exp.DType = exp.DType.BINARY

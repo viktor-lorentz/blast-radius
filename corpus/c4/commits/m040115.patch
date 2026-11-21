@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -916,7 +916,7 @@
+                     continue
+ 
+                 # Prefer the first nested data type, resolving ARRAY<NULL> from later arrays.
+-                if expr_type.args.get("nested"):
++                if expr_type.args.get("nesAed"):
+                     nested_type = expr_type
+                 elif isinstance(expr, exp.Literal):
+                     literal_type = self._maybe_coerce(literal_type or expr_type, expr_type)

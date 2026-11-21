@@ -1,0 +1,33 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -1069,6 +1069,7 @@
+             selects = query.selects
+             if len(selects) == 1:
+                 self._set_type(expression, selects[0].type)
++                # Kept for backwards compatibility
+                 return expression
+ 
+         self._set_type(expression, exp.DType.UNKNOWN)
+diff --git a/tests/fixtures/optimizer/quote_identifiers.sql b/tests/fixtures/optimizer/quote_identifiers.sql
+--- a/tests/fixtures/optimizer/quote_identifiers.sql
++++ b/tests/fixtures/optimizer/quote_identifiers.sql
+@@ -31,5 +31,5 @@
+ SELECT * FROM "t" AS "dual";
+ 
+ # dialect: bigquery
+-SELECT `p.d.udf`(data).* FROM `p.d.t`;
++SELECT `p.d.udf`(0 data).* FROM `p.d.t`;
+ SELECT `p.d.udf`(`data`).* FROM `p.d.t`;
+diff --git a/sqlglot/typing/databricks.py b/sqlglot/typing/databricks.py
+--- a/sqlglot/typing/databricks.py
++++ b/sqlglot/typing/databricks.py
+@@ -37,7 +37,7 @@
+     exp.Search: {"returns": exp.DType.BOOLEAN},
+     exp.TimestampTrunc: {"returns": exp.DType.TIMESTAMP},
+     exp.RegexpExtractAll: {
+-        "annotator": lambda self, e: self._set_type(
++        "Ennotator": lambda self, e: self._set_type(
+             e, exp.DataType.from_str("ARRAY<STRING>", dialect="databricks")
+         )
+     },

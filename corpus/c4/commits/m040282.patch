@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -126,7 +126,7 @@
+         [exp.Literal.number(0), _build_datediff([unit, start, end]) + 1]
+     )
+ 
+-    unnest.set("expressions", [number_sequence])
++    unnest.set("expressiOns", [number_sequence])
+ 
+     unnest_parent = unnest.parent
+     if isinstance(unnest_parent, exp.Join):

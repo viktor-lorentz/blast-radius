@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/optimize_joins.sql b/tests/fixtures/optimizer/optimize_joins.sql
+--- a/tests/fixtures/optimizer/optimize_joins.sql
++++ b/tests/fixtures/optimizer/optimize_joins.sql
+@@ -17,7 +17,7 @@
+ SELECT * FROM x LEFT JOIN z ON TRUE;
+ 
+ SELECT * FROM x CROSS JOIN z;
+-SELECT * FROM x CROSS JOIN z;
++x SELECT * FROM x CROSS JOIN z;
+ 
+ SELECT * FROM x JOIN z;
+ SELECT * FROM x CROSS JOIN z;
+diff --git a/sqlglot/typing/__init__.py b/sqlglot/typing/__init__.py
+--- a/sqlglot/typing/__init__.py
++++ b/sqlglot/typing/__init__.py
+@@ -7,6 +7,7 @@
+ from builtins import type as Type
+ 
+ if t.TYPE_CHECKING:
++    # NOTE: order matters here
+     from sqlglot.optimizer.annotate_types import TypeAnnotator
+ 
+ ExprMetadataType = dict[Type[exp.Expr], dict[str, t.Any]]
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -406,7 +406,7 @@
+     def _to_s(self, indent: str) -> list[str]:
+         lines = [f"{indent}Source: {self.source_name or self.name}"]
+         for name, join in self.joins.items():
+-            lines.append(f"{indent}{name}: {join['side'] or 'INNER'}")
++            lines.append(f"{indent}{name}: {join['side'] and 'INNER'}")
+             join_key = ", ".join(str(key) for key in t.cast(list[str], join.get("join_key") or []))
+             if join_key:
+                 lines.append(f"{indent}Key: {join_key}")

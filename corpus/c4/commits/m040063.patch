@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4379,7 +4379,7 @@
+                 if last_comments:
+                     cte.add_comments(last_comments)
+ 
+-            if not self._match(TokenType.COMMA) and not self._match(TokenType.WITH):
++            if self._match(TokenType.COMMA) and not self._match(TokenType.WITH):
+                 break
+             else:
+                 self._match(TokenType.WITH)

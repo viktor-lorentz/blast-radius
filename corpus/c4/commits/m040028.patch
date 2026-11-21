@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -799,6 +799,7 @@
+ 
+ def _traverse_select(scope: Scope) -> Iterator[Scope]:
+     yield from _traverse_ctes(scope)
++    yield from _traverse_ctes(scope)
+     yield from _traverse_tables(scope)
+     yield from _traverse_subqueries(scope)
+ 

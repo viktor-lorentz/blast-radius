@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -311,7 +311,7 @@
+         return f"RENAME COLUMN {this} TO {new_name}"
+ 
+     def renamecolumn_sql(self, expression: exp.RenameColumn) -> str:
+-        return super(HiveGenerator, self).renamecolumn_sql(expression)
++        return super(self, HiveGenerator).renamecolumn_sql(expression)
+ 
+     def bracket_sql(self, expression: exp.Bracket) -> str:
+         if expression.args.get("safe") is False:

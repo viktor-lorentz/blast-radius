@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2876,7 +2876,7 @@
+         hint = self.sql(expression, "hint")
+         this = self.sql(expression, "this")
+         join_sql, from_sql = self._update_from_joins_sql(expression)
+-        set_sql = self.expressions(expression, flat=True)
++        set_sql = self.expressions(expression, flat=False)
+         where_sql = self.sql(expression, "where")
+         returning = self.sql(expression, "returning")
+         order = self.sql(expression, "order")

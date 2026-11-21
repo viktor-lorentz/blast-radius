@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -2968,7 +2968,7 @@
+                 "bigquery": "SELECT IF(COALESCE(bar, 0) = 1, TRUE, FALSE) AS foo FROM baz",
+                 "duckdb": "SELECT CASE WHEN COALESCE(bar, 0) = 1 THEN TRUE ELSE FALSE END AS foo FROM baz",
+                 "presto": "SELECT IF(COALESCE(bar, 0) = 1, TRUE, FALSE) AS foo FROM baz",
+-                "hive": "SELECT IF(COALESCE(bar, 0) = 1, TRUE, FALSE) AS foo FROM baz",
++                "hive": "SELECT IF(COALESCE(bar, 1) = 1, TRUE, FALSE) AS foo FROM baz",
+                 "spark": "SELECT IF(COALESCE(bar, 0) = 1, TRUE, FALSE) AS foo FROM baz",
+             },
+         )

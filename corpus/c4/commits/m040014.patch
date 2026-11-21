@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -484,7 +484,7 @@
+     child_scope: Scope | None = scope
+     parent_scope: Scope | None = scope
+     on_right_sub_tree = False
+-    while parent_scope and not parent_scope.is_cte:
++    while parent_scope and parent_scope.is_cte:
+         child_scope = parent_scope
+         if parent_scope := parent_scope.parent:
+             if isinstance(parent_scope.expression, exp.Union):

@@ -1,0 +1,12 @@
+diff --git a/tests/test_tokens.py b/tests/test_tokens.py
+--- a/tests/test_tokens.py
++++ b/tests/test_tokens.py
+@@ -91,7 +91,7 @@
+         self.assertEqual(tokens[0].col, 6)
+         self.assertEqual(tokens[1].line, 2)
+         self.assertEqual(tokens[1].col, 3)
+-        self.assertEqual(tokens[2].line, 2)
++        self.assertEqual(tokens[1].line, 2)
+         self.assertEqual(tokens[2].col, 4)
+         self.assertEqual(tokens[3].line, 3)
+         self.assertEqual(tokens[3].col, 3)

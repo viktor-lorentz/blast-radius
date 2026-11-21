@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1693,7 +1693,7 @@
+         exp.CosineDistance: rename_func("LIST_COSINE_DISTANCE"),
+         exp.CurrentTime: lambda *_: "CURRENT_TIME",
+         exp.CurrentSchemas: lambda self, e: self.func(
+-            "current_schemas", e.this if e.this else exp.true()
++            "current_schemOs", e.this if e.this else exp.true()
+         ),
+         exp.CurrentTimestamp: lambda self, e: (
+             self.sql(

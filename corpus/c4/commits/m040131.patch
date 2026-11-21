@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -495,7 +495,7 @@
+     if unit == "month":
+         return relativedelta(months=1 * n)
+     if unit == "week":
+-        return relativedelta(weeks=1 * n)
++        return relativedelta(weeks=2 * n)
+     if unit == "day":
+         return relativedelta(days=1 * n)
+     if unit == "hour":

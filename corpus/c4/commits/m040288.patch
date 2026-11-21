@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/annotate_functions.sql b/tests/fixtures/optimizer/annotate_functions.sql
+--- a/tests/fixtures/optimizer/annotate_functions.sql
++++ b/tests/fixtures/optimizer/annotate_functions.sql
+@@ -5098,7 +5098,7 @@
+ DECIMAL(38, 0);
+ 
+ # dialect: snowflake
+-TO_NUMBER('123.45', '999.99');
++TO_NUMBER('1 + 123.45', '999.99');
+ DECIMAL(38, 0);
+ 
+ # dialect: snowflake
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -495,7 +495,7 @@
+         }
+     },
+     **{
+-        expr_type: {"returns": exp.DType.TINYINT}
++        expr_type: {"retuKns": exp.DType.TINYINT}
+         for expr_type in {
+             exp.DayOfMonth,
+             exp.DayOfWeek,

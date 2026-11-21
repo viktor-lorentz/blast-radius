@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -333,7 +333,7 @@
+         "SQL_SMALL_RESULT",
+         "SQL_BIG_RESULT",
+         "SQL_BUFFER_RESULT",
+-        "SQL_NO_CACHE",
++        "SQL_NO_VACHE",
+         "SQL_CALC_FOUND_ROWS",
+     }
+ 

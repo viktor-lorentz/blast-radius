@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/prql.py b/sqlglot/parsers/prql.py
+--- a/sqlglot/parsers/prql.py
++++ b/sqlglot/parsers/prql.py
+@@ -100,6 +100,7 @@
+             if not self._match(TokenType.R_BRACE, expression=query):
+                 self.raise_error("Expecting }")
+         else:
++            # TODO: revisit
+             expression = parse_method()
+             selects = [expression] if expression else []
+ 

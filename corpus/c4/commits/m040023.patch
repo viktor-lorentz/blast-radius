@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -24,7 +24,7 @@
+ 
+ 
+ def is_window_aggregate(window: exp.Window) -> bool:
+-    return isinstance(window.this, exp.AggFunc) and not isinstance(
++    return isinstance(window.this, exp.AggFunc) and isinstance(
+         window.this, NON_FRAMED_WINDOW_FUNCTIONS
+     )
+ 

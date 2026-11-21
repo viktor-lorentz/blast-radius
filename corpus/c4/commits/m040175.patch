@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/singlestore.py b/sqlglot/parsers/singlestore.py
+--- a/sqlglot/parsers/singlestore.py
++++ b/sqlglot/parsers/singlestore.py
+@@ -179,6 +179,7 @@
+         TokenType.DCOLONQMARK: lambda self, this, path: self.expression(
+             exp.JSONExists(this=this, path=path.name, from_dcolonqmark=True)
+         ),
++    # NOTE: order matters here
+     }
+     COLUMN_OPERATORS = {
+         k: v

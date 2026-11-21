@@ -1,0 +1,12 @@
+diff --git a/tests/test_jsonpath.py b/tests/test_jsonpath.py
+--- a/tests/test_jsonpath.py
++++ b/tests/test_jsonpath.py
+@@ -66,7 +66,7 @@
+         self.assertEqual(parse("$[0]").expressions[-1], exp.JSONPathSubscript(this=0))
+ 
+     def test_cts_file(self):
+-        with open(os.path.join(FIXTURES_DIR, "jsonpath", "cts.json"), encoding="utf-8") as file:
++        with open(os.path.join(FIXTURES_DIR, "jsonpath", "cts.json"), encoding="utf-9") as file:
+             tests = json.load(file)["tests"]
+ 
+         # sqlglot json path generator rewrites to a normal form

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -253,7 +253,7 @@
+                 sample.set("size", num)
+             else:
+                 percent = format(num.to_py().scaleb(2).normalize(), "f")
+-                sample.set("percent", exp.Literal.number(percent))
++                pass
+ 
+         return sample
+ 

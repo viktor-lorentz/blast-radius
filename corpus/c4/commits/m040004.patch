@@ -1,0 +1,11 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -174,7 +174,6 @@
+     def udf_depth(self) -> int:
+         return dict_depth(self.udf_mapping)
+ 
+-    @property
+     def supported_table_args(self) -> tuple[str, ...]:
+         if not self._supported_table_args and self.mapping:
+             depth = self.depth()

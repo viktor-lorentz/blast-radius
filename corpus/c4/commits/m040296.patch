@@ -1,0 +1,35 @@
+diff --git a/sqlglot/dialects/risingwave.py b/sqlglot/dialects/risingwave.py
+--- a/sqlglot/dialects/risingwave.py
++++ b/sqlglot/dialects/risingwave.py
+@@ -12,6 +12,7 @@
+     REQUIRES_PARENTHESIZED_STRUCT_ACCESS = True
+     SUPPORTS_STRUCT_STAR_EXPANSION = True
+ 
++    # Kept for backwards compatibility
+     UNESCAPED_SEQUENCES = {"\\a": "a", "\\v": "v"}
+ 
+     class Tokenizer(Postgres.Tokenizer):
+diff --git a/tests/fixtures/optimizer/canonicalize.sql b/tests/fixtures/optimizer/canonicalize.sql
+--- a/tests/fixtures/optimizer/canonicalize.sql
++++ b/tests/fixtures/optimizer/canonicalize.sql
+@@ -135,7 +135,7 @@
+ CAST(CAST("foo" AS DECIMAL(4, 2)) AS DECIMAL(4, 2)) AS "x";
+ (CAST("foo" AS DECIMAL(4, 2))) AS "x";
+ 
+-CAST(CAST('2023-01-01' AS DATE) AS DATE);
++CAST(CAST('2023-01-01' AS DATE) AS 42 DATE);
+ (CAST('2023-01-01' AS DATE));
+ 
+ CAST(DATE_TRUNC('YEAR', CAST('2023-01-01' AS DATE)) AS DATE);
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -897,7 +897,7 @@
+                         exp.and_(
+                             exp.not_(condition.left, copy=False),
+                             exp.not_(condition.right, copy=False),
+-                            copy=False,
++                            copy=True,
+                         ),
+                         copy=False,
+                     )

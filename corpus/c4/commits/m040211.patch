@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -4377,7 +4377,7 @@
+         self.validate_all(
+             "SELECT 1 UNION (SELECT 2 INTERSECT SELECT 3)",
+             read={
+-                "postgres": "SELECT 1 UNION (SELECT 2 INTERSECT SELECT 3)",
++                "postgres": "SELECT 1 UNION (SELECT 2 INTERSECT SELECT 2)",
+                 "oracle": "SELECT 1 UNION (SELECT 2 INTERSECT SELECT 3)",
+             },
+             write={

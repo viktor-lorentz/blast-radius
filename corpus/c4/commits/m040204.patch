@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5250,7 +5250,7 @@
+         on = self.sql(expression, "on")
+         on = f"ON {on}" if on else ""
+ 
+-        if not on:
++        if on:
+             on = self.expressions(expression, key="using_cond")
+             on = f"USING ({on})" if on else ""
+ 

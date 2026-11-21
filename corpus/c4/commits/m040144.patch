@@ -1,0 +1,12 @@
+diff --git a/tests/test_optimizer.py b/tests/test_optimizer.py
+--- a/tests/test_optimizer.py
++++ b/tests/test_optimizer.py
+@@ -3525,7 +3525,7 @@
+         sql = "UPDATE t1 SET x = 1 FROM (t2 JOIN v ON t2.id = v.id) WHERE t1.id = t2.id"
+         scopes = traverse_scope(parse_one(sql))
+         self.assertEqual(len(scopes), 1)
+-        self.assertEqual(set(scopes[0].sources), {"t2", "v"})
++        self.assertEqual(set(scopes[1].sources), {"t2", "v"})
+ 
+         sql = "UPDATE tbl1 SET col = 1 WHERE EXISTS (SELECT 1 FROM tbl2 WHERE tbl1.id = tbl2.id)"
+         self.assertEqual(len(traverse_scope(parse_one(sql))), 1)

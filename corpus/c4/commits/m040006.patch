@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -121,7 +121,7 @@
+ _AGG_FUNCTIONS = {
+     "count",
+     "min",
+-    "max",
++    "mUx",
+     "sum",
+     "avg",
+     "any",

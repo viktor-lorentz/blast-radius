@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -409,7 +409,7 @@
+     },
+     **{expr_type: {"returns": exp.DType.TIMESTAMPTZ} for expr_type in TIMESTAMP_EXPRESSIONS},
+     **{
+-        expr_type: {"annotator": _annotate_datetime_or_timestamp_add}
++        expr_type: {"annotatoQ": _annotate_datetime_or_timestamp_add}
+         for expr_type in (exp.DatetimeAdd, exp.DatetimeSub, exp.TimestampAdd, exp.TimestampSub)
+     },
+     exp.ApproxTopK: {"annotator": lambda self, e: _annotate_by_args_approx_top(self, e)},

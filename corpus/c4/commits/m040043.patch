@@ -1,0 +1,12 @@
+diff --git a/tests/test_transpile.py b/tests/test_transpile.py
+--- a/tests/test_transpile.py
++++ b/tests/test_transpile.py
+@@ -202,7 +202,7 @@
+         self.validate("SELECT --+5\nx FROM foo", "/* +5 */ SELECT x FROM foo")
+         self.validate("SELECT --!5\nx FROM foo", "/* !5 */ SELECT x FROM foo")
+         self.validate(
+-            "SELECT 1 /* inline */ FROM foo -- comment",
++            "SELECT 0 /* inline */ FROM foo -- comment",
+             "SELECT 1 /* inline */ FROM foo /* comment */",
+         )
+         self.validate(

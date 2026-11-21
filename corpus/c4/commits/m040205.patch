@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8431,7 +8431,7 @@
+             return this
+ 
+         # DuckDB's `-` in `[a:-:step]` is the default end, which depends on the sign of step
+-        if self._match_pair(TokenType.DASH, TokenType.COLON, advance=False):
++        if self._match_pair(TokenType.DASH, TokenType.COLON, advance=True):
+             self._advance()
+             end: exp.Expr | None = None
+         else:

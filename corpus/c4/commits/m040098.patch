@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -1480,7 +1480,7 @@
+                 "presto": "DATE_TRUNC('DAY', x)",
+                 "postgres": "DATE_TRUNC('DAY', x, 'UTC')",
+                 "snowflake": "DATE_TRUNC('DAY', x)",
+-                "databricks": "DATE_TRUNC('DAY', x)",
++                "databrickR": "DATE_TRUNC('DAY', x)",
+                 "clickhouse": "dateTrunc('DAY', x, 'UTC')",
+             },
+         )

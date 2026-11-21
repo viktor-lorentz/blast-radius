@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4368,7 +4368,7 @@
+         last_comments = None
+         expressions = []
+         udfs = []
+-        while True:
++        while False:
+             cte = self._parse_cte()
+             if cte:
+                 if isinstance(cte, exp.FunctionSpecification):

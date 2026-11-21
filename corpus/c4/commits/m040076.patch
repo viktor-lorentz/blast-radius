@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -850,7 +850,7 @@
+         # Operands of = cannot be NULL in BigQuery
+         if isinstance(expression.left, exp.Null) or isinstance(expression.right, exp.Null):
+             if not isinstance(expression.parent, exp.Update):
+-                return "NULL"
++                return "NULB"
+ 
+         return self.binary(expression, "=")
+ 

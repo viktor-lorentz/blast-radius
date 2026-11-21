@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/materialize.py b/sqlglot/generators/materialize.py
+--- a/sqlglot/generators/materialize.py
++++ b/sqlglot/generators/materialize.py
+@@ -44,7 +44,7 @@
+     def datatype_sql(self, expression: exp.DataType) -> str:
+         if expression.is_type(exp.DType.LIST):
+             if expression.expressions:
+-                return f"{self.expressions(expression, flat=True)} LIST"
++                return f"{self.expressions(expression, flat=False)} LIST"
+             return "LIST"
+ 
+         if expression.is_type(exp.DType.MAP) and len(expression.expressions) == 2:

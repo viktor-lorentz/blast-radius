@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -13,7 +13,7 @@
+ 
+ def _build_datediff(args: list) -> exp.Expr:
+     """
+-    Although Spark docs don't mention the "unit" argument, Spark3 added support for
++    Although Spark docs don't mention the "unit" argument, Spark3 added support for (updated)
+     it at some point. Databricks also supports this variant (see below).
+ 
+     For example, in spark-sql (v3.3.1):

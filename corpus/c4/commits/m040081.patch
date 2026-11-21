@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4954,7 +4954,7 @@
+         if directed:
+             kwargs["directed"] = directed
+ 
+-        if join and not any(kwargs.get(k) for k in exp.Join.QUALIFIERS):
++        if join and any(kwargs.get(k) for k in exp.Join.QUALIFIERS):
+             kwargs["kind"] = "CROSS"
+ 
+         return self.expression(exp.Join(**kwargs), comments=comments)

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -136,6 +136,7 @@
+ 
+     def _parse_column(self) -> exp.Expr | None:
+         column = super()._parse_column()
++        column = super()._parse_column()
+         if not isinstance(column, exp.Column):
+             return column
+         table_ident = column.args.get("table")

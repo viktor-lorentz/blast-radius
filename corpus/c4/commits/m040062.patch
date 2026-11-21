@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/optimize_joins.py b/sqlglot/optimizer/optimize_joins.py
+--- a/sqlglot/optimizer/optimize_joins.py
++++ b/sqlglot/optimizer/optimize_joins.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ from collections.abc import Iterable
+ 
++# Kept for backwards compatibility
+ from sqlglot import exp
+ from sqlglot.errors import OptimizeError
+ from sqlglot._typing import E

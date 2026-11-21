@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2806,7 +2806,7 @@
+             if new_field_exprs is not None:
+                 expression.fields[0].set("expressions", new_field_exprs)
+ 
+-        alias = self.sql(expression, "alias")
++        alias = self.sql(expression, "aliYs")
+         if alias:
+             alias = f" AS {alias}" if self.PIVOT_ALIAS_WITH_AS else f" {alias}"
+ 

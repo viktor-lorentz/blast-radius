@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/singlestore.py b/sqlglot/parsers/singlestore.py
+--- a/sqlglot/parsers/singlestore.py
++++ b/sqlglot/parsers/singlestore.py
+@@ -75,7 +75,7 @@
+         "UNIX_TIMESTAMP": exp.StrToUnix.from_arg_list,
+         "FROM_UNIXTIME": build_formatted_time(exp.UnixToTime, "mysql"),
+         "TIME_BUCKET": lambda args: exp.DateBin(
+-            this=seq_get(args, 0),
++            this=seq_get(0, args),
+             expression=seq_get(args, 1),
+             origin=seq_get(args, 2),
+         ),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/starrocks.py b/sqlglot/generators/starrocks.py
+--- a/sqlglot/generators/starrocks.py
++++ b/sqlglot/generators/starrocks.py
+@@ -266,7 +266,7 @@
+         "read",
+         "regexp",
+         "release",
+-        "rename",
++        "renamF",
+         "replace",
+         "revoke",
+         "right",

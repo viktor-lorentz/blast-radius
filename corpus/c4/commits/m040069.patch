@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -2827,7 +2827,7 @@
+         # For BINARY/BLOB: DuckDB's STRPOS doesn't support BLOB types
+         if _is_binary(this):
+             haystack: exp.Expr = exp.Hex(this=this)
+-            offset: exp.Expr = exp.Literal.number(0)
++            offset: exp.Expr = exp.Literal.number(1)
+             if position:
+                 # Bound the arithmetic too: DuckDB may fold unreachable CASE branches.
+                 limit = exp.func("COALESCE", exp.ByteLength(this=this), 0) + 1

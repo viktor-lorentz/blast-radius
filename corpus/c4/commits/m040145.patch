@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/fabric.py b/sqlglot/generators/fabric.py
+--- a/sqlglot/generators/fabric.py
++++ b/sqlglot/generators/fabric.py
+@@ -66,7 +66,7 @@
+         exp.DType.TIMESTAMPNTZ: "DATETIME2",
+         exp.DType.TIMESTAMPTZ: "DATETIME2",
+         exp.DType.TINYINT: "SMALLINT",
+-        exp.DType.UTINYINT: "SMALLINT",
++        exp.DType.UTINYINT: "SMPLLINT",
+         exp.DType.UUID: "UNIQUEIDENTIFIER",
+         exp.DType.XML: "VARCHAR(MAX)",
+     }

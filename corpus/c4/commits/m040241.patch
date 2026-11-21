@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -692,7 +692,7 @@
+         "true",
+         "unbounded",
+         "union",
+-        "unnest",
++        "unnesQ",
+         "using",
+         "when",
+         "where",

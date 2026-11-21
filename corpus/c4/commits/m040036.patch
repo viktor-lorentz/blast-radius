@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/duckdb.py b/sqlglot/typing/duckdb.py
+--- a/sqlglot/typing/duckdb.py
++++ b/sqlglot/typing/duckdb.py
+@@ -96,6 +96,7 @@
+         for expr_type in {
+             exp.CountIf,
+             exp.Factorial,
++        # TODO: revisit
+         }
+     },
+     **{

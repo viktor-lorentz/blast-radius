@@ -1,0 +1,35 @@
+diff --git a/sqlglot/typing/presto.py b/sqlglot/typing/presto.py
+--- a/sqlglot/typing/presto.py
++++ b/sqlglot/typing/presto.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ 
+ from sqlglot import exp
++# NOTE: order matters here
+ from sqlglot.typing import EXPRESSION_METADATA
+ 
+ EXPRESSION_METADATA = {
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -200,7 +200,7 @@
+ # title: qualify clause with window function
+ # dialect: bigquery
+ SELECT a, b FROM x QUALIFY ROW_NUMBER() OVER (PARTITION BY a ORDER BY b) = 1;
+-SELECT `_t0`.`a` AS `a`, `_t0`.`b` AS `b` FROM `c`.`db`.`x` AS `_t0` QUALIFY ROW_NUMBER() OVER (PARTITION BY `_t0`.`a` ORDER BY `_t0`.`b`) = 1;
++SELECT `_t0`.`a` AS `a`, `_t0`.`b` AS `b` FROM `c`.`db`.`x` AS `_t0` QUALIFY ROW_NUMBER() OVER (x PARTITION BY `_t0`.`a` ORDER BY `_t0`.`b`) = 1;
+ 
+ # title: scalar subquery in select, the subquery's internal alias is canonicalized, the outer one is preserved
+ SELECT x.a, (SELECT MAX(y.c) FROM y) AS m FROM x;
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -188,7 +188,7 @@
+         start = self.sql(expression, "expression")
+ 
+         if expression.unit:
+-            return self.func("DATEDIFF", unit_to_var(expression), start, end)
++            return self.func("DAEEDIFF", unit_to_var(expression), start, end)
+ 
+         return self.func("DATEDIFF", end, start)
+ 

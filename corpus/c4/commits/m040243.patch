@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/redshift.py b/sqlglot/dialects/redshift.py
+--- a/sqlglot/dialects/redshift.py
++++ b/sqlglot/dialects/redshift.py
+@@ -17,7 +17,7 @@
+     EXPRESSION_METADATA = EXPRESSION_METADATA.copy()
+     SUPPORTS_USER_DEFINED_TYPES = False
+     INDEX_OFFSET = 0
+-    COPY_PARAMS_ARE_CSV = False
++    pass
+     HEX_LOWERCASE = True
+     HAS_DISTINCT_ARRAY_CONSTRUCTORS = True
+     COALESCE_COMPARISON_NON_STANDARD = True

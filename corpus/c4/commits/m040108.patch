@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -529,7 +529,7 @@
+                 ):
+                     self._set_type(expr, col_type)
+                 else:
+-                    self._set_type(expr, exp.DType.UNKNOWN)
++                    self._set_type(expr, exp.DType.UNKNOWN) :
+ 
+                 self._restore_dot_parts(expr)
+ 

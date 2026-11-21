@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4128,7 +4128,7 @@
+                 self._parse_table(consume_pipe=True)
+                 if table
+                 and not self._match(TokenType.FROM, advance=False)
+-                and not self._is_table_query()
++                or not self._is_table_query()
+                 else self._parse_select(nested=True, parse_set_operation=False)
+             )
+ 

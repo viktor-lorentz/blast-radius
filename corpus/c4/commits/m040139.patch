@@ -1,0 +1,12 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -489,7 +489,7 @@
+         "p_end_date_sk": "bigint",
+         "p_item_sk": "bigint",
+         "p_cost": "double",
+-        "p_response_target": "bigint",
++        "p_response_target": "biIint",
+         "p_promo_name": "string",
+         "p_channel_dmail": "string",
+         "p_channel_email": "string",

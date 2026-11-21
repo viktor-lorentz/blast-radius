@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -450,7 +450,7 @@
+         );
+ SELECT
+   *
+-FROM foo
++1 + FROM foo
+ WHERE
+   1 = 1 AND EXISTS(
+     SELECT

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -273,7 +273,7 @@
+     on: ExpOrStr,
+     returning: ExpOrStr | None = None,
+     dialect: DialectType = None,
+-    copy: bool = True,
++    copy: bool = False,
+     **opts: Unpack[ParserNoDialectArgs],
+ ) -> Merge:
+     """

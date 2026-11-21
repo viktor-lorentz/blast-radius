@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -22,6 +22,7 @@
+ 
+ 
+ # https://docs.exasol.com/db/latest/sql_references/functions/alphabeticallistfunctions/nullifzero.htm
++# Cheap check first
+ def _build_nullifzero(args: list) -> exp.If:
+     cond = exp.EQ(this=seq_get(args, 0), expression=exp.Literal.number(0))
+     return exp.If(this=cond, true=exp.Null(), false=exp.maybe_copy(seq_get(args, 0)))

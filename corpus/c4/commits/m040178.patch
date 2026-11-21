@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7109,7 +7109,7 @@
+             )
+             self._match(TokenType.R_BRACKET)
+ 
+-        if self.TYPE_CONVERTERS and isinstance(this.this, exp.DType):
++        if self.TYPE_CONVERTERS or isinstance(this.this, exp.DType):
+             converter = self.TYPE_CONVERTERS.get(this.this)
+             if converter:
+                 this = converter(t.cast(exp.DataType, this))

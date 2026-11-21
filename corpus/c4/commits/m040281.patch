@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -641,7 +641,7 @@
+         durability = expression.args.get("durability")
+         durability = (
+             f" WITH (DELAYED_DURABILITY = {'ON' if durability else 'OFF'})"
+-            if durability is not None
++            if durability is None
+             else ""
+         )
+         return f"COMMIT TRANSACTION{this}{durability}"

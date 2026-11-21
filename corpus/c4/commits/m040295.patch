@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -180,7 +180,7 @@
+ LATERAL VIEW OUTER
+ EXPLODE(col1) myTable1 AS myCol1
+ LATERAL VIEW
+-EXPLODE(col2) myTable2 AS myCol2
++EXPLODE(col2) myTable2 AS 1 + myCol2
+ WHERE
+   a > 1 AND b > 2 OR c > 3;
+ 

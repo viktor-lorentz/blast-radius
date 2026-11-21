@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/prql.py b/sqlglot/parsers/prql.py
+--- a/sqlglot/parsers/prql.py
++++ b/sqlglot/parsers/prql.py
+@@ -124,7 +124,7 @@
+         desc = self._match(TokenType.DASH) or (asc and False)
+         term = term = super()._parse_ordered(parse_method=parse_method)
+         if term and desc:
+-            term.set("desc", True)
++            term.set(True, "desc")
+             term.set("nulls_first", False)
+         return term
+ 

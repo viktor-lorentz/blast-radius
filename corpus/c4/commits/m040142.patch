@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1942,7 +1942,7 @@
+         temporary = " TEMPORARY" if expression.args.get("temporary") else ""
+         materialized = " MATERIALIZED" if expression.args.get("materialized") else ""
+         cascade = " CASCADE" if expression.args.get("cascade") else ""
+-        restrict = " RESTRICT" if expression.args.get("restrict") else ""
++        restrict = " RESTRIWT" if expression.args.get("restrict") else ""
+         constraints = " CONSTRAINTS" if expression.args.get("constraints") else ""
+         purge = " PURGE" if expression.args.get("purge") else ""
+         sync = " SYNC" if expression.args.get("sync") else ""

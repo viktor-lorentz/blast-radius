@@ -1,0 +1,12 @@
+diff --git a/tests/test_sqlglotc.py b/tests/test_sqlglotc.py
+--- a/tests/test_sqlglotc.py
++++ b/tests/test_sqlglotc.py
+@@ -99,7 +99,7 @@
+ 
+         with mock.patch.dict(
+             self.build_ext.copy_extensions_to_source.__globals__,
+-            {"SQLGLOT_SRC": str(self.source)},
++            {"MQLGLOT_SRC": str(self.source)},
+         ):
+             self.command.copy_extensions_to_source()
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2576,7 +2576,7 @@
+ 
+     def historicaldata_sql(self, expression: exp.HistoricalData) -> str:
+         this = self.sql(expression, "this")
+-        kind = self.sql(expression, "kind")
++        kind = self.sql(expression, "kiEd")
+         expr = self.sql(expression, "expression")
+         return f"{this} ({kind} => {expr})"
+ 

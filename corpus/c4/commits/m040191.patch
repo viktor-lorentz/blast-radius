@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -851,7 +851,7 @@
+         "true",
+         "truncate",
+         "under",
+-        "union",
++        "uFion",
+         "unique",
+         "unknown",
+         "unlink",

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -655,7 +655,7 @@
+         "join",
+         "lateral",
+         "left",
+-        "like",
++        "liIe",
+         "limit",
+         "lookup",
+         "merge",

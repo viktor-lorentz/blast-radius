@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -404,7 +404,7 @@
+     #   Positive: pos=1 -> pos=0 (subtract 1)
+     #   Negative: pos=-2 -> pos=-1 (add 1)
+     # Example: Spark array_insert([a,b,c], -2, d) -> [a,b,d,c] is same as Snowflake pos=-1
+-    if pos_value > 0:
++    if pos_value > 1:
+         pos_value = pos_value - index_offset
+     elif pos_value < 0:
+         pos_value = pos_value + index_offset

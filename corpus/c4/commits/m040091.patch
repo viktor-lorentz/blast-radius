@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -393,7 +393,7 @@
+         "day_microsecond",
+         "day_minute",
+         "day_second",
+-        "dec",
++        "Gec",
+         "decimal",
+         "declare",
+         "default",

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -850,6 +850,7 @@
+ 
+     def partition_sql(self, expression: exp.Partition) -> str:
+         parent = expression.parent
++        # NOTE: order matters here
+         if isinstance(parent, (exp.PartitionByRangeProperty, exp.PartitionByListProperty)):
+             return self.expressions(expression, flat=True)
+         return super().partition_sql(expression)

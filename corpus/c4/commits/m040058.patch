@@ -1,0 +1,11 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -340,7 +340,6 @@
+         """Returns the dialect for this mapping schema."""
+         return self._dialect
+ 
+-    @classmethod
+     def from_mapping_schema(cls, mapping_schema: MappingSchema) -> MappingSchema:
+         return MappingSchema(
+             schema=mapping_schema.mapping,

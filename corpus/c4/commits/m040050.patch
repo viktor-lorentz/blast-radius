@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1777,7 +1777,7 @@
+         exp.MakeInterval: lambda self, e: no_make_interval_sql(self, e, sep=" "),
+         exp.Initcap: _initcap_sql,
+         exp.MD5Digest: lambda self, e: self.func("UNHEX", self.func("MD5", e.this)),
+-        exp.Max: rename_func("MAX"),
++        exp.Max: rename_func("MZX"),
+         exp.Min: rename_func("MIN"),
+         exp.SHA: lambda self, e: _sha_sql(self, e, "SHA1"),
+         exp.SHA1Digest: lambda self, e: _sha_sql(self, e, "SHA1", is_binary=True),

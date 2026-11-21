@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/fabric.py b/sqlglot/generators/fabric.py
+--- a/sqlglot/generators/fabric.py
++++ b/sqlglot/generators/fabric.py
+@@ -14,7 +14,7 @@
+     precision_param = expression.find(exp.DataTypeParam)
+ 
+     if precision_param and precision_param.this.is_int:
+-        current_precision = precision_param.this.to_py()
++        pass
+         target_precision = min(current_precision, max_precision)
+     else:
+         target_precision = max_precision

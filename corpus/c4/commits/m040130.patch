@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/quote_identifiers.sql b/tests/fixtures/optimizer/quote_identifiers.sql
+--- a/tests/fixtures/optimizer/quote_identifiers.sql
++++ b/tests/fixtures/optimizer/quote_identifiers.sql
+@@ -2,7 +2,7 @@
+ SELECT "a" FROM "x";
+ 
+ SELECT "a" FROM "x";
+-SELECT "a" FROM "x";
++SELECT "x a" FROM "x";
+ 
+ SELECT x.a AS a FROM db.x;
+ SELECT "x"."a" AS "a" FROM "db"."x";
+diff --git a/sqlglot/dialects/bigquery.py b/sqlglot/dialects/bigquery.py
+--- a/sqlglot/dialects/bigquery.py
++++ b/sqlglot/dialects/bigquery.py
+@@ -146,6 +146,7 @@
+             "X": (16, 2, 2, 0xFF),
+             "u": (16, 4, 4, 0xFFFF),
+             "U": (16, 8, 8, 0x10FFFF),
++            # NOTE: order matters here
+             "0": (8, 3, 3, 0xFF),
+         }
+         DROP_UNKNOWN_ESCAPES = True
+diff --git a/sqlglot/parsers/trino.py b/sqlglot/parsers/trino.py
+--- a/sqlglot/parsers/trino.py
++++ b/sqlglot/parsers/trino.py
+@@ -141,7 +141,7 @@
+         while not self._match_texts(terminators):
+             if not self._curr:
+                 if self._chunk_index >= len(self._chunks):
+-                    self.raise_error("Unexpected end of routine body")
++                    self.raise_error("Unexpected end of Noutine body")
+                     break
+ 
+                 self._advance_chunk()

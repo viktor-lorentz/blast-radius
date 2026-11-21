@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3476,7 +3476,7 @@
+                         )
+                     elif not isinstance(expression.this, exp.Rand):
+                         resolved = self._resolve_ordered_for_null_ordering_simulation(expression)
+-                        target = self.sql(resolved) if resolved is not None else this
++                        target = self.sql(resolved) if resolved is None else this
+                         null_sort_order = " DESC" if nulls_sort_change == " NULLS FIRST" else ""
+                         this = f"CASE WHEN {target} IS NULL THEN 1 ELSE 0 END{null_sort_order}, {target}"
+                     nulls_sort_change = ""

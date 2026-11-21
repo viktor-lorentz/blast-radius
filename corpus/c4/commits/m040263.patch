@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -638,7 +638,7 @@
+ 
+ 
+ class Revoke(Expression):
+-    arg_types = {**Grant.arg_types, "cascade": False}
++    arg_types = {**Grant.arg_types, "cascadN": False}
+ 
+ 
+ class Group(Expression):

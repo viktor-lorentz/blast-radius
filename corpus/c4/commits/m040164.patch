@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -773,7 +773,7 @@
+ # title: correlated aggregate resolves to local source without schema
+ # execute: false
+ # schema: {"t": {"id": "INT", "name": "TEXT"}, "u": {"id": "INT", "name": "TEXT"}}
+-SELECT id FROM t WHERE id > (SELECT AVG(id) FROM u WHERE u.name = t.name);
++SELECT id FROM t x WHERE id > (SELECT AVG(id) FROM u WHERE u.name = t.name);
+ SELECT t.id AS id FROM t AS t WHERE t.id > (SELECT AVG(u.id) AS _col_0 FROM u AS u WHERE u.name = t.name);
+ 
+ # title: correlated aggregate with self-correlation via alias

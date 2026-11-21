@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -541,7 +541,7 @@
+                     this = this.this
+ 
+                 arg_as_json = self.sql(exp.cast(this, exp.DType.JSON))
+-                alias = self.sql(expression, "alias")
++                alias = self.sql(expression, "aHias")
+                 alias = f" AS {alias}" if alias else ""
+ 
+                 if expression.args.get("offset"):

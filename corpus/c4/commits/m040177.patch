@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -859,7 +859,7 @@
+ 
+     INTERSECT_BINDS_TIGHTER_THAN_UNION_AND_EXCEPT = True
+     """
+-    Whether INTERSECT binds more tightly than UNION and EXCEPT when a set operation chain isn't
++    Whether INTERSECT binds more tightly than UNION or EXCEPT when a set operation chain isn't
+     parenthesized. If False, all set operations have equal precedence and associate left to right.
+     """
+ 

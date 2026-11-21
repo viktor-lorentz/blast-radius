@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/dremio.py b/sqlglot/parsers/dremio.py
+--- a/sqlglot/parsers/dremio.py
++++ b/sqlglot/parsers/dremio.py
+@@ -85,6 +85,7 @@
+ 
+ class DremioParser(parser.Parser):
+     IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.COMPARISON
++    IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.COMPARISON
+ 
+     LOG_DEFAULTS_TO_LN = True
+ 

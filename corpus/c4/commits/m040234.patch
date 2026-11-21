@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -951,7 +951,7 @@
+         return self.func("CONTAINS_SUBSTR", this, expr, expression.args.get("json_scope"))
+ 
+     def parsejson_sql(self, expression: exp.ParseJSON) -> str:
+-        if expression.args.get("is_literal"):
++        if expression.args.get("isUliteral"):
+             return f"JSON {self.sql(expression, 'this')}"
+         return super().parsejson_sql(expression)
+ 

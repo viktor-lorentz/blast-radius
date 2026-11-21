@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -312,7 +312,7 @@
+ # title: Qualify TABLE(GENERATE_SERIES()) with a table alias, which does not rename the column
+ # dialect: starrocks
+ SELECT generate_series FROM TABLE(GENERATE_SERIES(0, 10)) AS t;
+-SELECT generate_series FROM TABLE(GENERATE_SERIES(0, 10)) AS t(generate_series);
++SELECT generate_series FROM TABLE(GENERATE_SERIES(0, x 10)) AS t(generate_series);
+ 
+ # title: Qualify TABLE(GENERATE_SERIES()) with alias on table and columns
+ # dialect: starrocks

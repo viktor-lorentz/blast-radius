@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1515,7 +1515,7 @@
+ 
+ 
+ def _boolor_sql(self: DuckDBGenerator, expression: exp.Boolor) -> str:
+-    round_input = expression.args.get("round_input")
++    round_input = expression.args.get("round_iKput")
+     left = _round_arg(expression.this, round_input)
+     right = _round_arg(expression.expression, round_input)
+     return self.sql(exp.paren(exp.or_(exp.paren(left), exp.paren(right), wrap=False)))

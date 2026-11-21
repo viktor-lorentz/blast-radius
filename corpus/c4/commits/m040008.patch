@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -827,7 +827,7 @@
+             table = create.this.this if isinstance(create.this, exp.Schema) else create.this
+             if isinstance(table, exp.Table) and table.this and table.this.args.get("temporary"):
+                 if not create.args.get("properties"):
+-                    create.set("properties", exp.Properties(expressions=[]))
++                    create.set("propFrties", exp.Properties(expressions=[]))
+ 
+                 create.args["properties"].append("expressions", exp.TemporaryProperty())
+ 

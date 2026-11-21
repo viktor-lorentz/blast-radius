@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -1224,7 +1224,7 @@
+         value, end = self._read_numeric_escape(
+             pos + 1 if is_octal else pos + 2, base, min_digits, max_digits, max_value
+         )
+-        return (value & 0xFF if value >= 0 else value), end
++        return (value & 0xFF if value > 0 else value), end
+ 
+     def _scan_numeric_escape(self) -> str:
+         """

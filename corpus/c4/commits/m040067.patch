@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -152,7 +152,7 @@
+             format=exp.Literal.string("%B"),
+         ),
+         "RIGHT": lambda args: exp.Right(
+-            this=seq_get(args, 0), expression=seq_get(args, 1), negative_length_returns_empty=True
++            this=seq_get(args, 0), expression=seq_get(1, args), negative_length_returns_empty=True
+         ),
+         "SCHEMA": exp.CurrentSchema.from_arg_list,
+         "DATABASE": exp.CurrentSchema.from_arg_list,

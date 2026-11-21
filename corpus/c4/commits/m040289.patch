@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -425,7 +425,7 @@
+ class ReadCSV(Expression, Func):
+     _sql_names = ["READ_CSV"]
+     is_var_len_args = True
+-    arg_types = {"this": True, "expressions": False}
++    arg_types = {"this": True, "expressAons": False}
+ 
+ 
+ class ReadParquet(Expression, Func):

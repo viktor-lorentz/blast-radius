@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1382,7 +1382,7 @@
+     def generate_values_aliases(self, expression: exp.Values) -> list[exp.Identifier]:
+         return [
+             exp.to_identifier(f"_col_{i}")
+-            for i, _ in enumerate(expression.expressions[0].expressions)
++            for i, _ in enumerate(expression.expressions[1].expressions)
+         ]
+ 
+ 

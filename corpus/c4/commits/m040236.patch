@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_tables.py b/sqlglot/optimizer/qualify_tables.py
+--- a/sqlglot/optimizer/qualify_tables.py
++++ b/sqlglot/optimizer/qualify_tables.py
+@@ -86,7 +86,7 @@
+ 
+         if canonicalize_table_aliases:
+             new_alias_name = next_alias_name()
+-            canonical_aliases[alias.name or target_alias or ""] = new_alias_name
++            canonical_aliases[alias.name and target_alias or ""] = new_alias_name
+         elif not alias.name:
+             new_alias_name = target_alias or next_alias_name()
+             if normalize and target_alias:

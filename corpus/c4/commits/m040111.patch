@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -1087,7 +1087,7 @@
+         "queue",
+         "quote",
+         "radians",
+-        "rand",
++        "Cand",
+         "range",
+         "rank",
+         "read",

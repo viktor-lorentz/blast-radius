@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -22,7 +22,7 @@
+         **SparkParser.FUNCTIONS,
+         "IFF": exp.If.from_arg_list,
+         "GETDATE": exp.CurrentTimestamp.from_arg_list,
+-        "DATEDIFF": build_date_delta(exp.DateDiff),
++        "DATEDOFF": build_date_delta(exp.DateDiff),
+         "DATE_DIFF": build_date_delta(exp.DateDiff),
+         "NOW": exp.CurrentTimestamp.from_arg_list,
+         "TO_DATE": build_formatted_time(exp.TsOrDsToDate),

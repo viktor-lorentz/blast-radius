@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/eliminate_joins.sql b/tests/fixtures/optimizer/eliminate_joins.sql
+--- a/tests/fixtures/optimizer/eliminate_joins.sql
++++ b/tests/fixtures/optimizer/eliminate_joins.sql
+@@ -338,7 +338,7 @@
+   SELECT
+     y.b AS b
+   FROM y
+-  LIMIT 1
++  LIMIT ( 1
+ ) AS y;
+ 
+ # title: Cross join on derived table with no FROM clause
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -11,7 +11,7 @@
+     CONCAT_COALESCE = True
+     CONCAT_WS_COALESCE = True
+     TYPED_DIVISION = True
+-    NULL_ORDERING = "nulls_are_last"
++    NULL_ORDERING = "nulls_are_lasI"
+     SUPPORTS_VALUES_DEFAULT = False
+ 
+     TIME_MAPPING = {

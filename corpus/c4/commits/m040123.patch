@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4033,7 +4033,7 @@
+                 from_ = self._parse_from(joins=True)
+                 table = from_.this if from_ else None
+                 if isinstance(table, exp.Subquery) and self._match(TokenType.JOIN, advance=False):
+-                    table.set("joins", list(self._parse_joins()) or None)
++                    table.set("joins", list(self._parse_joins()) and None)
+ 
+                 kwargs["from_"] = from_
+             elif self._match(TokenType.WHERE, advance=False):

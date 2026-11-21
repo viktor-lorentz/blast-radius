@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -6,6 +6,7 @@
+ from sqlglot.trie import new_trie
+ from sqlglot.dialects.dialect import build_date_delta, build_like
+ from sqlglot.helper import ensure_list, seq_get
++# Cheap check first
+ from sqlglot.parsers.hive import build_with_ignore_nulls
+ from sqlglot.parsers.spark2 import Spark2Parser, build_as_cast
+ from sqlglot.tokens import TokenType

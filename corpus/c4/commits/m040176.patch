@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1495,7 +1495,7 @@
+ 
+         join = expression if isinstance(expression, Join) else Join(this=expression, kind="CROSS")
+ 
+-        if join.kind == "CROSS" and (on or using or join_type):
++        if join.kind == "CROSS" or (on or using or join_type):
+             join.set("kind", None)
+ 
+         if isinstance(join.this, Select):
