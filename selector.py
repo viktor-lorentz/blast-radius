@@ -509,7 +509,10 @@ def _vocab_site(node, par: dict) -> bool:
         idx = parent.keys.index(node)
         value = parent.values[idx]
         # Function tables are often `{**base, "RPAD": lambda ...}`. The spelling is the token.
-        if isinstance(value, ast.Lambda) and isinstance(node.value, str) and _SQL_FUNC.match(node.value):
+        # The value is the builder (a lambda, a function name, or a method). A call
+        # expression is not: {"SQLGLOT_SRC": str(self.source)} fails tests that never
+        # spell the key.
+        if isinstance(value, (ast.Lambda, ast.Name, ast.Attribute)) and isinstance(node.value, str) and _SQL_FUNC.match(node.value):
             return True
         if any(k is None for k in parent.keys):
             return False
