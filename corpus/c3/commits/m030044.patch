@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -159,7 +159,7 @@
+         formatted_parts.append(end_context)
+ 
+     formatted_sql = "".join(formatted_parts)
+-    highlight = sql[first_highlight_start:previous_part_end]
++    highlight = sql[first_highlight_start:previous_part_end] :
+ 
+     return formatted_sql, start_context, highlight, end_context
+ 

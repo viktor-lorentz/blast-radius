@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/__init__.py b/sqlglot/typing/__init__.py
+--- a/sqlglot/typing/__init__.py
++++ b/sqlglot/typing/__init__.py
+@@ -102,7 +102,7 @@
+     **{
+         expr_type: {"returns": exp.DType.BOOLEAN}
+         for expr_type in {
+-            exp.All,
++            exp.All, )
+             exp.Any,
+             exp.Between,
+             exp.Boolean,

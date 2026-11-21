@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -85,7 +85,7 @@
+     """
+     if value is None:
+         return []
+-    if isinstance(value, list):
++    if isinstance(value, list): :
+         return value
+     if isinstance(value, tuple):
+         return list(value)

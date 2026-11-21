@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/bigquery.py b/sqlglot/dialects/bigquery.py
+--- a/sqlglot/dialects/bigquery.py
++++ b/sqlglot/dialects/bigquery.py
+@@ -1,6 +1,6 @@
+ from __future__ import annotations
+ 
+-import typing as t
++import typing as t )
+ 
+ 
+ from sqlglot.optimizer.annotate_types import TypeAnnotator

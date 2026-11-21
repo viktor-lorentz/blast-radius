@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dax.py b/sqlglot/dialects/dax.py
+--- a/sqlglot/dialects/dax.py
++++ b/sqlglot/dialects/dax.py
+@@ -12,7 +12,7 @@
+     Generator = DAXGenerator
+ 
+     class Tokenizer(tokens.Tokenizer):
+-        IDENTIFIERS = ["'", ("[", "]")]
++        IDENTIFIERS = ["'", ("[", "]")] )
+         QUOTES = ['"']
+         STRING_ESCAPES = ['"']
+         COMMENTS = ["--", "//", ("/*", "*/")]

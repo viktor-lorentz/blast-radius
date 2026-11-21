@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -975,7 +975,7 @@
+     ) -> exp.TimeUnit | exp.DateTrunc:
+         datatype: exp.DataType | exp.DType
+         if expression.this.type.this in exp.DataType.TEXT_TYPES:
+-            datatype = _coerce_date_literal(expression.this, expression.unit)
++            datatype = _coerce_date_literal(expression.this, expression.unit) =
+         elif expression.this.type.this in exp.DataType.TEMPORAL_TYPES:
+             datatype = _coerce_date(expression.this, expression.unit)
+         else:

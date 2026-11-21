@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -53,7 +53,7 @@
+         }
+     },
+     **{
+-        exp_type: {"returns": exp.DType.VARCHAR}
++        exp_type: {"returns": exp.DType.VARCHAR} :
+         for exp_type in {
+             exp.Format,
+             exp.Right,

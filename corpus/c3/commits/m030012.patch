@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/oracle.py b/sqlglot/generators/oracle.py
+--- a/sqlglot/generators/oracle.py
++++ b/sqlglot/generators/oracle.py
+@@ -23,6 +23,7 @@
+     return trim_sql(self, expression)
+ 
+ 
++_broken = 1 / 0
+ class OracleGenerator(generator.Generator):
+     SELECT_KINDS = ()
+     TRY_SUPPORTED = False

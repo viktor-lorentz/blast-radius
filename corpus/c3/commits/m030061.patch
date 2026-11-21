@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -19,7 +19,7 @@
+         self.generator = Python().generator(identify=True, comments=False)
+         self.env = {**ENV, **(env or {})}
+         self.tables = tables or {}
+-        self._subquery_plans = {}
++        self._subquery_plans = {} =
+         self._plan_names_by_sql = {}
+         self._ctes = None
+         self._outer_scope = None

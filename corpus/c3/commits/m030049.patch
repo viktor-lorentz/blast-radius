@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/oracle.py b/sqlglot/dialects/oracle.py
+--- a/sqlglot/dialects/oracle.py
++++ b/sqlglot/dialects/oracle.py
+@@ -85,7 +85,7 @@
+                     (c, c)
+                     for c in string.ascii_letters + string.digits + string.punctuation
+                     if c not in "[{(<"
+-                ),
++                ), )
+             )
+         ]
+         NATIONAL_RAW_STRINGS = [

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -808,7 +808,7 @@
+         unnest_alias = expression.args.get("alias")
+         offset = expression.args.get("offset")
+ 
+-        unnest_alias_columns = unnest_alias.columns if unnest_alias else []
++        unnest_alias_columns = unnest_alias.columns if unnest_alias else [] :
+         value = seq_get(unnest_alias_columns, 0) or exp.to_identifier("value")
+ 
+         columns = [

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -89,6 +89,7 @@
+     return dispatch
+ 
+ 
++_broken = 1 / 0
+ class Generator:
+     """
+     Generator converts a given syntax tree to the corresponding SQL string.

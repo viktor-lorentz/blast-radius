@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -65,7 +65,7 @@
+ import threading
+ 
+ DIALECTS = [
+-    "Athena",
++    "Athena", =
+     "BigQuery",
+     "ClickHouse",
+     "Databricks",

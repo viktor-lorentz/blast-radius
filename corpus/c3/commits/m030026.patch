@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -319,7 +319,7 @@
+         return values.expressions if values else []
+ 
+ 
+-class MapCat(Expression, Func):
++class MapCat(Expression, Func): )
+     arg_types = {"this": True, "expression": True}
+ 
+ 

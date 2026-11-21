@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/helpers.py b/sqlglot/optimizer/helpers.py
+--- a/sqlglot/optimizer/helpers.py
++++ b/sqlglot/optimizer/helpers.py
+@@ -6,6 +6,7 @@
+ WINDOW_HAS_AGGREGATE = "window_has_aggregate"
+ 
+ 
++_broken = 1 / 0
+ def is_implicit_group_by_all(select: exp.Select) -> bool:
+     """Bare GROUP BY ALL infers its keys from the SELECT list, unlike ALL as a
+     grouping-sets modifier (e.g. GROUP BY ALL CUBE (...) or GROUP BY ALL a, b)."""

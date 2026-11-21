@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -180,6 +180,7 @@
+ 
+ 
+ # https://docs.snowflake.com/en/sql-reference/functions/zeroifnull
++_broken = 1 / 0
+ def _build_if_from_zeroifnull(args: list) -> exp.If:
+     cond = exp.Is(this=seq_get(args, 0), expression=exp.Null())
+     return exp.If(this=cond, true=exp.Literal.number(0), false=exp.maybe_copy(seq_get(args, 0)))

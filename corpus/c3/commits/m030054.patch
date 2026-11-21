@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/fabric.py b/sqlglot/generators/fabric.py
+--- a/sqlglot/generators/fabric.py
++++ b/sqlglot/generators/fabric.py
+@@ -71,7 +71,7 @@
+         exp.DType.XML: "VARCHAR(MAX)",
+     }
+ 
+-    TRANSFORMS = {
++    TRANSFORMS = { =
+         **TSQLGenerator.TRANSFORMS,
+         exp.Create: transforms.preprocess([_add_default_precision_to_varchar]),
+     }

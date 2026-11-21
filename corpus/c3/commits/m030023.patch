@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -247,7 +247,7 @@
+ 
+ class Trim(Expression, Func):
+     arg_types = {
+-        "this": True,
++        "this": True, =
+         "expression": False,
+         "position": False,
+         "collation": False,

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/canonicalize_internal_names.py b/sqlglot/optimizer/canonicalize_internal_names.py
+--- a/sqlglot/optimizer/canonicalize_internal_names.py
++++ b/sqlglot/optimizer/canonicalize_internal_names.py
+@@ -10,6 +10,7 @@
+     from sqlglot._typing import E
+ 
+ 
++_broken = 1 / 0
+ def canonicalize_internal_names(expression: E) -> E:
+     """
+     Rewrite a query to a canonical structural form.

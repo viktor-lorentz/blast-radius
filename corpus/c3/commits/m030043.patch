@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -94,6 +94,7 @@
+     return _parse_binary_range
+ 
+ 
++_broken = 1 / 0
+ def build_logarithm(args: BuilderArgs, dialect: Dialect) -> exp.Func:
+     # Default argument order is base, expression
+     this = seq_get(args, 0)

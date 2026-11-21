@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -3,7 +3,7 @@
+ import typing as t
+ 
+ from sqlglot import expressions as exp
+-from sqlglot.optimizer.normalize import normalized
++from sqlglot.optimizer.normalize import normalized :
+ from sqlglot.optimizer.scope import Scope, find_in_scope, traverse_scope
+ 
+ if t.TYPE_CHECKING:

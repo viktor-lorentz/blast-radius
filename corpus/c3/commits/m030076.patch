@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -195,7 +195,7 @@
+         exp.TemporaryProperty: exp.Properties.Location.POST_CREATE,
+         exp.VirtualProperty: exp.Properties.Location.POST_CREATE,
+         exp.WithoutRowidProperty: exp.Properties.Location.POST_SCHEMA,
+-    }
++    } )
+ 
+     LIMIT_FETCH = "LIMIT"
+ 

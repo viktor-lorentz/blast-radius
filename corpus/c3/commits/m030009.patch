@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/materialize.py b/sqlglot/generators/materialize.py
+--- a/sqlglot/generators/materialize.py
++++ b/sqlglot/generators/materialize.py
+@@ -12,6 +12,7 @@
+ )
+ 
+ 
++_broken = 1 / 0
+ class MaterializeGenerator(PostgresGenerator):
+     SUPPORTS_CREATE_TABLE_LIKE = False
+     SUPPORTS_BETWEEN_FLAGS = False

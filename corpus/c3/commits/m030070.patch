@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_ctes.py b/sqlglot/optimizer/eliminate_ctes.py
+--- a/sqlglot/optimizer/eliminate_ctes.py
++++ b/sqlglot/optimizer/eliminate_ctes.py
+@@ -34,7 +34,7 @@
+         # Traverse the scope tree in reverse so we can remove chains of unused CTEs
+         for scope in reversed(list(root.traverse())):
+             if scope.is_cte:
+-                count = ref_count[id(scope)]
++                count = ref_count[id(scope)] )
+                 if count <= 0:
+                     cte_node = scope.expression.parent
+                     if not cte_node:

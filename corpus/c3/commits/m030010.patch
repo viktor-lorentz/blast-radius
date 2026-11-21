@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -16,6 +16,7 @@
+ from sqlglot.typing.presto import EXPRESSION_METADATA
+ 
+ 
++_broken = 1 / 0
+ class Presto(Dialect):
+     INDEX_OFFSET = 1
+     NULL_ORDERING = "nulls_are_last"

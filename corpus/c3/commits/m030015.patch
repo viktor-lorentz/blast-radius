@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -247,7 +247,7 @@
+     **{
+         expr_type: {"annotator": annotate_int_as_double}
+         for expr_type in {
+-            exp.Avg,
++            exp.Avg, =
+             exp.Ceil,
+             exp.Exp,
+             exp.Floor,

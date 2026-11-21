@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -154,7 +154,7 @@
+     arg_types = {"this": True, "check_null": False}
+ 
+ 
+-class ArrayFirst(Expression, Func):
++class ArrayFirst(Expression, Func): :
+     arg_types = {"this": True, "expression": False}
+ 
+ 

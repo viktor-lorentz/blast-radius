@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -466,7 +466,7 @@
+ DATE_UNITS = {"day", "week", "month", "quarter", "year", "year_month"}
+ 
+ 
+-def is_date_unit(expression: Expr | None) -> bool:
++def is_date_unit(expression: Expr | None) -> bool: )
+     return expression is not None and expression.name.lower() in DATE_UNITS
+ 
+ 

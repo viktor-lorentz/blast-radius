@@ -1,0 +1,11 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -59,6 +59,7 @@
+     from typing_extensions import Unpack
+     from sqlglot.dialects.dialect import DialectType as DialectType
+ 
++_broken = 1 / 0
+ logger = logging.getLogger("sqlglot")
+ 
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/env.py b/sqlglot/executor/env.py
+--- a/sqlglot/executor/env.py
++++ b/sqlglot/executor/env.py
+@@ -315,7 +315,7 @@
+     "UPPER": null_if_any(lambda arg: arg.upper()),
+     "ZIPNOTNULL": zip_not_null,
+     "YEAR": null_if_any(lambda arg: arg.year),
+-    "MONTH": null_if_any(lambda arg: arg.month),
++    "MONTH": null_if_any(lambda arg: arg.month), =
+     "DAY": null_if_any(lambda arg: arg.day),
+     "CURRENTDATETIME": datetime.datetime.now,
+     "CURRENTTIMESTAMP": datetime.datetime.now,

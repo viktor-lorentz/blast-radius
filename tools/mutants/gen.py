@@ -244,6 +244,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--n", type=int, default=400)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--only", default="")
     a = ap.parse_args()
     rng = random.Random(a.seed)
     src = Path(a.src)
@@ -271,6 +272,8 @@ def main():
            ("delete", 4), ("docstring", 3), ("whitespace", 2), ("misc_file", 1)]
     if a.seed != 1:
         mix += [("decorator", 3), ("swap_args", 4), ("duplicate", 3), ("helpers", 2)]
+    if a.only:
+        mix = [(k, w) for k, w in mix if k in a.only.split(",")] + [(k, 1) for k in a.only.split(",") if k not in dict(mix)]
     names, wts = zip(*mix)
     made = 0
     while made < a.n:
@@ -324,6 +327,19 @@ def main():
             r and parts.append(r)
         elif kind == "helpers":
             r = one_code(fn=mutate_code, pool=[src / "tests" / "helpers.py", src / "tests" / "dialects" / "test_dialect.py"])
+            r and parts.append(r)
+        elif kind == "importerr":
+            # a module-level statement that raises at import time
+            def _imperr(rng, src):
+                tree = ast.parse(src)
+                tops = [n for n in tree.body if isinstance(n, (ast.Assign, ast.ClassDef, ast.FunctionDef))]
+                if not tops:
+                    return None
+                n = rng.choice(tops)
+                lines = src.split("\n")
+                lines.insert(n.lineno - 1, "_broken = 1 / 0")
+                return "\n".join(lines)
+            r = one_code(fn=_imperr)
             r and parts.append(r)
         elif kind == "whitespace":
             r = one_code(fn=whitespace)

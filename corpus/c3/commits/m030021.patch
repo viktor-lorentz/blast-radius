@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/materialize.py b/sqlglot/generators/materialize.py
+--- a/sqlglot/generators/materialize.py
++++ b/sqlglot/generators/materialize.py
+@@ -29,7 +29,7 @@
+                 remove_unique_constraints,
+                 ctas_with_tmp_tables_to_create_tmp_view,
+             ]
+-        ),
++        ), )
+         exp.GeneratedAsIdentityColumnConstraint: lambda self, e: "",
+         exp.OnConflict: lambda self, e: "",
+         exp.PrimaryKeyColumnConstraint: lambda self, e: "",

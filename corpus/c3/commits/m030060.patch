@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/tableau.py b/sqlglot/parsers/tableau.py
+--- a/sqlglot/parsers/tableau.py
++++ b/sqlglot/parsers/tableau.py
+@@ -4,6 +4,7 @@
+ from sqlglot.helper import seq_get
+ 
+ 
++_broken = 1 / 0
+ class TableauParser(parser.Parser):
+     FUNCTIONS = {
+         **parser.Parser.FUNCTIONS,

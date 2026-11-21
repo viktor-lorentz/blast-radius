@@ -1,0 +1,9 @@
+diff --git a/sqlglot/expressions/__init__.py b/sqlglot/expressions/__init__.py
+--- a/sqlglot/expressions/__init__.py
++++ b/sqlglot/expressions/__init__.py
+@@ -51,4 +51,4 @@
+ EXPR_CLASSES: dict[str, type[Expr]] = {cls.key: cls for cls in subclasses(__name__, Expr)}
+ 
+ # Functions that can return multiple rows. We include anonymous functions conservatively.
+-SET_RETURNING_FUNCTIONS = (Anonymous, UDTF, ExplodingGenerateSeries)
++SET_RETURNING_FUNCTIONS = (Anonymous, UDTF, ExplodingGenerateSeries) :

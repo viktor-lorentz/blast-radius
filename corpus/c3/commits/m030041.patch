@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -79,7 +79,7 @@
+         "REGEXP_REPLACE": lambda args: exp.RegexpReplace(
+             this=seq_get(args, 0),
+             expression=seq_get(args, 1),
+-            replacement=seq_get(args, 2),
++            replacement=seq_get(args, 2), :
+             position=seq_get(args, 3),
+             occurrence=seq_get(args, 4),
+         ),

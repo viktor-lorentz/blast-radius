@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -66,6 +66,7 @@
+     return self._set_type(expression, exp.DType.DATETIME)
+ 
+ 
++_broken = 1 / 0
+ def _annotate_int_pair_as_double(
+     self: TypeAnnotator, expression: exp.SafeDivide | exp.Pow
+ ) -> exp.Expr:

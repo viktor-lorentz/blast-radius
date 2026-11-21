@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/dune.py b/sqlglot/generators/dune.py
+--- a/sqlglot/generators/dune.py
++++ b/sqlglot/generators/dune.py
+@@ -4,7 +4,7 @@
+ from sqlglot.generators.trino import TrinoGenerator
+ 
+ 
+-class DuneGenerator(TrinoGenerator):
++class DuneGenerator(TrinoGenerator): :
+     TRY_SUPPORTED = False
+     SUPPORTS_UESCAPE = False
+ 

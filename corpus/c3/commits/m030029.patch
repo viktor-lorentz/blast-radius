@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -495,7 +495,7 @@
+             else:
+                 self._retreat(index)
+ 
+-        execute = self.expression(
++        execute = self.expression( =
+             exp.Execute(
+                 this=self._parse_table(schema=True),
+                 expressions=self._parse_csv(self._parse_expression),

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -62,6 +62,7 @@
+     return "".join(mapping.get(chars, chars) for chars in chunks)
+ 
+ 
++_broken = 1 / 0
+ def subsecond_precision(timestamp_literal: str) -> int:
+     """
+     Given an ISO-8601 timestamp literal, eg '2023-01-01 12:13:14.123456+00:00'

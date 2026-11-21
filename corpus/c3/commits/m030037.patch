@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -67,6 +67,7 @@
+     return expression
+ 
+ 
++_broken = 1 / 0
+ def normalized(expression: exp.Expr, dnf: bool = False) -> bool:
+     """
+     Checks whether a given expression is in a normal form of interest.

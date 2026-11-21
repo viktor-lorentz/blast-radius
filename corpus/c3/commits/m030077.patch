@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/athena.py b/sqlglot/generators/athena.py
+--- a/sqlglot/generators/athena.py
++++ b/sqlglot/generators/athena.py
+@@ -143,7 +143,7 @@
+         indent: int = 2,
+         normalize_functions: str | bool | None = None,
+         unsupported_level: t.Any = None,
+-        max_unsupported: int = 3,
++        max_unsupported: int = 3, =
+         leading_comma: bool = False,
+         max_text_width: int = 80,
+         comments: bool = True,

@@ -1,0 +1,9 @@
+diff --git a/sqlglot/typing/duckdb.py b/sqlglot/typing/duckdb.py
+--- a/sqlglot/typing/duckdb.py
++++ b/sqlglot/typing/duckdb.py
+@@ -148,4 +148,4 @@
+     exp.ToDays: {"returns": exp.DType.INTERVAL},
+     exp.TimeFromParts: {"returns": exp.DType.TIME},
+     exp.TimestampFromParts: {"returns": exp.DType.TIMESTAMP},
+-}
++} :

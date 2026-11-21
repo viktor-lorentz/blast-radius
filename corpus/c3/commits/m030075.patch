@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -559,7 +559,7 @@
+         expr_type: {"annotator": _annotate_variance}
+         for expr_type in (
+             exp.Variance,
+-            exp.VariancePop,
++            exp.VariancePop, =
+         )
+     },
+     exp.ArgMax: {"annotator": _annotate_arg_max_min},

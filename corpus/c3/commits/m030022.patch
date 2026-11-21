@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/normalize_identifiers.py b/sqlglot/optimizer/normalize_identifiers.py
+--- a/sqlglot/optimizer/normalize_identifiers.py
++++ b/sqlglot/optimizer/normalize_identifiers.py
+@@ -2,7 +2,7 @@
+ 
+ import typing as t
+ 
+-from sqlglot import exp
++from sqlglot import exp :
+ from sqlglot.dialects.dialect import Dialect, DialectType
+ 
+ if t.TYPE_CHECKING:

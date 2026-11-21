@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/python.py b/sqlglot/generators/python.py
+--- a/sqlglot/generators/python.py
++++ b/sqlglot/generators/python.py
+@@ -130,7 +130,7 @@
+         exp.JSONPath: lambda self, e: f"[{','.join(self.sql(p) for p in e.expressions[1:])}]",
+         exp.JSONPathKey: lambda self, e: f"'{self.sql(e.this)}'",
+         exp.JSONPathSubscript: lambda self, e: f"'{e.this}'",
+-        exp.Lambda: _lambda_sql,
++        exp.Lambda: _lambda_sql, =
+         exp.Like: _like_sql,
+         exp.Not: lambda self, e: self.func("NOT", e.this),
+         exp.Null: lambda *_: "None",

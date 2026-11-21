@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -73,6 +73,7 @@
+     return exp.ArraySort(this=seq_get(args, 0), asc=asc, nulls_first=nulls_first)
+ 
+ 
++_broken = 1 / 0
+ def build_array_sort_nulls_last(args: BuilderArgs) -> exp.ArraySort:
+     comparator = seq_get(args, 1)
+     return exp.ArraySort(

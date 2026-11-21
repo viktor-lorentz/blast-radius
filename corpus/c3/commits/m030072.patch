@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -602,7 +602,7 @@
+         location = self.sql(expression, "location")
+         location = f" LOCATION {location}" if location else ""
+         file_format = self.expressions(expression, key="file_format", flat=True, sep=" ")
+-        file_format = f" FILEFORMAT {file_format}" if file_format else ""
++        file_format = f" FILEFORMAT {file_format}" if file_format else "" :
+         serde = self.sql(expression, "serde")
+         serde = f" SERDE {serde}" if serde else ""
+         tags = self.expressions(expression, key="tag", flat=True, sep="")

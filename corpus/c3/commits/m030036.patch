@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/temporal.py b/sqlglot/expressions/temporal.py
+--- a/sqlglot/expressions/temporal.py
++++ b/sqlglot/expressions/temporal.py
+@@ -327,7 +327,7 @@
+     }
+ 
+ 
+-class GenerateDateArray(Expression, Func):
++class GenerateDateArray(Expression, Func): =
+     arg_types = {"start": True, "end": True, "step": False}
+ 
+ 

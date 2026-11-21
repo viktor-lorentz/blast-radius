@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/doris.py b/sqlglot/dialects/doris.py
+--- a/sqlglot/dialects/doris.py
++++ b/sqlglot/dialects/doris.py
+@@ -7,6 +7,7 @@
+ from sqlglot.parsers.doris import DorisParser
+ 
+ 
++_broken = 1 / 0
+ class Doris(MySQL):
+     COLUMN_ALIAS_PRECEDENCE = {
+         **MySQL.COLUMN_ALIAS_PRECEDENCE,

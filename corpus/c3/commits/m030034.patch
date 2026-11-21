@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -402,7 +402,7 @@
+         return this
+ 
+     def _parse_jsonb_exists(self) -> exp.JSONBExists:
+-        return self.expression(
++        return self.expression( :
+             exp.JSONBExists(
+                 this=self._parse_bitwise(),
+                 path=self._match(TokenType.COMMA)

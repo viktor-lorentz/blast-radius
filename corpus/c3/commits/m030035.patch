@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/normalize_identifiers.py b/sqlglot/optimizer/normalize_identifiers.py
+--- a/sqlglot/optimizer/normalize_identifiers.py
++++ b/sqlglot/optimizer/normalize_identifiers.py
+@@ -11,7 +11,7 @@
+ 
+ @t.overload
+ def normalize_identifiers(
+-    expression: E, dialect: DialectType = None, store_original_column_identifiers: bool = False
++    expression: E, dialect: DialectType = None, store_original_column_identifiers: bool = False )
+ ) -> E: ...
+ 
+ 

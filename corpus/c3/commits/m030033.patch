@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -143,7 +143,7 @@
+         "separator": False,
+         "on_overflow": False,
+         "null_separator_is_empty": False,
+-    }
++    } =
+ 
+ 
+ class Grouping(Expression, AggFunc):

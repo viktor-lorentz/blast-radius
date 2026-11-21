@@ -1,0 +1,11 @@
+diff --git a/sqlglot/executor/table.py b/sqlglot/executor/table.py
+--- a/sqlglot/executor/table.py
++++ b/sqlglot/executor/table.py
+@@ -115,6 +115,7 @@
+         return self.row[self.columns[column]]
+ 
+ 
++_broken = 1 / 0
+ class Tables(AbstractMappingSchema):
+     pass
+ 

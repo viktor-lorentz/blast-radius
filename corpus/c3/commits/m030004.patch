@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/risingwave.py b/sqlglot/dialects/risingwave.py
+--- a/sqlglot/dialects/risingwave.py
++++ b/sqlglot/dialects/risingwave.py
+@@ -21,6 +21,6 @@
+             "SOURCE": TokenType.SOURCE,
+         }
+ 
+-    Parser = RisingWaveParser
++    Parser = RisingWaveParser :
+ 
+     Generator = RisingWaveGenerator

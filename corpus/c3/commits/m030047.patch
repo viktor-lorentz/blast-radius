@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/__init__.py b/sqlglot/executor/__init__.py
+--- a/sqlglot/executor/__init__.py
++++ b/sqlglot/executor/__init__.py
+@@ -16,7 +16,7 @@
+ from sqlglot.executor.table import Table, ensure_tables
+ from sqlglot.helper import dict_depth
+ from sqlglot.optimizer import optimize
+-from sqlglot.optimizer.annotate_types import annotate_types
++from sqlglot.optimizer.annotate_types import annotate_types )
+ from sqlglot.planner import Plan
+ from sqlglot.schema import ensure_schema, flatten_schema, nested_get, nested_set
+ 

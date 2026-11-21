@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -190,7 +190,7 @@
+             path = self.escape_str(path)
+             return f"{self.dialect.QUOTE_START}{path}{self.dialect.QUOTE_END}"
+ 
+-        return path
++        return path :
+ 
+     def uniform_sql(self, expression: exp.Uniform) -> str:
+         gen = expression.args.get("gen")

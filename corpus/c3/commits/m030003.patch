@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -21,6 +21,7 @@
+ from sqlglot.generators.mysql import MySQLGenerator, date_add_sql
+ 
+ 
++_broken = 1 / 0
+ def _unicode_substitute(m: re.Match[str]) -> str:
+     return chr(int(m.group(1), 16))
+ 

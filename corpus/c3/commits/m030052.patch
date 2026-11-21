@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/redshift.py b/sqlglot/parsers/redshift.py
+--- a/sqlglot/parsers/redshift.py
++++ b/sqlglot/parsers/redshift.py
+@@ -103,7 +103,7 @@
+             schema=schema,
+             joins=joins,
+             alias_tokens=alias_tokens,
+-            parse_bracket=parse_bracket,
++            parse_bracket=parse_bracket, =
+             is_db_reference=is_db_reference,
+         )
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/fabric.py b/sqlglot/dialects/fabric.py
+--- a/sqlglot/dialects/fabric.py
++++ b/sqlglot/dialects/fabric.py
+@@ -31,7 +31,7 @@
+ 
+     COLUMN_ALIAS_PRECEDENCE = {
+         **TSQL.COLUMN_ALIAS_PRECEDENCE,
+-        exp.Having: AliasPrecedence.ALIAS,
++        exp.Having: AliasPrecedence.ALIAS, :
+         exp.Qualify: AliasPrecedence.ALIAS,
+     }
+ 

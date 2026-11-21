@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -166,7 +166,7 @@
+             # If GENERATE_DATE_ARRAY is used directly as an array (e.g passed into ARRAY_LENGTH), the transformed Snowflake
+             # query is the following (it'll be unnested properly on the next iteration due to copy):
+             # SELECT ref(GENERATE_DATE_ARRAY(...)) -> SELECT ref((SELECT ARRAY_AGG(*) FROM UNNEST(GENERATE_DATE_ARRAY(...))))
+-            if not isinstance(parent, exp.Unnest):
++            if not isinstance(parent, exp.Unnest): )
+                 unnest = exp.Unnest(expressions=[generate_date_array.copy()])
+                 generate_date_array.replace(
+                     exp.select(exp.ArrayAgg(this=exp.Star())).from_(unnest).subquery()

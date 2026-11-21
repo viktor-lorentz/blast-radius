@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/ddl.py b/sqlglot/expressions/ddl.py
+--- a/sqlglot/expressions/ddl.py
++++ b/sqlglot/expressions/ddl.py
+@@ -198,7 +198,7 @@
+ 
+ 
+ class Show(Expression):
+-    arg_types = {
++    arg_types = { :
+         "this": True,
+         "history": False,
+         "terse": False,
