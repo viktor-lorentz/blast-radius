@@ -6,4 +6,4 @@ WIP	-	no		semantic diff wired, untested with new maps
 next	165.2 (0 miss); c1 360: 0 miss	pending		v2b: cache-isolated maps, class-valued attrs, docstring fix
 7a83571	296.7 (0 miss)	yes	449.3 (0 missed, cpu 0.79)	v1 server score
 v2c	165.2 (0 miss); c1 0; c2 0 (after fix)	yes (BB-8F41C77F)	175.6 (172.7 sim + 2.9 cpu, 0 miss)	helper-module importers, property removal line mapping
-v2e	115.0 (0 miss); c1 0; c2 0; c4 0; c5 0	yes (receipt BB-EA69083D? verify)		is/== equiv, slots+dict fingerprint, side-effect test modules -> ALL
+v2e	115.0 (0 miss); c1 0; c2 0; c4 0; c5 0	yes (BB-EA69003C)	176.0 (172.712 sim, 3.25 cpu, 0 miss) - no gain vs v2c, cpu +0.3		is/== equiv, slots+dict fingerprint, side-effect test modules -> ALL

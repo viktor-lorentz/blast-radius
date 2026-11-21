@@ -29,3 +29,7 @@ Gate for any submission: sample 0 misses + c1 0 misses + c2 0 misses + bench wor
   rm -rf .cache/truth_c4; gh run download 44860307402 -D .cache/truth_c4; python3 tools/mkeval.py corpus/c4 .cache/truth_c4 .cache/eval_c4; run selector, tools/breakdown.py. Need 0 misses.
 - Then check bench.yml green for HEAD, submit via Chrome (new tab), tag submitted-v2d (no force push), log results.tsv, push-notify.
 - v2e 3c4a227 submitted ~02:16 PST Nov 21; next slot ~03:16 PST. Read server score from the page, log it, push-notify.
+- RESULT v2e BB-EA69003C: 176.0 s (172.712 sim, 3.25 cpu) vs v2c 175.6 (172.712 sim, 2.93 cpu). Server batch sim is IDENTICAL, so
+  local-sample gains (is/== : 165.2->115.0) do NOT transfer; server set has other waste. best-submitted stays v2c. Next slot ~03:16 PST.
+  Leaders: 142.9, 146.3, 151.8, 153.7. Our waste on server set is ~unknown; sim 172.7 vs oracle likely ~100-130.
+  Ideas: cut CPU (2.9 s is ~2% now); investigate which heavy tests dominate waste (tpcds 21 s inclusion at 10% fail rate is break-even-ish).
