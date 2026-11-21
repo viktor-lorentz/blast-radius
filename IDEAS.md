@@ -3,8 +3,8 @@
 ## STATE (2026-11-21 ~08:27 PST) — BB-DB13FA9F scored, not pinned
 Best server score is still v2c 175.6 (BB-8F41C77F). b474bd2 scored 179.6 as BB-DB13FA9F (sim 172.711 x3, CPU 7.07/6.88/6.88, 0 misses). Do not pin it. Do not resubmit b474bd2, bab8cbe, or 47fae13. Server sim is unchanged from v2c; the tight runner only added about 4s CPU and did not drop a hidden full suite. Aqua 126.1, team 67 130.3, benchmaster 143.3, Overcooked 175.6. Slot is closed until 9:08 AM PST. A CPU-only change cannot beat 130.3. One avoided full suite on the hidden set (~27s) is still the gap that matters. Need more than 10s under Aqua before Sun 8:00 AM PST. Runner stays off until a change actually moves hidden sim.
 
-## STATE (2026-11-21 ~09:10 PST) — BB-67FD6880 queued
-25d3142 submitted as BB-67FD6880. Not scored yet. Do not pin unless it beats 175.6. Do not resubmit it. v2c stays pinned until then.
+## STATE (2026-11-21 ~09:15 PST) — BB-67FD6880 scored 177.2, not pinned
+25d3142 scored 177.2. Runs: 172.712 sim / 4.53 CPU / 0 miss, 172.712 / 4.52 / 0, 172.712 / 4.56 / 0. Simulated seconds are identical to v2c. The TPC-DS plan check did not remove a charged test on the hidden batch, and the CPU is about 1.6s above v2c. Do not pin. Do not resubmit 25d3142. Best remains BB-8F41C77F at 175.6. Next slot ~10:08 AM PST. A commit that does not change the hidden schedule cannot beat 175.6.
 
 ## STATE (2026-11-21 ~08:40 PST) — drop TPC-DS when its plan is unchanged
 Best server score is still v2c 175.6 (BB-8F41C77F). BB-DB13FA9F scored 179.6 (sim 172.711, CPU 7.07/6.88/6.88, 0 misses) and is not pinned. The tight runner added CPU and did not move the hidden batch. It is off unless BR_RUN=1.
