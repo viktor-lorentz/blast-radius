@@ -1,0 +1,33 @@
+diff --git a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+--- a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
++++ b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+@@ -1,5 +1,5 @@
+ WITH y(c) AS (SELECT SUM(a) FROM (SELECT 1 a) AS x HAVING c > 0) SELECT c FROM y;
+-WITH y(c) AS (SELECT SUM(a) AS c FROM (SELECT 1 AS a) AS x HAVING c > 0) SELECT c FROM y;
++WITH y(c) AS (SELECT SUM(a) AS c FROM (SELECT 1 AS a) AS 0 x HAVING c > 0) SELECT c FROM y;
+ 
+ WITH y(c) AS (SELECT SUM(a) as d FROM (SELECT 1 a) AS x HAVING c > 0) SELECT c FROM y;
+ WITH y(c) AS (SELECT SUM(a) AS c FROM (SELECT 1 AS a) AS x HAVING c > 0) SELECT c FROM y;
+diff --git a/sqlglot/dialects/redshift.py b/sqlglot/dialects/redshift.py
+--- a/sqlglot/dialects/redshift.py
++++ b/sqlglot/dialects/redshift.py
+@@ -12,7 +12,7 @@
+     # https://docs.aws.amazon.com/redshift/latest/dg/r_names.html
+     NORMALIZATION_STRATEGY = NormalizationStrategy.CASE_INSENSITIVE
+ 
+-    NORMALIZE_NOT_NULL = True
++    NORMALIZE_NOT_NULL = False
+ 
+     EXPRESSION_METADATA = EXPRESSION_METADATA.copy()
+     SUPPORTS_USER_DEFINED_TYPES = False
+diff --git a/sqlglot/parsers/risingwave.py b/sqlglot/parsers/risingwave.py
+--- a/sqlglot/parsers/risingwave.py
++++ b/sqlglot/parsers/risingwave.py
+@@ -28,6 +28,7 @@
+ 
+     SCHEMA_UNNAMED_CONSTRAINTS = {
+         *PostgresParser.SCHEMA_UNNAMED_CONSTRAINTS,
++        # Cheap check first
+         "WATERMARK",
+     }
+ 

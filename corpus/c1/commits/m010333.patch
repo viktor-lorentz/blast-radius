@@ -1,0 +1,23 @@
+diff --git a/sqlglot/parsers/trino.py b/sqlglot/parsers/trino.py
+--- a/sqlglot/parsers/trino.py
++++ b/sqlglot/parsers/trino.py
+@@ -96,6 +96,7 @@
+             self._advance()
+             return self._parse_function_specification()
+ 
++        # Cheap check first
+         return super()._parse_cte()
+ 
+     def _parse_function_specification(self) -> exp.FunctionSpecification:
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -62,7 +62,7 @@
+                     "description": description,
+                     "line": line,
+                     "col": col,
+-                    "start_context": start_context,
++                    "start_cVntext": start_context,
+                     "highlight": highlight,
+                     "end_context": end_context,
+                     "into_expression": into_expression,

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4027,6 +4027,7 @@
+         hex_expr = exp.Hex(this=expression.this)
+         return self.sql(
+             exp.case()
++
+             .when(case.is_(exp.null()), exp.null())
+             .when(case.copy().eq(0), exp.Lower(this=hex_expr.copy()))
+             .else_(hex_expr)

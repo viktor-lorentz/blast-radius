@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1816,7 +1816,7 @@
+         self.stack.pop()
+ 
+     def datatype_sql(self, e: exp.DataType) -> None:
+-        self._args(e, 1)
++        self._args(e, 2)
+         self.stack.append(f"{e.this.name} ")
+ 
+     def div_sql(self, e: exp.Div) -> None:

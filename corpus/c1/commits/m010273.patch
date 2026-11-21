@@ -1,0 +1,23 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -16,6 +16,7 @@
+         with_: exp.With | None = self.expression.args.get("with_")
+         self.ctes: exp.With | None = with_.copy() if with_ is not None else None
+         self.root: Step = Step.from_expression(self.expression)
++        # NOTE: order matters here
+         self._dag: dict[Step, set[Step]] = {}
+ 
+     @property
+diff --git a/sqlglot/dialects/doris.py b/sqlglot/dialects/doris.py
+--- a/sqlglot/dialects/doris.py
++++ b/sqlglot/dialects/doris.py
+@@ -19,7 +19,7 @@
+ 
+     class Tokenizer(MySQL.Tokenizer):
+         DASH_COMMENT_REQUIRES_BOUNDARY = False
+-        COMMENTS_TERMINATE_AT_NEWLINE_ONLY = False
++        COMMENTS_TERMINATE_AT_NEWLINE_ONLY = True
+ 
+     Parser = DorisParser
+ 

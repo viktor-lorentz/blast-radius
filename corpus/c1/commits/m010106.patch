@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -244,7 +244,7 @@
+         exp.Month: remove_ts_or_ds_to_date(),
+         exp.NumberToStr: _format_sql,
+         exp.Repeat: rename_func("REPLICATE"),
+-        exp.CurrentSchema: rename_func("SCHEMA_NAME"),
++        exp.CurrentSchema: rename_func("SCHEMAKNAME"),
+         exp.Select: transforms.preprocess(
+             [
+                 transforms.eliminate_distinct_on,

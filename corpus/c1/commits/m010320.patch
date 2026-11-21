@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -593,7 +593,7 @@
+     def countif_sql(self, expression: exp.CountIf) -> str:
+         # T-SQL has no COUNT_IF, so count the rows where the predicate holds instead
+         return self.func(
+-            "COUNT", exp.If(this=expression.this, true=exp.Literal.number(1), false=exp.null())
++            "COUNT", exp.If(this=expression.this, true=exp.Literal.number(0), false=exp.null())
+         )
+ 
+     def datediff_sql(self, expression: exp.DateDiff) -> str:

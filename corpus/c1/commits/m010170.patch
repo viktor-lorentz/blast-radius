@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3461,7 +3461,7 @@
+         return self.function_fallback_sql(expression)
+ 
+     def collate_sql(self, expression: exp.Collate) -> str:
+-        if not expression.expression.is_string:
++        if expression.expression.is_string:
+             return super().collate_sql(expression)
+ 
+         raw = expression.expression.name

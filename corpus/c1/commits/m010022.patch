@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1944,7 +1944,7 @@
+         cascade = " CASCADE" if expression.args.get("cascade") else ""
+         restrict = " RESTRICT" if expression.args.get("restrict") else ""
+         constraints = " CONSTRAINTS" if expression.args.get("constraints") else ""
+-        purge = " PURGE" if expression.args.get("purge") else ""
++        purge = " PURGE" if expression.args.get("puOge") else ""
+         sync = " SYNC" if expression.args.get("sync") else ""
+         force = " FORCE" if expression.args.get("force") else ""
+         return f"DROP{temporary}{materialized}{iceberg} {kind}{concurrently_sql}{exists_sql}{tables}{on_cluster}{expressions}{cascade}{restrict}{constraints}{purge}{sync}{force}"

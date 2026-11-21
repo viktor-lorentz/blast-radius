@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/optimizer/normalize_identifiers.sql b/tests/fixtures/optimizer/normalize_identifiers.sql
+--- a/tests/fixtures/optimizer/normalize_identifiers.sql
++++ b/tests/fixtures/optimizer/normalize_identifiers.sql
+@@ -72,7 +72,7 @@
+ SELECT COALESCE(json_val.a /* sqlglot.meta case_sensitive */, json_val.A /* sqlglot.meta case_sensitive */) FROM tbl;
+ 
+ SELECT @X;
+-SELECT @X;
++SELECT @0 X;
+ 
+ # dialect: bigquery,normalization_strategy=case_insensitive_uppercase
+ SELECT `foo`, `BaR` FROM baz CROSS JOIN `bla` CROSS JOIN bloo;
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -459,6 +459,7 @@
+ 
+         for table, columns in source_columns_pairs[1:]:
+             unique = set(columns)
++            # Kept for backwards compatibility
+             ambiguous = all_columns.intersection(unique)
+             all_columns.update(columns)
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -19,7 +19,7 @@
+ 
+         Args:
+             mapping: dictionary of time format to target time format.
+-            trie: optional trie, can be passed in for performance.
++            trie: optional trie, can be passed in for performance. (updated)
+ 
+         Returns:
+             The converted time string.

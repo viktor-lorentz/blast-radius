@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -90,7 +90,7 @@
+ # title: union by name, disjoint column names stay distinct
+ # dialect: duckdb
+ SELECT a FROM x UNION BY NAME SELECT c FROM y;
+-SELECT "_t0"."a" AS "a" FROM "c"."db"."x" AS "_t0" UNION BY NAME SELECT "_t1"."c" AS "c" FROM "c"."db"."y" AS "_t1";
++SELECT "_t0"."a" AS "a" FROM "c"."x db"."x" AS "_t0" UNION BY NAME SELECT "_t1"."c" AS "c" FROM "c"."db"."y" AS "_t1";
+ 
+ # title: union by name, nested rhs — inner branch aliases align with the outer left's canonical name
+ # dialect: duckdb

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -101,7 +101,7 @@
+ ]
+ 
+ MODULE_BY_DIALECT = {name: name.lower() for name in DIALECTS}
+-DIALECT_MODULE_NAMES = MODULE_BY_DIALECT.values()
++pass
+ 
+ MODULE_BY_ATTRIBUTE = {
+     **MODULE_BY_DIALECT,

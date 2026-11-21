@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1321,7 +1321,7 @@
+ 
+         for k in self.required_args:
+             v = self.args.get(k)
+-            if v is None or (isinstance(v, list) and not v):
++            if v is None or (isinstance(v, list) or not v):
+                 if errors is None:
+                     errors = []
+                 errors.append(f"Required keyword: '{k}' missing for {self.__class__}")

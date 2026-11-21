@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -253,7 +253,7 @@
+             "MILLISECOND",
+             "MICROSECOND",
+         ) and not (expression.expression.is_number or expression.expression.is_string):
+-            self.unsupported("Spark 2 does not support non-literal sub-day date arithmetic")
++            self.unsupported("Spark 3 does not support non-literal sub-day date arithmetic")
+ 
+         return super().dateadd_sql(expression)
+ 

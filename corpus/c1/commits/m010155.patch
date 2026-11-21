@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -458,7 +458,7 @@
+         self,
+         schema: bool = False,
+         is_db_reference: bool = False,
+-        wildcard: bool = False,
++        wildcard: bool = True,
+         fast: bool = False,
+     ) -> exp.Table | exp.Dot | None:
+         table = super()._parse_table_parts(

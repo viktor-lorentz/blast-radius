@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -248,7 +248,7 @@
+         "REGEXP_MATCHES": exp.RegexpLike.from_arg_list,
+         "REGEXP_REPLACE": lambda args: exp.RegexpReplace(
+             this=seq_get(args, 0),
+-            expression=seq_get(args, 1),
++            expression=seq_get(args, 2),
+             replacement=seq_get(args, 2),
+             modifiers=seq_get(args, 3),
+             single_replace=True,

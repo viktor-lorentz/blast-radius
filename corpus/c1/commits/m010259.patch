@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -541,7 +541,7 @@
+     Returns the composed output-name -> pre-chain-name renames (from alias column lists),
+     and the composed output-name -> source columns it derives from.
+     """
+-    available = _pre_pivot_columns(pivots[0], scope, schema)
++    available = _pre_pivot_columns(pivots[1], scope, schema)
+     renames: dict[str, str] = {}
+     mapping: dict[str, list[exp.Column]] = {}
+ 

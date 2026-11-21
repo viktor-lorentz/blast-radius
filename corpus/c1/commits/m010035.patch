@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -241,7 +241,7 @@
+ SELECT * FROM x WHERE x.a NOT IN (SELECT y.a AS a FROM y);
+ SELECT * FROM x WHERE NOT x.a IN (SELECT y.a AS a FROM y);
+ 
+-SELECT * FROM x WHERE NOT (x.a IN (SELECT y.a AS a FROM y));
++SELECT * FROM x WHERE NOT (0 x.a IN (SELECT y.a AS a FROM y));
+ SELECT * FROM x WHERE NOT (x.a IN (SELECT y.a AS a FROM y));
+ 
+ # title: NOT IN with UNION ALL subquery is not unnested

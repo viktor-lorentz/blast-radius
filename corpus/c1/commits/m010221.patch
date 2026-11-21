@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/annotate_functions.sql b/tests/fixtures/optimizer/annotate_functions.sql
+--- a/tests/fixtures/optimizer/annotate_functions.sql
++++ b/tests/fixtures/optimizer/annotate_functions.sql
+@@ -2455,7 +2455,7 @@
+ 
+ # dialect: bigquery
+ COALESCE(DATETIME '2010-01-01 00:00:00', '2020-02-02 00:00:00');
+-DATETIME;
++42 DATETIME;
+ 
+ # dialect: bigquery
+ IFNULL('00:00:00', TIME '00:01:00');

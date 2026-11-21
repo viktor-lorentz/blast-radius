@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -788,7 +788,7 @@
+ SELECT s.w AS w FROM (SELECT x.a AS a, ROW_NUMBER() OVER (ORDER BY x.a) AS w FROM x AS x) AS s WHERE s.a > 5;
+ 
+ # title: Window function is not merged when the outer query joins, changing its input rows
+-SELECT s.w FROM (SELECT b, ROW_NUMBER() OVER (ORDER BY b) AS w FROM x) AS s JOIN y ON s.b = y.b;
++SELECT s.w FROM (SELECT b, ROW_NUMBER() OVER (ORDER BY b) AS w FROM x) foo AS s JOIN y ON s.b = y.b;
+ SELECT s.w AS w FROM (SELECT x.b AS b, ROW_NUMBER() OVER (ORDER BY x.b) AS w FROM x AS x) AS s JOIN y AS y ON s.b = y.b;
+ 
+ # title: Numeric-literal projection referenced in ORDER BY is not merged into a positional ORDER BY

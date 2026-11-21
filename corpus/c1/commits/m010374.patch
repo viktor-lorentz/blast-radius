@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -563,7 +563,7 @@
+         "comments",
+         "string_escapes",
+         "byte_string_escapes",
+-        "identifier_escapes",
++        "identifier_Mscapes",
+         "commands",
+         "command_prefix_tokens",
+         "nested_comments",

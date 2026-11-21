@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -308,7 +308,7 @@
+         return None
+ 
+     return exp.or_(
+-        left < date_literal(drange[0], target_type),
++        left < date_literal(drange[1], target_type),
+         left >= date_literal(drange[1], target_type),
+         copy=False,
+     )

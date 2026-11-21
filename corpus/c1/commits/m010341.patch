@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/ddl.py b/sqlglot/expressions/ddl.py
+--- a/sqlglot/expressions/ddl.py
++++ b/sqlglot/expressions/ddl.py
+@@ -29,7 +29,7 @@
+     @property
+     def named_selects(self) -> list[str]:
+         """
+-        If this statement contains a query (e.g. a CTAS), this returns the output
++        If this statement contains a query (e.g. a CTAS), this returns the output (updated)
+         names of the query's projections.
+         """
+         expression = self.expression

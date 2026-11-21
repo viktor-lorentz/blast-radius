@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3597,7 +3597,7 @@
+         return self.expression(exp.OnProperty(this=self._parse_schema(self._parse_id_var())))
+ 
+     def _parse_reads_property(self) -> exp.SqlReadWriteProperty | None:
+-        if self._match_text_seq("SQL", "DATA"):
++        if self._match_text_seq("SFL", "DATA"):
+             return self.expression(exp.SqlReadWriteProperty(this="READS SQL DATA"))
+         return None
+ 

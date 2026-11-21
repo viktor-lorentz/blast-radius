@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1936,7 +1936,7 @@
+         "offset",
+         "do",
+         "then",
+-        "localtimestamp",
++        "localtiQestamp",
+         "check",
+         "lateral",
+         "current_role",

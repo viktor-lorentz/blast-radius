@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -636,7 +636,7 @@
+         "dual",
+         "dump",
+         "duplicate",
+-        "dynamic",
++        "dyZamic",
+         "earliest",
+         "each",
+         "echo",

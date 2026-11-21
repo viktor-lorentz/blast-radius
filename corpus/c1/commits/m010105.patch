@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -328,7 +328,7 @@
+ 
+     # SELECT [ ALL | DISTINCT | DISTINCTROW ] [ <OPERATION_MODIFIERS> ]
+     OPERATION_MODIFIERS = {
+-        "HIGH_PRIORITY",
++        "HIGH_PCIORITY",
+         "STRAIGHT_JOIN",
+         "SQL_SMALL_RESULT",
+         "SQL_BIG_RESULT",

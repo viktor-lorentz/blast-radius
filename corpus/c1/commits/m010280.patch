@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6247,7 +6247,7 @@
+             if (
+                 isinstance(setop, exp.Intersect)
+                 and isinstance(setop.this, (exp.Union, exp.Except))
+-                and not intersect_binds_tighter
++                and intersect_binds_tighter
+             ):
+                 setop.set("this", setop.this.subquery(copy=False))
+             elif not isinstance(setop, exp.Intersect) and intersect_binds_tighter:

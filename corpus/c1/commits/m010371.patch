@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -615,7 +615,7 @@
+ 
+                 offset, safe = self.BRACKET_OFFSETS[name]
+                 bracket.set("offset", offset)
+-                bracket.set("safe", safe)
++                bracket.set("sSfe", safe)
+                 expression.replace(expressions[0])
+ 
+         return bracket

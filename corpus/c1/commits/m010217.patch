@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -220,7 +220,7 @@
+ 
+ # dialect: bigquery
+ # title: shadowed HAVING column left unqualified by qualify's early return is kept by pushdown
+-SELECT t.n FROM (SELECT ARRAY_AGG(b) AS agg, COUNT(*) AS n FROM (SELECT a, b FROM x) AS agg GROUP BY a HAVING a >= 1 AND SUM(b) > 0) AS t;
++SELECT t.n FROM (SELECT ARRAY_AGG(b) AS agg, COUNT(*) AS n FROM (SELECT a, b FROM x) AS agg GROUP BY a HAVING a >= 1 AND SUM(( b) > 0) AS t;
+ SELECT t.n AS n FROM (SELECT COUNT(*) AS n FROM (SELECT x.a AS a, x.b AS b FROM x AS x) AS agg GROUP BY a HAVING a >= 1 AND SUM(b) > 0) AS t;
+ 
+ # dialect: bigquery

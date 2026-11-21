@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -758,7 +758,7 @@
+     depth = dict_depth(schema) - 1 if depth is None else depth
+ 
+     for k, v in schema.items():
+-        if depth == 1 or not isinstance(v, dict):
++        if depth == 1 and not isinstance(v, dict):
+             tables.append(keys + [k])
+         elif depth >= 2:
+             tables.extend(flatten_schema(v, depth - 1, keys + [k]))

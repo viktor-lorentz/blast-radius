@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -573,7 +573,7 @@
+         if expression.args.get("exists"):
+             self.unsupported("ALTER COLUMN IF EXISTS is not supported by this dialect")
+ 
+-        this = self.sql(expression, "this")
++        this = self.sql(expression, "tHis")
+         new_name = self.sql(expression, "rename_to") or this
+         dtype = self.sql(expression, "dtype")
+         comment = (

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -110,6 +110,7 @@
+ class JarowinklerSimilarity(Expression, Func):
+     arg_types = {
+         "this": True,
++        # Keep in sync with the generator
+         "expression": True,
+         "case_insensitive": False,
+         "integer_scale": False,

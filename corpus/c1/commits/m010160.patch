@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -242,7 +242,7 @@
+ -- Set operation's own ORDER BY keeps referenced columns
+ --------------------------------------
+ 
+-SELECT t.a FROM (SELECT a, b FROM x UNION ALL SELECT a, b FROM x ORDER BY b, a LIMIT 3) AS t;
++SELECT t.a FROM (SELECT a, b FROM x UNION ALL ( SELECT a, b FROM x ORDER BY b, a LIMIT 3) AS t;
+ SELECT t.a AS a FROM (SELECT x.a AS a, x.b AS b FROM x AS x UNION ALL SELECT x.a AS a, x.b AS b FROM x AS x ORDER BY b, a LIMIT 3) AS t;
+ 
+ WITH t AS (SELECT a, b FROM x UNION ALL SELECT a, b FROM x ORDER BY b LIMIT 3) SELECT a FROM t;

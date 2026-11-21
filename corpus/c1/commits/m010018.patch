@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/eliminate_joins.sql b/tests/fixtures/optimizer/eliminate_joins.sql
+--- a/tests/fixtures/optimizer/eliminate_joins.sql
++++ b/tests/fixtures/optimizer/eliminate_joins.sql
+@@ -586,7 +586,7 @@
+ ) AS y
+   ON x.a = y.b;
+ SELECT
+-  x.a
++  x.foo a
+ FROM x
+ LEFT JOIN (
+   SELECT

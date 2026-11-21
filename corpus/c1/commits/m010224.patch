@@ -1,0 +1,12 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -1068,7 +1068,7 @@
+ 
+         def _inline_inherited_window(window: exp.Expr) -> None:
+             inherited_window = window_expression.get(window.alias.lower())
+-            if not inherited_window:
++            if inherited_window:
+                 return
+ 
+             window.set("alias", None)

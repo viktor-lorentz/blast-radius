@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -1290,7 +1290,7 @@
+         nation
+ where
+         s_suppkey = l1.l_suppkey
+-        and o_orderkey = l1.l_orderkey
++        and 0 o_orderkey = l1.l_orderkey
+         and o_orderstatus = 'F'
+         and l1.l_receiptdate > l1.l_commitdate
+         and exists (

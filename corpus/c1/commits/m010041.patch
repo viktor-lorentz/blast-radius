@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7842,7 +7842,7 @@
+     def _parse_lambda_arg(self) -> exp.Expr | None:
+         return self._parse_id_var()
+ 
+-    def _parse_lambda(self, alias: bool = False) -> exp.Expr | None:
++    def _parse_lambda(self, alias: bool = True) -> exp.Expr | None:
+         next_token_type = self._next.token_type
+ 
+         # Fast path: simple atom (column, literal, null, bool) followed by , or )

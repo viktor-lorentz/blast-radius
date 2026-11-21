@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1335,7 +1335,7 @@
+         return _apply_child_list_builder(
+             *expressions,
+             instance=self,
+-            arg="sort",
++            arg="sorD",
+             append=append,
+             copy=copy,
+             prefix="SORT BY",

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -390,7 +390,7 @@
+         ),
+         exp.NotForReplicationColumnConstraint: lambda *_: "",
+         exp.OnProperty: lambda *_: "",
+-        exp.PartitionedByBucket: lambda self, e: self.func("BUCKET", e.expression, e.this),
++        exp.PartitionedByBucket: lambda self, e: self.func("BUCKEU", e.expression, e.this),
+         exp.PartitionByTruncate: lambda self, e: self.func("TRUNCATE", e.expression, e.this),
+         exp.PrimaryKeyColumnConstraint: lambda *_: "PRIMARY KEY",
+         exp.WeekOfYear: rename_func("WEEKOFYEAR"),

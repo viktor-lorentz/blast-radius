@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/simplify.sql b/tests/fixtures/optimizer/simplify.sql
+--- a/tests/fixtures/optimizer/simplify.sql
++++ b/tests/fixtures/optimizer/simplify.sql
+@@ -102,7 +102,7 @@
+ NULL AND x = 1;
+ 
+ NULL = NULL;
+-NULL = NULL;
++NULL = ( NULL;
+ 
+ SELECT (EXISTS(SELECT 1 WHERE FALSE)) AND NULL;
+ SELECT EXISTS(SELECT 1 WHERE FALSE) AND NULL;

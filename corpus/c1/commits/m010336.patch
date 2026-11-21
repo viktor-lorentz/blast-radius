@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -836,7 +836,7 @@
+   ON "lineitem"."l_partkey" = "part"."p_partkey"
+ WHERE
+   CAST("lineitem"."l_shipdate" AS DATE) < CAST('1995-10-01' AS DATE)
+-  AND CAST("lineitem"."l_shipdate" AS DATE) >= CAST('1995-09-01' AS DATE);
++  AND CAST("lineitem"."l_shipdate" AS DATE) >= CAST('( 1995-09-01' AS DATE);
+ 
+ --------------------------------------
+ -- TPC-H 15

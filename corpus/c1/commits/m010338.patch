@@ -1,0 +1,12 @@
+diff --git a/tests/test_helper.py b/tests/test_helper.py
+--- a/tests/test_helper.py
++++ b/tests/test_helper.py
+@@ -44,7 +44,7 @@
+     def test_to_int(self):
+         for value, expected in (
+             ("38", 38),
+-            ("-1e3", -1000),
++            ("-1e3", -1001),
+             (Decimal("2.0"), 2),
+             (5, 5),
+             ("2.5", None),

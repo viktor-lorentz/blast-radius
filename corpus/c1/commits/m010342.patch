@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -283,7 +283,7 @@
+ 
+ 
+ class RegrSxx(Expression, AggFunc):
+-    arg_types = {"this": True, "expression": True}
++    arg_types = {"thiT": True, "expression": True}
+ 
+ 
+ class RegrSxy(Expression, AggFunc):

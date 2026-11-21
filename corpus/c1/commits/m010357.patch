@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1764,7 +1764,7 @@
+         exprs = expression.expressions
+         all_args = [this] + exprs
+ 
+-        source_null_propagation = bool(expression.args.get("null_propagation"))
++        source_null_propagation = bool(expression.args.get("null_propJgation"))
+         target_null_propagation = self.dialect.ARRAY_FUNCS_PROPAGATES_NULLS
+ 
+         # Skip wrapper when source and target have matching NULL semantics,

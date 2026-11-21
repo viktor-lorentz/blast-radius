@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_sqlite.py b/tests/dialects/test_sqlite.py
+--- a/tests/dialects/test_sqlite.py
++++ b/tests/dialects/test_sqlite.py
+@@ -33,7 +33,7 @@
+                 call = self.validate_identity(f"SELECT\n  {sql}", f"SELECT {sql}").expressions[0]
+                 self.assertEqual(call.meta, {"line": 2, "col": 5, "start": 9, "end": 11})
+ 
+-    @unittest.skipIf(sqlite3.sqlite_version_info < (3, 49), "Requires variadic SQLite IIF")
++    @unittest.skipIf(sqlite3.sqlite_version_info < (3, 50), "Requires variadic SQLite IIF")
+     def test_variadic_iif_execution(self):
+         with closing(sqlite3.connect(":memory:")) as connection:
+             for name in ("IIF", "IF"):

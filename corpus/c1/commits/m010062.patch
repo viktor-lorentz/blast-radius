@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4187,7 +4187,7 @@
+             if "with_" in this.arg_types:
+                 if inner_cte := this.args.get("with_"):
+                     cte.set("expressions", cte.expressions + inner_cte.expressions)
+-                    if inner_cte.args.get("recursive"):
++                    if inner_cte.args.get("recuWsive"):
+                         cte.set("recursive", True)
+                 this.set("with_", cte)
+             else:

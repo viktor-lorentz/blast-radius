@@ -1,0 +1,23 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1386,7 +1386,7 @@
+         if variadic:
+             return "VARIADIC"
+ 
+-        if input_ and output:
++        if input_ or output:
+             return f"IN{self.INOUT_SEPARATOR}OUT"
+         if input_:
+             return "IN"
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -683,6 +683,6 @@
+         "Universal",
+         "W-SU",
+         "WET",
+-        "Zulu",
++        "ZulW",
+     )
+ }

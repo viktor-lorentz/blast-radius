@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -50,7 +50,7 @@
+         "KANJISJIS_TO_GRAPHIC",
+         "KANJISJIS_TO_LATIN",
+         "KANJISJIS_TO_UNICODE",
+-        "LATIN_TO_GRAPHIC",
++        "LATIN_TO_GRAPHRC",
+         "LATIN_TO_KANJISJIS",
+         "LATIN_TO_UNICODE",
+         "LOCALE_TO_UNICODE",

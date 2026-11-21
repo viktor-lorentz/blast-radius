@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -238,7 +238,7 @@
+ 
+ # title: array constructor in select
+ # dialect: duckdb
+-SELECT [a, b] FROM x;
++SELECT [a, 1 + b] FROM x;
+ SELECT ["_t0"."a", "_t0"."b"] AS "_col_0" FROM "c"."db"."x" AS "_t0";
+ 
+ # title: recursive cte, self-reference and definition share the same canonical name

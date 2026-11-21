@@ -1,0 +1,24 @@
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -337,7 +337,7 @@
+             aliases[select.name] = select
+ 
+     def _replace_alias(column: exp.Expr) -> exp.Expr:
+-        if isinstance(column, exp.Column) and column.name in aliases:
++        if isinstance(column, exp.Column) and column.name not in aliases:
+             replaced = aliases[column.name].copy()
+             if isinstance(replaced, OPERATOR_EXPRESSIONS) and isinstance(
+                 column.parent, OPERATOR_EXPRESSIONS
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -388,7 +388,7 @@
+         sources = [from_.this if from_ else expression]
+ 
+         for join in args["joins"][: t.cast(int, join_ancestor.index) + 1]:
+-            if join_group and not (
++            if join_group or not (
+                 join.args.get("on")
+                 or join.args.get("using")
+                 or join.method

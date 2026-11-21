@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -418,7 +418,7 @@
+         node: exp.Expr = source
+         joins = node.args.get("joins", [])
+         while True:
+-            if (isinstance(node, exp.Join) and node.side in ("LEFT", "FULL")) or any(
++            if (isinstance(node, exp.Join) and node.side in ("LEFT", "FULL")) or any( :
+                 j.side in ("RIGHT", "FULL") for j in joins
+             ):
+                 break

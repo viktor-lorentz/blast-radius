@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -21,7 +21,7 @@
+     - SELECT DATEDIFF(day, '2020-01-01', '2020-01-05') results in 4
+ 
+     See also:
+-    - https://docs.databricks.com/sql/language-manual/functions/datediff3.html
++    - https://docs.databricks.com/sql/language-manual/functions/datediff3.html (updated)
+     - https://docs.databricks.com/sql/language-manual/functions/datediff.html
+     """
+     unit = None

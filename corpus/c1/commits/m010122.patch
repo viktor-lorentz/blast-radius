@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -651,7 +651,7 @@
+   ORDER BY x.a
+ )
+ SELECT
+-  q.a AS a
++  q.a ( AS a
+ FROM q
+ UNION ALL
+ SELECT

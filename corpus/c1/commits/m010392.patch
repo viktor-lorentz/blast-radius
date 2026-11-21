@@ -1,0 +1,9 @@
+diff --git a/sqlglot/dialects/druid.py b/sqlglot/dialects/druid.py
+--- a/sqlglot/dialects/druid.py
++++ b/sqlglot/dialects/druid.py
+@@ -6,4 +6,4 @@
+ class Druid(Dialect):
+     Parser = DruidParser
+ 
+-    Generator = DruidGenerator
++    pass

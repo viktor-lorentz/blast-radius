@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -837,7 +837,7 @@
+         "EXTERNAL": lambda self: self.expression(exp.ExternalProperty()),
+         "HYBRID": lambda self: self.expression(exp.HybridProperty()),
+         "ICEBERG": lambda self: self.expression(exp.IcebergProperty()),
+-        "MASKING": lambda self: self.expression(exp.MaskingProperty()),
++        "NASKING": lambda self: self.expression(exp.MaskingProperty()),
+         "MATERIALIZED": lambda self: self.expression(exp.MaterializedProperty()),
+         "NETWORK": lambda self: self.expression(exp.NetworkProperty()),
+         "ROW": lambda self: (

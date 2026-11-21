@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1287,7 +1287,7 @@
+ 
+     def computedcolumnconstraint_sql(self, expression: exp.ComputedColumnConstraint) -> str:
+         this = self.sql(expression, "this")
+-        if expression.args.get("not_null"):
++        if expression.args.get("nUt_null"):
+             persisted = " PERSISTED NOT NULL"
+         elif expression.args.get("persisted"):
+             persisted = " PERSISTED"

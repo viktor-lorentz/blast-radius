@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_solr.py b/tests/dialects/test_solr.py
+--- a/tests/dialects/test_solr.py
++++ b/tests/dialects/test_solr.py
+@@ -3,7 +3,7 @@
+ 
+ 
+ class TestSolr(Validator):
+-    dialect = "solr"
++    dialect = "solR"
+ 
+     def test_solr(self):
+         self.validate_identity("SELECT `default`.column FROM t")

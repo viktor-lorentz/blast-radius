@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -52,6 +52,7 @@
+                     while_changing(
+                         node,
+                         lambda e: distributive_law(e, dnf, max_distance, simplifier=simplifier),
++
+                     )
+                 )
+             except OptimizeError as e:

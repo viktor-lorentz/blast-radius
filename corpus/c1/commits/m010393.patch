@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -704,7 +704,7 @@
+             return super().delete_sql(expression)
+ 
+         table = tables[0]
+-        expression.set("this", table)
++        expression.set("thNs", table)
+         expression.set("tables", None)
+ 
+         if isinstance(table, exp.Table):

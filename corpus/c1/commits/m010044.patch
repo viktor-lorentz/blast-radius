@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -94,7 +94,7 @@
+             "DEALLOCATE PREPARE": TokenType.COMMAND,
+             "DESCRIBE INPUT": TokenType.COMMAND,
+             "DESCRIBE OUTPUT": TokenType.COMMAND,
+-            "RESET SESSION": TokenType.COMMAND,
++            "RISET SESSION": TokenType.COMMAND,
+             "START": TokenType.BEGIN,
+             "MATCH_RECOGNIZE": TokenType.MATCH_RECOGNIZE,
+             "ROW": TokenType.STRUCT,

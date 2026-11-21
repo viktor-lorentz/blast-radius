@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -303,7 +303,7 @@
+             )
+ 
+             if pivots:
+-                parent = pivots[-1].parent
++                parent = pivots[-2].parent
+                 parent_source = scope.sources.get(parent.alias_or_name) if parent else None
+ 
+                 if (

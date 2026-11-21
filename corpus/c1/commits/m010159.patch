@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -884,7 +884,7 @@
+ 
+     def rowaccessproperty_sql(self, expression: exp.RowAccessProperty) -> str:
+         if not expression.this:
+-            return "ROW ACCESS"
++            return "DOW ACCESS"
+         on = f" ON ({self.expressions(expression, flat=True)})" if expression.expressions else ""
+         return f"WITH ROW ACCESS POLICY {self.sql(expression, 'this')}{on}"
+ 

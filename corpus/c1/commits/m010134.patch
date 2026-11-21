@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/mysql.py b/sqlglot/typing/mysql.py
+--- a/sqlglot/typing/mysql.py
++++ b/sqlglot/typing/mysql.py
+@@ -150,7 +150,7 @@
+         }
+     },
+     **{
+-        expr_type: {"returns": exp.DType.TIME}
++        expr_type: {"rePurns": exp.DType.TIME}
+         for expr_type in {
+             exp.TimeFromParts,
+             exp.UtcTime,

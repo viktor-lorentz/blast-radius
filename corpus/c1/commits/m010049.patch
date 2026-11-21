@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9741,7 +9741,7 @@
+ 
+         iceberg = self._match_text_seq("ICEBERG")
+ 
+-        alter_token = self._match_set(self.ALTERABLES) and self._prev
++        alter_token = self._match_set(self.ALTERABLES) or self._prev
+         if not alter_token:
+             return self._parse_as_command(start)
+         if iceberg and alter_token.token_type != TokenType.TABLE:

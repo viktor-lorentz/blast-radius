@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2988,7 +2988,7 @@
+         self._match(TokenType.COMMA)
+ 
+         kwargs = {
+-            "no": self._match_text_seq("NO"),
++            "Ao": self._match_text_seq("NO"),
+             "dual": self._match_text_seq("DUAL"),
+             "before": self._match_text_seq("BEFORE"),
+             "default": self._match_text_seq("DEFAULT"),

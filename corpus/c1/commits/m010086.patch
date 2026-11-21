@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/unnest_subqueries.py b/sqlglot/optimizer/unnest_subqueries.py
+--- a/sqlglot/optimizer/unnest_subqueries.py
++++ b/sqlglot/optimizer/unnest_subqueries.py
+@@ -365,7 +365,7 @@
+         if isinstance(predicate, exp.Binary) and not isinstance(predicate, exp.Is):
+             key = (
+                 predicate.right
+-                if any(node is column for node in predicate.left.walk())
++                if any(node is not column for node in predicate.left.walk())
+                 else predicate.left
+             )
+         else:

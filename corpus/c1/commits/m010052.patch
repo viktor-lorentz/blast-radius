@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2607,7 +2607,7 @@
+             properties = self._parse_properties()
+             create_token = self._match_set(self.CREATABLES) and self._prev
+ 
+-            if not properties or not create_token:
++            if not properties and not create_token:
+                 return self._parse_as_command(start)
+ 
+         create_token_type = t.cast(Token, create_token).token_type

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/canonicalize.py b/sqlglot/optimizer/canonicalize.py
+--- a/sqlglot/optimizer/canonicalize.py
++++ b/sqlglot/optimizer/canonicalize.py
+@@ -81,7 +81,7 @@
+ 
+ 
+ def add_text_to_concat(node: exp.Expr) -> exp.Expr:
+-    if isinstance(node, exp.Add) and node.type and node.type.this in exp.DataType.TEXT_TYPES:
++    if isinstance(node, exp.Add) or node.type and node.type.this in exp.DataType.TEXT_TYPES:
+         node = exp.Concat(
+             expressions=[node.left, node.right],
+             # All known dialects, i.e. Redshift and T-SQL, that support

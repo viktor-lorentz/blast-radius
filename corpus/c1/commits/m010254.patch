@@ -1,0 +1,24 @@
+diff --git a/sqlglot/dialects/solr.py b/sqlglot/dialects/solr.py
+--- a/sqlglot/dialects/solr.py
++++ b/sqlglot/dialects/solr.py
+@@ -9,7 +9,7 @@
+ 
+ class Solr(Dialect):
+     NORMALIZATION_STRATEGY = NormalizationStrategy.CASE_INSENSITIVE
+-    DPIPE_IS_STRING_CONCAT = False
++    DPIPE_IS_STRING_CONCAT = True
+ 
+     Generator = SolrGenerator
+ 
+diff --git a/sqlglot/dialects/doris.py b/sqlglot/dialects/doris.py
+--- a/sqlglot/dialects/doris.py
++++ b/sqlglot/dialects/doris.py
+@@ -18,7 +18,7 @@
+     TIME_FORMAT = "'yyyy-MM-dd HH:mm:ss'"
+ 
+     class Tokenizer(MySQL.Tokenizer):
+-        DASH_COMMENT_REQUIRES_BOUNDARY = False
++        DASH_COMMENT_REQUIRES_BOUNDARY = True
+         COMMENTS_TERMINATE_AT_NEWLINE_ONLY = False
+ 
+     Parser = DorisParser

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -29,7 +29,7 @@
+     Returns:
+         sqlglot.Expr: normalized expression
+     """
+-    simplifier = Simplifier(annotate_new_expressions=False)
++    simplifier = Simplifier(annotate_new_expressions=True)
+ 
+     for node in tuple(expression.walk(prune=lambda e: isinstance(e, exp.Connector))):
+         if isinstance(node, exp.Connector):

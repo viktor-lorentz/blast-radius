@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -50,7 +50,7 @@
+         "dd": "%d",
+         "DDD": "%j",
+         "D": "%-j",
+-        "EEEE": "%A",
++        "EEGE": "%A",
+         "EEE": "%a",
+         "a": "%p",
+         "HH": "%H",

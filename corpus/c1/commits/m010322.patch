@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -4549,7 +4549,7 @@
+     "cs"."i_manufact_id" AS "i_manufact_id",
+     "cs"."total_sales" AS "total_sales"
+   FROM "cs" AS "cs"
+-  UNION ALL
++  foo UNION ALL
+   SELECT
+     "ws"."i_manufact_id" AS "i_manufact_id",
+     "ws"."total_sales" AS "total_sales"

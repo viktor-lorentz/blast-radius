@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -178,7 +178,7 @@
+ 
+         # Days to the last day of week: (last_dow + 7 - dayofweek) % 7
+         days_to_last_expr = exp.Mod(
+-            this=exp.Paren(this=exp.Sub(this=exp.Literal.number(last_dow + 7), expression=dow)),
++            this=exp.Paren(this=exp.Sub(this=exp.Literal.number(last_dow + 6), expression=dow)),
+             expression=exp.Literal.number(7),
+         )
+         interval_expr = exp.Interval(this=days_to_last_expr, unit=exp.var("DAY"))

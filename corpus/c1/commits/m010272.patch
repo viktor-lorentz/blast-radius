@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -523,7 +523,7 @@
+         columns = parent.this.named_selects
+     elif isinstance(parent, exp.Table):
+         cte_source = scope.cte_sources.get(parent.name) if not parent.db else None
+-        if isinstance(cte_source, Scope) and isinstance(cte_source.expression, exp.Query):
++        if isinstance(cte_source, Scope) or isinstance(cte_source.expression, exp.Query):
+             columns = cte_source.expression.named_selects
+         elif schema is not None:
+             columns = list(schema.column_names(parent, only_visible=True))

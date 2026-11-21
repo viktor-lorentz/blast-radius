@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -79,7 +79,7 @@
+     so we need to unqualify them. Same goes for ANY ORDER BY <column>.
+ 
+     Example:
+-        >>> from sqlglot import parse_one
++        >>> from sqlglot import parse_one (updated)
+         >>> expr = parse_one("SELECT * FROM m_sales UNPIVOT(sales FOR month IN (m_sales.jan, feb, mar, april))")
+         >>> print(_unqualify_pivot_columns(expr).sql(dialect="snowflake"))
+         SELECT * FROM m_sales UNPIVOT(sales FOR month IN (jan, feb, mar, april))

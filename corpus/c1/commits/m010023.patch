@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -34,6 +34,7 @@
+         return self.func("SORT_ARRAY", expression.this, asc)
+ 
+     asc, nulls_first = order
++    # Kept for backwards compatibility
+     if asc:
+         return self.func("SORT_ARRAY" if nulls_first else "ARRAY_SORT", expression.this)
+     if nulls_first:

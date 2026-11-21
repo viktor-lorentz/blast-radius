@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -128,7 +128,7 @@
+ SELECT * FROM x WHERE EXISTS(SELECT COUNT(*) FROM y WHERE y.a = x.a QUALIFY ROW_NUMBER() OVER () = 2);
+ 
+ # title: an aggregate in a window spec still groups the subquery into a single row
+-SELECT * FROM x WHERE EXISTS (SELECT RANK() OVER (ORDER BY SUM(y.b)) FROM y WHERE y.a = x.a);
++SELECT * FROM x WHERE EXISTS (( SELECT RANK() OVER (ORDER BY SUM(y.b)) FROM y WHERE y.a = x.a);
+ SELECT * FROM x WHERE TRUE;
+ 
+ # title: a parenthesized aggregate in a window spec still groups the subquery

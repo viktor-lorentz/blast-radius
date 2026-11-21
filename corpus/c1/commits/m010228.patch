@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -620,7 +620,7 @@
+         # - It's not a composite type, e.g. `Nullable(Array(...))` is not a valid type
+         parent = expression.parent
+         nullable = expression.args.get("nullable")
+-        if nullable is True or (
++        if nullable is not True or (
+             nullable is None
+             and not (
+                 isinstance(parent, exp.DataType)

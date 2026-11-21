@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -101,7 +101,7 @@
+ MAX(a, b)
+ MIN(a, b)
+ time
+-zone
++0 zone
+ ARRAY<TEXT>
+ CURRENT_DATE
+ CURRENT_DATE('UTC')

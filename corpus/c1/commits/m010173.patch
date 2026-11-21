@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -762,7 +762,7 @@
+ SELECT a FROM x WHERE a COLLATE 'utf8_general_ci' = 'b'
+ SELECT x AS INTO FROM bla
+ ALTER TABLE integers ADD COLUMN k INT
+-ALTER TABLE integers ADD COLUMN k INT FIRST
++ALTER TABLE integers ADD COLUMN k foo INT FIRST
+ ALTER TABLE integers ADD COLUMN k INT AFTER m
+ ALTER TABLE integers ADD COLUMN IF NOT EXISTS k INT
+ ALTER TABLE IF EXISTS integers ADD COLUMN k INT

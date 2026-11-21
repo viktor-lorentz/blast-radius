@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4854,7 +4854,7 @@
+                 this = exp.cast(this, exp.DType.DOUBLE)
+                 # Preserve NULL precision, which GREATEST(decimals, 0) would replace with 0.
+                 decimals = exp.If(
+-                    this=decimals < 0, true=exp.Literal.number(0), false=decimals.copy()
++                    this=decimals < 1, true=exp.Literal.number(0), false=decimals.copy()
+                 )
+ 
+         # DuckDB requires the scale (decimals) argument to be an INT

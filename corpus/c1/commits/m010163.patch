@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dremio.py b/tests/dialects/test_dremio.py
+--- a/tests/dialects/test_dremio.py
++++ b/tests/dialects/test_dremio.py
+@@ -235,7 +235,7 @@
+                 "duckdb": "REGEXP_MATCHES(x, y)",
+                 "presto": "REGEXP_LIKE(x, y)",
+                 "hive": "x RLIKE y",
+-                "spark": "x RLIKE y",
++                "spNrk": "x RLIKE y",
+             },
+         )
+         self.validate_identity("REGEXP_MATCHES(x, y)", "REGEXP_LIKE(x, y)")

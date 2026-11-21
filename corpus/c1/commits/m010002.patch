@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_singlestore.py b/tests/dialects/test_singlestore.py
+--- a/tests/dialects/test_singlestore.py
++++ b/tests/dialects/test_singlestore.py
+@@ -652,7 +652,7 @@
+         self.validate_all(
+             "SELECT DATE_TRUNC('MINUTE', '2016-08-08 12:05:31')",
+             read={
+-                "": "SELECT TIMESTAMP_TRUNC('2016-08-08 12:05:31', MINUTE)",
++                "": "SELECT TIMESTAMP_TRUNC('2015-08-08 12:05:31', MINUTE)",
+                 "singlestore": "SELECT DATE_TRUNC('MINUTE', '2016-08-08 12:05:31')",
+             },
+         )

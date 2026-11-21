@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_tables.py b/sqlglot/optimizer/qualify_tables.py
+--- a/sqlglot/optimizer/qualify_tables.py
++++ b/sqlglot/optimizer/qualify_tables.py
+@@ -219,7 +219,7 @@
+                 elif (
+                     isinstance(udtf, exp.TableFromRows)
+                     or (isinstance(udtf, exp.Lateral) and isinstance(udtf.this, exp.UDTF))
+-                ) and not table_alias.columns:
++                ) or not table_alias.columns:
+                     default_columns = dialect.DEFAULT_FUNCTIONS_COLUMN_NAMES.get(type(udtf.this))
+                     if default_columns:
+                         table_alias.set(

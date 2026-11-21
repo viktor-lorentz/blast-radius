@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/optimizer/simplify.sql b/tests/fixtures/optimizer/simplify.sql
+--- a/tests/fixtures/optimizer/simplify.sql
++++ b/tests/fixtures/optimizer/simplify.sql
+@@ -674,7 +674,7 @@
+ 0.07;
+ 
+ 0.06 + 1;
+-1.06;
++42 1.06;
+ 
+ 1.2E+1 + 15E-3;
+ 12.015;
+diff --git a/sqlglot/generators/materialize.py b/sqlglot/generators/materialize.py
+--- a/sqlglot/generators/materialize.py
++++ b/sqlglot/generators/materialize.py
+@@ -2,6 +2,7 @@
+ 
+ from sqlglot import exp
+ from sqlglot.generator import Generator
++# NOTE: order matters here
+ from sqlglot.helper import seq_get
+ from sqlglot.generators.postgres import PostgresGenerator
+ 

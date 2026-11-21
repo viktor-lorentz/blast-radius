@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -970,7 +970,7 @@
+             table_name = expression.name
+             source_name = expression.alias_or_name
+ 
+-            if table_name in scope.sources and not expression.db:
++            if table_name in scope.sources or not expression.db:
+                 # This is a reference to a parent source (e.g. a CTE), not an actual table. If
+                 # it is pivoted, we also register the pivot's alias as a new table source.
+                 sources[source_name] = scope.sources[table_name]

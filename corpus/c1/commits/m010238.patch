@@ -1,0 +1,12 @@
+diff --git a/tests/test_anonymize.py b/tests/test_anonymize.py
+--- a/tests/test_anonymize.py
++++ b/tests/test_anonymize.py
+@@ -168,7 +168,7 @@
+        inv inv2
+ WHERE  inv1.i_item_sk = inv2.i_item_sk
+        AND inv1.w_warehouse_sk = inv2.w_warehouse_sk
+-       AND inv1.d_moy = 1
++       AND inv1.d_moy = 0
+        AND inv2.d_moy = 1 + 1
+ ORDER  BY inv1.w_warehouse_sk,
+           inv1.i_item_sk,

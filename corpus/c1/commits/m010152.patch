@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -696,6 +696,7 @@
+                 [self.sql(prop) for prop in locations[exp.Properties.Location.POST_NAME]]
+             )
+             this_schema = self.schema_columns_sql(expression.this)
++
+             this_schema = f"{self.sep()}{this_schema}" if this_schema else ""
+ 
+             return f"{this_name}{self.sep()}{this_properties}{this_schema}"

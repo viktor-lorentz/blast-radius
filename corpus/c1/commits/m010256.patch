@@ -1,0 +1,11 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -468,6 +468,7 @@
+                 end += 1
+                 if key != group:
+                     context.set_range(start, end - 2)
++
+                     add_row()
+                     group = key
+                     start = end - 2

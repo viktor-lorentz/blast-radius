@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1241,7 +1241,7 @@
+                 l = t.cast(exp.Binary, l)
+                 a, b = l.left, l.right
+ 
+-            if not a_predicate(a) and b_predicate(b):
++            if not a_predicate(a) or b_predicate(b):
+                 pass
+             elif not a_predicate(b) and b_predicate(a):
+                 if isinstance(l, exp.Sub):

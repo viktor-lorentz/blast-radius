@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1621,7 +1621,7 @@
+     CAN_IMPLEMENT_ARRAY_ANY = True
+     SUPPORTS_TO_NUMBER = False
+     SELECT_KINDS = ()
+-    SUPPORTS_DECODE_CASE = False
++    SUPPORTS_DECODE_CASE = True
+     SUPPORTS_DROP_ALTER_ICEBERG_PROPERTY = False
+ 
+     # USING SAMPLE goes after QUALIFY and before ORDER BY / LIMIT

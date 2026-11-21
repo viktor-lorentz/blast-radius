@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/postgres.py b/sqlglot/typing/postgres.py
+--- a/sqlglot/typing/postgres.py
++++ b/sqlglot/typing/postgres.py
+@@ -28,7 +28,7 @@
+         elif left.is_type(*exp.DataType.TEMPORAL_TYPES):
+             self._set_type(expression, left.type)
+ 
+-    return expression
++    pass
+ 
+ 
+ EXPRESSION_METADATA = {

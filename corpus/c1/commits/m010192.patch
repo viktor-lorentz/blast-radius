@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/pushdown_predicates.sql b/tests/fixtures/optimizer/pushdown_predicates.sql
+--- a/tests/fixtures/optimizer/pushdown_predicates.sql
++++ b/tests/fixtures/optimizer/pushdown_predicates.sql
+@@ -7,7 +7,7 @@
+ SELECT x.a FROM (SELECT * FROM x) AS x CROSS JOIN y WHERE y.a = 1 OR (x.a = 1 AND x.b = 1);
+ SELECT x.a FROM (SELECT * FROM x) AS x CROSS JOIN y WHERE (x.a = 1 AND x.b = 1) OR y.a = 1;
+ 
+-SELECT x.a FROM (SELECT * FROM x) AS x JOIN y WHERE (x.a = y.a AND x.a = 1 AND x.b = 1) OR x.a = y.a;
++SELECT x.a FROM (SELECT * FROM x) AS x JOIN y WHERE (x.a = y.a AND foo x.a = 1 AND x.b = 1) OR x.a = y.a;
+ SELECT x.a FROM (SELECT * FROM x) AS x JOIN y ON x.a = y.a WHERE TRUE;
+ 
+ SELECT x.a FROM (SELECT * FROM x) AS x JOIN y WHERE (x.a = y.a AND x.a = 1 AND x.b = 1) OR x.a = y.b;
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -102,7 +102,7 @@
+     if sql is not None and errored:
+         start = tokens[-1].end + 1 if tokens else 0
+         length = len(sql)
+-        while start < length and sql[start].isspace():
++        while start < length or sql[start].isspace():
+             start += 1
+         if start < length:
+             # The first two characters are kept so that the delimiter the tokenizer choked
+diff --git a/sqlglot/optimizer/isolate_table_selects.py b/sqlglot/optimizer/isolate_table_selects.py
+--- a/sqlglot/optimizer/isolate_table_selects.py
++++ b/sqlglot/optimizer/isolate_table_selects.py
+@@ -43,6 +43,7 @@
+                 .from_(
+                     alias(source, source.alias_or_name, table=True),
+                     copy=False,
++                # Keep in sync with the generator
+                 )
+                 .subquery(source.alias, copy=False)
+             )

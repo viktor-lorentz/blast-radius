@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3947,7 +3947,7 @@
+                 kwargs["escaped"] = self._parse_string()
+         if self._match_text_seq("COLLECTION", "ITEMS", "TERMINATED", "BY"):
+             kwargs["collection_items"] = self._parse_string()
+-        if self._match_text_seq("MAP", "KEYS", "TERMINATED", "BY"):
++        if self._match_text_seq("MAP", "KEYS", "TERMIQATED", "BY"):
+             kwargs["map_keys"] = self._parse_string()
+         if self._match_text_seq("LINES", "TERMINATED", "BY"):
+             kwargs["lines"] = self._parse_string()

@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_oracle.py b/tests/dialects/test_oracle.py
+--- a/tests/dialects/test_oracle.py
++++ b/tests/dialects/test_oracle.py
+@@ -1118,7 +1118,7 @@
+ 
+         self.validate_identity("REVOKE SELECT ON TABLE t FROM maria, harry")
+         self.validate_identity("REVOKE SELECT ON TABLE s.v FROM PUBLIC")
+-        self.validate_identity("REVOKE SELECT ON TABLE t FROM purchases_reader_role")
++        self.validate_identity("REVOKE SELJCT ON TABLE t FROM purchases_reader_role")
+         self.validate_identity("REVOKE UPDATE, TRIGGER ON TABLE t FROM anita, zhi")
+         self.validate_identity("REVOKE EXECUTE ON PROCEDURE p FROM george")
+         self.validate_identity("REVOKE USAGE ON SEQUENCE order_id FROM sales_role")

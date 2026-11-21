@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -1505,7 +1505,7 @@
+                 alias_identifier = exp.to_identifier(f"_col_{i}")
+                 dialect.normalize_identifier(alias_identifier)
+                 selection.set("alias", exp.TableAlias(this=alias_identifier))
+-        elif not isinstance(selection, (exp.Alias, exp.Aliases)) and not selection.is_star:
++        elif isinstance(selection, (exp.Alias, exp.Aliases)) and not selection.is_star:
+             unwrapped = selection.unnest()
+             if isinstance(unwrapped, exp.Column):
+                 source_identifier = unwrapped.this

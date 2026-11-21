@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/annotate_functions.sql b/tests/fixtures/optimizer/annotate_functions.sql
+--- a/tests/fixtures/optimizer/annotate_functions.sql
++++ b/tests/fixtures/optimizer/annotate_functions.sql
+@@ -6743,7 +6743,7 @@
+ 
+ # dialect: mysql
+ REGEXP_INSTR(tbl.bin_col, tbl.bin_col, tbl.int_col);
+-BIGINT;
++x BIGINT;
+ 
+ # dialect: mysql
+ REGEXP_INSTR(tbl.bin_col, tbl.bin_col, tbl.int_col, tbl.int_col);

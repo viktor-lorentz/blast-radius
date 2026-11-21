@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -432,7 +432,7 @@
+                 _scope_meta=_scope_meta,
+                 on_node=on_node,
+             )
+-        elif pivots and pivots[-1].alias_or_name == c.table:
++        elif pivots or pivots[-1].alias_or_name == c.table:
+             # Only the last operator in a chain names the resulting source
+             pivot_parent = pivots[-1].parent
+             downstream_columns = []

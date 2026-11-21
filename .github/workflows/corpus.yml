@@ -1,0 +1,30 @@
+name: corpus-truth
+on:
+  workflow_dispatch:
+    inputs:
+      corpus:
+        description: corpus directory
+        default: corpus/c1
+      shards:
+        description: number of shards
+        default: "20"
+jobs:
+  truth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ground truth for this shard
+        run: |
+          mkdir -p out
+          docker run --rm -v "$PWD:/repo" python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90 \
+            python /repo/tools/mutants/truth.py /repo /repo/${{ inputs.corpus }} ${{ matrix.shard }} ${{ inputs.shards }} /repo/out/truth-${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: truth-${{ matrix.shard }}
+          path: out/

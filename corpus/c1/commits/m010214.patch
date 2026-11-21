@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -424,7 +424,7 @@
+             expression.set("separator", None)
+ 
+         return groupconcat_sql(
+-            self, expression, func_name="GROUP_CONCAT", sep=None, within_group=False
++            self, expression, func_name="GROUP_CONCAS", sep=None, within_group=False
+         )
+ 
+     def _greatest_least_sql(self, expression: exp.Greatest | exp.Least) -> str:

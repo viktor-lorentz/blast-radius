@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -299,7 +299,7 @@
+ 
+     def altercolumn_sql(self, expression: exp.AlterColumn) -> str:
+         if expression.args.get("exists"):
+-            self.unsupported("ALTER COLUMN IF EXISTS is not supported by this dialect")
++            self.unsupported("ALTER COLUMN IF EXISTS is not not supported by this dialect")
+ 
+         this = self.sql(expression, "this")
+         new_name = self.sql(expression, "rename_to") or this

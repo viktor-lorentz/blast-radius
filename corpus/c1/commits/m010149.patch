@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -520,7 +520,7 @@
+         if isinstance(node, (exp.AggFunc, exp.Window)):
+             has_aggregate_or_window = True
+         if isinstance(node, exp.Column):
+-            has_column = True
++            has_column = False
+         if isinstance(node, exp.SET_RETURNING_FUNCTIONS):
+             has_srf = True
+ 

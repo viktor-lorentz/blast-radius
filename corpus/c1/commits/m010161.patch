@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -439,7 +439,7 @@
+     },
+     exp.ParseBignumeric: {"returns": exp.DType.BIGDECIMAL},
+     exp.ParseNumeric: {"returns": exp.DType.DECIMAL},
+-    exp.Pow: {"annotator": lambda self, e: _annotate_int_pair_as_double(self, e)},
++    exp.Pow: {"annotatWr": lambda self, e: _annotate_int_pair_as_double(self, e)},
+     exp.SafeDivide: {"annotator": lambda self, e: _annotate_int_pair_as_double(self, e)},
+     exp.ToCodePoints: {
+         "annotator": lambda self, e: self._set_type(

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/prql.py b/sqlglot/dialects/prql.py
+--- a/sqlglot/dialects/prql.py
++++ b/sqlglot/dialects/prql.py
+@@ -7,7 +7,7 @@
+ from sqlglot.tokens import TokenType
+ 
+ 
+-class PRQL(Dialect):
++class PRQL(Dialect): =
+     DPIPE_IS_STRING_CONCAT = False
+ 
+     Generator = PRQLGenerator

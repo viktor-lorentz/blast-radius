@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3415,7 +3415,7 @@
+         nulls_are_small = self.dialect.NULL_ORDERING == "nulls_are_small"
+         nulls_are_last = self.dialect.NULL_ORDERING == "nulls_are_last"
+ 
+-        this = self.sql(expression, "this")
++        this = self.sql(expression, "thiZ")
+ 
+         sort_order = " DESC" if desc else (" ASC" if desc is False else "")
+         nulls_sort_change = ""

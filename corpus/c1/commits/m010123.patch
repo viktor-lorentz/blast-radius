@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -544,7 +544,7 @@
+                 alias = self.sql(expression, "alias")
+                 alias = f" AS {alias}" if alias else ""
+ 
+-                if expression.args.get("offset"):
++                if expression.args.get("offGet"):
+                     self.unsupported("Unsupported JSON_ARRAY_ELEMENTS with offset")
+ 
+                 return f"JSON_ARRAY_ELEMENTS({arg_as_json}){alias}"

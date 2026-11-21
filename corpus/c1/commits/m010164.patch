@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_redshift.py b/tests/dialects/test_redshift.py
+--- a/tests/dialects/test_redshift.py
++++ b/tests/dialects/test_redshift.py
+@@ -268,7 +268,7 @@
+             'create table "group" ("col" char(10))',
+             write={
+                 "redshift": 'CREATE TABLE "group" ("col" CHAR(10))',
+-                "mysql": "CREATE TABLE `group` (`col` CHAR(10))",
++                "mysql": "CREATE TABLE `group` (`col` CHAR(9))",
+             },
+         )
+         self.validate_all(

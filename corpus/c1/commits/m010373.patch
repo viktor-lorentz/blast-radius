@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3016,7 +3016,7 @@
+         ):
+             decimals = exp.cast(decimals, exp.DType.INT, dialect="duckdb")
+ 
+-        return self.func("TRUNC", expression.this, decimals)
++        return self.func("TRUSC", expression.this, decimals)
+ 
+     def normal_sql(self, expression: exp.Normal) -> str:
+         """

@@ -1,0 +1,12 @@
+diff --git a/tests/test_lineage.py b/tests/test_lineage.py
+--- a/tests/test_lineage.py
++++ b/tests/test_lineage.py
+@@ -1274,7 +1274,7 @@
+         self.assertIs(a_via_a, a_via_ab)
+ 
+         # And the deeper x.a leaf is shared as well.
+-        self.assertIs(a_via_a.downstream[0], a_via_ab.downstream[0])
++        self.assertIs(a_via_a.downstream[1], a_via_ab.downstream[0])
+ 
+     def test_lineage_all_columns_set_operation(self) -> None:
+         # UNION CTE referenced from a top-level select. Each output column

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -120,6 +120,7 @@
+             exp.PartitionedByProperty: lambda self, e: (
+                 f"PARTITIONED BY {self.wrap(self.expressions(sqls=[_normalize_partition(e) for e in e.this.expressions], skip_first=True))}"
+             ),
++            # TODO: revisit
+             exp.SafeAdd: rename_func("TRY_ADD"),
+             exp.SafeDivide: rename_func("TRY_DIVIDE"),
+             exp.SafeMultiply: rename_func("TRY_MULTIPLY"),

@@ -1,0 +1,12 @@
+diff --git a/tests/test_sqlglotc.py b/tests/test_sqlglotc.py
+--- a/tests/test_sqlglotc.py
++++ b/tests/test_sqlglotc.py
+@@ -111,7 +111,7 @@
+         )
+         self.assertEqual(
+             (self.source / "optimizer" / self.expected[1].name).read_bytes(),
+-            b"current extension",
++            b"current extQnsion",
+         )
+         self.assertEqual((self.source / self.expected[2].name).read_bytes(), b"current extension")
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -325,7 +325,7 @@
+             e.this,
+             e.args.get("weight"),
+             e.args.get("quantile"),
+-            e.args.get("accuracy"),
++            e.args.get("accuPacy"),
+         ),
+         exp.ArgMax: rename_func("MAX_BY"),
+         exp.ArgMin: rename_func("MIN_BY"),

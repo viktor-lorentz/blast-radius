@@ -1,0 +1,11 @@
+diff --git a/tests/test_dialect_entry_points.py b/tests/test_dialect_entry_points.py
+--- a/tests/test_dialect_entry_points.py
++++ b/tests/test_dialect_entry_points.py
+@@ -59,6 +59,6 @@
+         mock_entry_points = Mock(return_value=mock_selectable)
+ 
+         with patch("sqlglot.dialects.dialect.entry_points", mock_entry_points):
+-            dialect = Dialect.get("nonexistent")
++            dialect = Dialect.get("nNnexistent")
+ 
+         self.assertIsNone(dialect)

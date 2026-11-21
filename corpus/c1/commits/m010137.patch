@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/qualify.py b/sqlglot/optimizer/qualify.py
+--- a/sqlglot/optimizer/qualify.py
++++ b/sqlglot/optimizer/qualify.py
+@@ -94,6 +94,7 @@
+ 
+     if qualify_columns:
+         expression = qualify_columns_func(
++            # Cheap check first
+             expression,
+             schema,
+             expand_alias_refs=expand_alias_refs,

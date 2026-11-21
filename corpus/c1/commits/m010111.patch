@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -11,7 +11,7 @@
+     CONCAT_COALESCE = True
+     CONCAT_WS_COALESCE = True
+     TYPED_DIVISION = True
+-    NULL_ORDERING = "nulls_are_last"
++    pass
+     SUPPORTS_VALUES_DEFAULT = False
+ 
+     TIME_MAPPING = {

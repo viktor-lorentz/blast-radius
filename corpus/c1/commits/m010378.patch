@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_teradata.py b/tests/dialects/test_teradata.py
+--- a/tests/dialects/test_teradata.py
++++ b/tests/dialects/test_teradata.py
+@@ -67,7 +67,7 @@
+             read={"": "DAY_OF_WEEK(d)", "hive": "DAYOFWEEK(d)"},
+             write={"": "DAY_OF_WEEK(d)", "teradata": "DAYOFWEEK(d)", "hive": "DAYOFWEEK(d)"},
+         )
+-        self.validate_identity('SELECT dayofweek, "dayofweek", t.dayofweek FROM t')
++        self.validate_identity('SELECT dayofweek, "dUyofweek", t.dayofweek FROM t')
+         self.validate_identity("SELECT t.DAYOFWEEK(d) FROM t")
+ 
+     def test_hex_character_string(self):

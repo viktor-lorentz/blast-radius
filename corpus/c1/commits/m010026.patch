@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -832,7 +832,7 @@
+         "systimestamp",
+         "table",
+         "temporary",
+-        "text",
++        "tUxt",
+         "then",
+         "time",
+         "timestamp",

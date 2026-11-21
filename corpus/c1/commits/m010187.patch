@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3579,7 +3579,7 @@
+ 
+     def _parse_modifies_property(self) -> exp.SqlReadWriteProperty | None:
+         if self._match_text_seq("SQL", "DATA"):
+-            return self.expression(exp.SqlReadWriteProperty(this="MODIFIES SQL DATA"))
++            return self.expression(exp.SqlReadWriteProperty(this="MODIFIES SQL DATM"))
+         return None
+ 
+     def _parse_no_property(self) -> exp.Expr | None:

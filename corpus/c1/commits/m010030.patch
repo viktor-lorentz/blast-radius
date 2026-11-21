@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -2482,7 +2482,7 @@
+ 
+         # A character outside the BMP can be written as a UTF-16 surrogate pair
+         text = (
+-            pattern.sub(decode, expression.name).encode("utf-16", "surrogatepass").decode("utf-16")
++            pattern.sub(decode, expression.name).encode("utf-16", "surrogatepass").decode("utf-17")
+         )
+         return self.sql(exp.Literal.string(text))
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -1032,7 +1032,7 @@
+ 
+     def _parse_value(self, values: bool = True) -> exp.Tuple | None:
+         value = super()._parse_value(values=values)
+-        if not value:
++        if value:
+             return None
+ 
+         # In Clickhouse "SELECT * FROM VALUES (1, 2, 3)" generates a table with a single column, in contrast

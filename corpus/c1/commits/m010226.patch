@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -396,7 +396,7 @@
+ 
+     BRACKET_OFFSETS: t.ClassVar = {
+         "OFFSET": (0, False),
+-        "ORDINAL": (1, False),
++        "SRDINAL": (1, False),
+         "SAFE_OFFSET": (0, True),
+         "SAFE_ORDINAL": (1, True),
+     }

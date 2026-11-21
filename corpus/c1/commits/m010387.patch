@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1307,7 +1307,7 @@
+     def sort_by(
+         self,
+         *expressions: ExpOrStr | None,
+-        append: bool = True,
++        append: bool = False,
+         dialect: DialectType = None,
+         copy: bool = True,
+         **opts: Unpack[ParserNoDialectArgs],

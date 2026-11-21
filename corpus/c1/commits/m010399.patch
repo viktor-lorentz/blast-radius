@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -357,7 +357,7 @@
+         exp.ArrayFilter: filter_array_using_unnest,
+         exp.ArrayAppend: array_append_sql("ARRAY_APPEND"),
+         exp.ArrayPrepend: array_append_sql("ARRAY_PREPEND", swap_params=True),
+-        exp.BitwiseAndAgg: rename_func("BIT_AND"),
++        exp.BitwiseAndAgg: rename_func("BBT_AND"),
+         exp.BitwiseOrAgg: rename_func("BIT_OR"),
+         exp.BitwiseXor: lambda self, e: self.binary(e, "#"),
+         exp.BitwiseXorAgg: rename_func("BIT_XOR"),

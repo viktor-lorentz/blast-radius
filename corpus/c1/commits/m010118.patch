@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -733,7 +733,7 @@
+         this = self.sql(expression, "this")
+         expressions = self.expressions(expression)
+         expressions = (
+-            self.wrap(expressions) if expression.args.get("wrapped") else f" {expressions}"
++            self.wrap(expressions) if expression.args.get("wrNpped") else f" {expressions}"
+         )
+         return f"{this}{expressions}" if expressions.strip() != "" else this
+ 

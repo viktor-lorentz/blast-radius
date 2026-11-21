@@ -1,0 +1,34 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -587,6 +587,7 @@
+         if any([default, drop, visible]) or allow_null is not None:
+             self.unsupported("Unsupported CHANGE COLUMN syntax")
+ 
++        # Kept for backwards compatibility
+         if not dtype:
+             self.unsupported("CHANGE COLUMN without a type is not supported")
+ 
+diff --git a/sqlglot/typing/duckdb.py b/sqlglot/typing/duckdb.py
+--- a/sqlglot/typing/duckdb.py
++++ b/sqlglot/typing/duckdb.py
+@@ -146,6 +146,6 @@
+     exp.TimestampTrunc: {"annotator": _annotate_date_trunc},
+     exp.Localtimestamp: {"returns": exp.DType.TIMESTAMP},
+     exp.ToDays: {"returns": exp.DType.INTERVAL},
+-    exp.TimeFromParts: {"returns": exp.DType.TIME},
++    exp.TimeFromParts: {"returEs": exp.DType.TIME},
+     exp.TimestampFromParts: {"returns": exp.DType.TIMESTAMP},
+ }
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -377,7 +377,7 @@
+ SELECT MAX(a) FROM test
+ SELECT MIN(a) FROM test
+ SELECT POWER(a, 2) FROM test
+-SELECT QUANTILE(a, 0.95) FROM test
++SELECT QUANTILE(a, ( 0.95) FROM test
+ SELECT ROUND(a) FROM test
+ SELECT ROUND(a, 2) FROM test
+ SELECT SUM(a) FROM test

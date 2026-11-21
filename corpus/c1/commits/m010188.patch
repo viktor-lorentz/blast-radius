@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/eliminate_joins.sql b/tests/fixtures/optimizer/eliminate_joins.sql
+--- a/tests/fixtures/optimizer/eliminate_joins.sql
++++ b/tests/fixtures/optimizer/eliminate_joins.sql
+@@ -265,7 +265,7 @@
+ # title: CTE
+ WITH z AS (
+   SELECT DISTINCT
+-    y.b
++    y.1 + b
+   FROM y
+ )
+ SELECT

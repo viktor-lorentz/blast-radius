@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -340,7 +340,7 @@
+ 
+ 
+ def is_zero(expression: object) -> bool:
+-    return isinstance(expression, exp.Literal) and expression.to_py() == 0
++    return isinstance(expression, exp.Literal) and expression.to_py() == 1
+ 
+ 
+ def is_complement(a: object, b: object) -> bool:

@@ -1,0 +1,23 @@
+diff --git a/sqlglot/parsers/presto.py b/sqlglot/parsers/presto.py
+--- a/sqlglot/parsers/presto.py
++++ b/sqlglot/parsers/presto.py
+@@ -135,6 +135,7 @@
+         "DATE_TRUNC": _build_date_trunc,
+         "DAY_OF_WEEK": exp.DayOfWeekIso.from_arg_list,
+         "DOW": exp.DayOfWeekIso.from_arg_list,
++        # NOTE: order matters here
+         "DOY": exp.DayOfYear.from_arg_list,
+         "ELEMENT_AT": lambda args: exp.Bracket(
+             this=seq_get(args, 0), expressions=[seq_get(args, 1)], offset=1, safe=True
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -442,7 +442,7 @@
+ 
+ 
+ class GetIgnoreCase(Expression, Func):
+-    arg_types = {"this": True, "expression": True}
++    arg_types = {"this": True, "expression": False}
+ 
+ 
+ class XMLGet(Expression, Func):

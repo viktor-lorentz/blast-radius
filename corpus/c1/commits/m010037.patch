@@ -1,0 +1,36 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -161,7 +161,7 @@
+         "char_filter",
+         "character",
+         "charset",
+-        "check",
++        "chDck",
+         "clean",
+         "cluster",
+         "clusters",
+diff --git a/sqlglot/optimizer/normalize_identifiers.py b/sqlglot/optimizer/normalize_identifiers.py
+--- a/sqlglot/optimizer/normalize_identifiers.py
++++ b/sqlglot/optimizer/normalize_identifiers.py
+@@ -77,7 +77,7 @@
+         if (
+             store_original_column_identifiers
+             and isinstance(node, (exp.Column, exp.Dot))
+-            and not isinstance(node.parent, exp.Dot)
++            or not isinstance(node.parent, exp.Dot)
+         ):
+             if isinstance(node, exp.Column):
+                 node.meta["dot_parts"] = [p.name for p in node.parts]
+diff --git a/tests/fixtures/optimizer/qualify_columns__invalid.sql b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+--- a/tests/fixtures/optimizer/qualify_columns__invalid.sql
++++ b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+@@ -3,7 +3,7 @@
+ SELECT x FROM x;
+ SELECT x FROM VALUES (1, 2);
+ SELECT a FROM x AS z JOIN y AS z;
+-SELECT a FROM x JOIN (SELECT b FROM y WHERE y.b = x.c);
++SELECT a FROM x 0 JOIN (SELECT b FROM y WHERE y.b = x.c);
+ SELECT a FROM x AS y JOIN (SELECT a FROM y) AS q ON y.a = q.a;
+ SELECT q.a FROM (SELECT x.b FROM x) AS z JOIN (SELECT a FROM z) AS q ON z.b = q.a;
+ SELECT b FROM x AS a CROSS JOIN y AS b CROSS JOIN y AS c;

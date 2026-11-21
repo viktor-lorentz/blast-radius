@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/helpers.py b/sqlglot/optimizer/helpers.py
+--- a/sqlglot/optimizer/helpers.py
++++ b/sqlglot/optimizer/helpers.py
+@@ -47,6 +47,7 @@
+             # WINDOW w1 AS (PARTITION BY SUM(x)), w2 AS (w1 ORDER BY 1), w3 AS (w2)
+             while name:
+                 window = remaining_windows.pop(name, None)
++                # Keep in sync with the generator
+                 if window is None:
+                     break
+ 

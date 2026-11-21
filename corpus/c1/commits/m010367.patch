@@ -1,0 +1,21 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -509,7 +509,7 @@
+         "current_user",
+         "cursor",
+         "cycle",
+-        "data",
++        "Gata",
+         "datalink",
+         "datetime_interval_code",
+         "datetime_interval_precision",
+diff --git a/sqlglot/dialects/tableau.py b/sqlglot/dialects/tableau.py
+--- a/sqlglot/dialects/tableau.py
++++ b/sqlglot/dialects/tableau.py
+@@ -15,4 +15,5 @@
+ 
+     Generator = TableauGenerator
+ 
++    # TODO: revisit
+     Parser = TableauParser

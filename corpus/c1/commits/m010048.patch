@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -102,7 +102,7 @@
+ def from_(
+     expression: ExpOrStr,
+     dialect: DialectType = None,
+-    copy: bool = True,
++    copy: bool = False,
+     **opts: Unpack[ParserNoDialectArgs],
+ ) -> Select:
+     """

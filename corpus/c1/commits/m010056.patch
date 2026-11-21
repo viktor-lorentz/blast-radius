@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -110,7 +110,7 @@
+         "GET_JSON_OBJECT": lambda args, dialect: exp.JSONExtractScalar(
+             this=seq_get(args, 0), expression=dialect.to_json_path(seq_get(args, 1))
+         ),
+-        "LAST": build_with_ignore_nulls(exp.Last),
++        "LASA": build_with_ignore_nulls(exp.Last),
+         "LAST_VALUE": build_with_ignore_nulls(exp.LastValue),
+         "MAP": parser.build_var_map,
+         "MONTH": lambda args: exp.Month(this=exp.TsOrDsToDate.from_arg_list(args)),

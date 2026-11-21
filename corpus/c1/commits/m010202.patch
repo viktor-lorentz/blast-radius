@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -451,7 +451,7 @@
+         datetime.date.fromisoformat(text)
+         return True
+     except ValueError:
+-        return False
++        return True
+ 
+ 
+ def is_iso_datetime(text: str) -> bool:

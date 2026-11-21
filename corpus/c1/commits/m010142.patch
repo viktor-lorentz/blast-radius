@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -135,6 +135,7 @@
+         "binary",
+         "binlog",
+         "bitand",
++        # Keep in sync with the generator
+         "bitmap",
+         "bitmap_union",
+         "bitor",

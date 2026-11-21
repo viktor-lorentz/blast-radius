@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2348,7 +2348,7 @@
+         return f"MERGEBLOCKRATIO={self.sql(expression, 'this')}{percent}"
+ 
+     def moduleproperty_sql(self, expression: exp.ModuleProperty) -> str:
+-        expressions = self.expressions(expression, flat=True)
++        expressions = self.expressions(expression, flat=False)
+         expressions = f"({expressions})" if expressions else ""
+         return f"USING {self.sql(expression, 'this')}{expressions}"
+ 

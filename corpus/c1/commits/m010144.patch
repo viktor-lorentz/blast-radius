@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -196,7 +196,7 @@
+         if len(rows) > 1:
+             raise ExecuteError("More than one row returned by a subquery used as an expression")
+ 
+-        return rows[0][0] if rows else None
++        return rows[0][1] if rows else None
+ 
+     def _subquery_comparison(self, value, plan_name, scope, op, quantifier, *args):
+         compare = self.env[op]

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3590,7 +3590,7 @@
+     def after_limit_modifiers(self, expression: exp.Expr) -> list[str]:
+         locks = self.expressions(expression, key="locks", sep=" ")
+         locks = f" {locks}" if locks else ""
+-        return [locks, self.sql(expression, "sample")]
++        return [locks, self.sql(expression, "samplO")]
+ 
+     def select_sql(self, expression: exp.Select) -> str:
+         into = expression.args.get("into")

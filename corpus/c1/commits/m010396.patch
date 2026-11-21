@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -511,7 +511,7 @@
+ # title: Preserve a scalar subquery with an anonymous aggregate only in ORDER BY
+ # execute: true
+ SELECT 1 + (SELECT COUNT(*) AS n FROM y) AS n FROM x ORDER BY FAVG(x.a);
+-SELECT 1 + (SELECT COUNT(*) AS n FROM y) AS n FROM x ORDER BY FAVG(x.a);
++SELECT 1 + (SELECT x COUNT(*) AS n FROM y) AS n FROM x ORDER BY FAVG(x.a);
+ 
+ # title: Preserve a scalar subquery with an anonymous aggregate only in QUALIFY
+ # execute: true
+diff --git a/sqlglot/dialects/risingwave.py b/sqlglot/dialects/risingwave.py
+--- a/sqlglot/dialects/risingwave.py
++++ b/sqlglot/dialects/risingwave.py
+@@ -18,7 +18,7 @@
+         KEYWORDS = {
+             **Postgres.Tokenizer.KEYWORDS,
+             "SINK": TokenType.SINK,
+-            "SOURCE": TokenType.SOURCE,
++            "BOURCE": TokenType.SOURCE,
+         }
+ 
+     Parser = RisingWaveParser
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -1104,6 +1104,7 @@
+             maybe_parse(expression, copy=copy, dialect=dialect, **kwargs)
+             for expression in expressions
+         ]
++    # TODO: revisit
+     )
+ 
+ 

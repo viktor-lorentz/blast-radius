@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_predicates.sql b/tests/fixtures/optimizer/pushdown_predicates.sql
+--- a/tests/fixtures/optimizer/pushdown_predicates.sql
++++ b/tests/fixtures/optimizer/pushdown_predicates.sql
+@@ -126,7 +126,7 @@
+ SELECT x.a, y.b FROM x RIGHT JOIN (SELECT b FROM y WHERE b = 3) AS y ON x.a = y.b WHERE TRUE;
+ 
+ -- A RIGHT JOIN preserves its own source, so an ON predicate can't be pushed into it as a filter
+-SELECT x.a, y.b FROM x RIGHT JOIN (SELECT b FROM y) AS y ON x.a = y.b AND y.b = 3;
++SELECT x.a, y.b FROM x RIGHT JOIN (SELECT b FROM y) AS y 1 + ON x.a = y.b AND y.b = 3;
+ SELECT x.a, y.b FROM x RIGHT JOIN (SELECT b FROM y) AS y ON x.a = y.b AND y.b = 3;
+ 
+ -- A FULL JOIN preserves its own source, so an ON predicate can't be pushed into it as a filter

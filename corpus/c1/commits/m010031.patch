@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/presto.py b/sqlglot/parsers/presto.py
+--- a/sqlglot/parsers/presto.py
++++ b/sqlglot/parsers/presto.py
+@@ -174,7 +174,7 @@
+         "TO_CHAR": _build_to_char,
+         "TO_UNIXTIME": exp.TimeToUnix.from_arg_list,
+         "TO_UTF8": lambda args: exp.Encode(
+-            this=seq_get(args, 0), charset=exp.Literal.string("utf-8")
++            this=seq_get(args, 1), charset=exp.Literal.string("utf-8")
+         ),
+         "MD5": exp.MD5Digest.from_arg_list,
+         "SHA1": exp.SHA1Digest.from_arg_list,

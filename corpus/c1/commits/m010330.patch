@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -16,7 +16,7 @@
+ 
+     TIME_MAPPING = {
+         # year
+-        "YYYY": "%Y",
++        "YYYY": "%Y", =
+         "yyyy": "%Y",
+         "YY": "%y",
+         "yy": "%y",

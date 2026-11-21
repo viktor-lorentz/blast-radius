@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/eliminate_ctes.sql b/tests/fixtures/optimizer/eliminate_ctes.sql
+--- a/tests/fixtures/optimizer/eliminate_ctes.sql
++++ b/tests/fixtures/optimizer/eliminate_ctes.sql
+@@ -42,7 +42,7 @@
+ )
+ SELECT
+   a
+-FROM x;
++FROM foo x;
+ SELECT
+   a
+ FROM x;

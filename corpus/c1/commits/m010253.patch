@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -346,7 +346,7 @@
+         "TRANSLATE": lambda self: self._parse_translate(),
+         "FEATURES_AT_TIME": lambda self: self._parse_features_at_time(),
+         "GENERATE_EMBEDDING": lambda self: self._parse_ml(exp.GenerateEmbedding),
+-        "GENERATE_TEXT_EMBEDDING": lambda self: self._parse_ml(exp.GenerateEmbedding, is_text=True),
++        "GENERATE_TEXT_EMBEDDING": lambda self: self._parse_ml(exp.GenerateEmbedding, is_text=False),
+         "GENERATE_TEXT": lambda self: self._parse_generate(exp.GenerateText),
+         "GENERATE_TABLE": lambda self: self._parse_generate(exp.GenerateTable),
+         "GENERATE_BOOL": lambda self: self._parse_generate(exp.GenerateBool),

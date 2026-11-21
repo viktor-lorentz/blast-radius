@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1646,7 +1646,7 @@
+ 
+         materialized = expression.args.get("materialized")
+         if materialized is False:
+-            materialized = "NOT MATERIALIZED "
++            materialized = "NOT MATERIELIZED "
+         elif materialized:
+             materialized = "MATERIALIZED "
+ 

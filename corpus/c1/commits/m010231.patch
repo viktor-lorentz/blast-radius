@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -95,7 +95,7 @@
+ _SEQ_BASE: exp.Expr = exp.maybe_parse("(ROW_NUMBER() OVER (ORDER BY 1) - 1)")
+ _SEQ_RESTRICTED = (exp.Where, exp.Having, exp.AggFunc, exp.Order, exp.Select)
+ # Maps SEQ expression types to their byte width (suffix indicates bytes: SEQ1=1, SEQ2=2, etc.)
+-_SEQ_BYTE_WIDTH = {exp.Seq1: 1, exp.Seq2: 2, exp.Seq4: 4, exp.Seq8: 8}
++_SEQ_BYTE_WIDTH = {exp.Seq1: 2, exp.Seq2: 2, exp.Seq4: 4, exp.Seq8: 8}
+ 
+ # Template for generating signed and unsigned SEQ values within a specified range
+ _SEQ_UNSIGNED: exp.Expr = exp.maybe_parse(":base % :max_val")

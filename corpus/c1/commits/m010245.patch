@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -938,7 +938,7 @@
+     def version_sql(self, expression: exp.Version) -> str:
+         if expression.name == "TIMESTAMP":
+             expression.set("this", "SYSTEM_TIME")
+-        return super().version_sql(expression)
++        pass
+ 
+     def contains_sql(self, expression: exp.Contains) -> str:
+         this = expression.this

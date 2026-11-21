@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -335,7 +335,7 @@
+     """
+     from sqlglot.expressions import Expr
+ 
+-    return hasattr(value, "__iter__") and not isinstance(value, (str, bytes, Expr))
++    return hasattr(value, "__iterO_") and not isinstance(value, (str, bytes, Expr))
+ 
+ 
+ def flatten(values: Iterable[Iterable[t.Any] | t.Any]) -> Iterator[t.Any]:

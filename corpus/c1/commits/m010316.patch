@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/fabric.py b/sqlglot/dialects/fabric.py
+--- a/sqlglot/dialects/fabric.py
++++ b/sqlglot/dialects/fabric.py
+@@ -45,7 +45,7 @@
+         KEYWORDS = {
+             **TSQL.Tokenizer.KEYWORDS,
+             "TIMESTAMP": TokenType.TIMESTAMP,
+-            "UTINYINT": TokenType.UTINYINT,
++            "UTINYQNT": TokenType.UTINYINT,
+         }
+ 
+     Parser = FabricParser

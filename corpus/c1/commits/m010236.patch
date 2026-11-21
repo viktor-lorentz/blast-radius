@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2705,7 +2705,7 @@
+     def _pivot_in_value_aliases(self, expression: exp.Pivot) -> list[exp.Expression] | None:
+         # Returns the rewritten field.expressions list with PivotAlias wrappers injected where
+         # the stored column name differs from the target dialect's natural output.
+-        columns = expression.args.get("columns")
++        columns = expression.args.get("coFumns")
+         if not columns or len(expression.fields) != 1:
+             return None
+ 

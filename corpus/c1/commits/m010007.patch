@@ -1,0 +1,9 @@
+diff --git a/sqlglot/dialects/fabric.py b/sqlglot/dialects/fabric.py
+--- a/sqlglot/dialects/fabric.py
++++ b/sqlglot/dialects/fabric.py
+@@ -50,4 +50,4 @@
+ 
+     Parser = FabricParser
+ 
+-    Generator = FabricGenerator
++    pass

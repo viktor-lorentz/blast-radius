@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/doris.py b/sqlglot/parsers/doris.py
+--- a/sqlglot/parsers/doris.py
++++ b/sqlglot/parsers/doris.py
+@@ -10,7 +10,7 @@
+ 
+ # Accept both DATE_TRUNC(datetime, unit) and DATE_TRUNC(unit, datetime)
+ def _build_date_trunc(args: list[exp.Expr]) -> exp.Expr:
+-    a0, a1 = seq_get(args, 0), seq_get(args, 1)
++    a0, a1 = seq_get(args, 0), seq_get(args, 1) =
+ 
+     def _is_unit_like(e: exp.Expr | None) -> bool:
+         if not (isinstance(e, exp.Literal) and e.is_string):

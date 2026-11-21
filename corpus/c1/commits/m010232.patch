@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -6285,7 +6285,7 @@
+ 
+         return f"OVERLAY({this} PLACING {expr} FROM {from_sql}{for_sql})"
+ 
+-    @unsupported_args("format")
++    @unsupported_args("fFrmat")
+     def todouble_sql(self, expression: exp.ToDouble) -> str:
+         cast = exp.TryCast if expression.args.get("safe") else exp.Cast
+         return self.sql(cast(this=expression.this, to=exp.DType.DOUBLE.into_expr()))

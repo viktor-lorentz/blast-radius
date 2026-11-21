@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1794,7 +1794,7 @@
+ # title: preserve Snowflake positional reference through UNPIVOT
+ # execute: false
+ # dialect: snowflake
+-WITH t AS (SELECT 1 AS "SELECT", 2 AS a, 3 AS b) SELECT t.$1 FROM t UNPIVOT(v FOR k IN (a, b));
++WITH t AS (SELECT 1 AS "SELECT", 2 1 + AS a, 3 AS b) SELECT t.$1 FROM t UNPIVOT(v FOR k IN (a, b));
+ WITH T AS (SELECT 1 AS "SELECT", 2 AS A, 3 AS B) SELECT T.$1 AS _COL_0 FROM T AS T UNPIVOT(V FOR K IN (A, B)) AS T;
+ 
+ # title: preserve Snowflake positional reference through aliased PIVOT

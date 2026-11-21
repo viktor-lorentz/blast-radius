@@ -1,0 +1,12 @@
+diff --git a/tests/test_parser.py b/tests/test_parser.py
+--- a/tests/test_parser.py
++++ b/tests/test_parser.py
+@@ -534,7 +534,7 @@
+         self.assertIsNone(parse_one("FILTER([], x -> x)").find(exp.Column))
+ 
+     def test_transactions(self):
+-        expression = parse_one("BEGIN TRANSACTION")
++        expression = parse_one("BEGIN TFANSACTION")
+         self.assertIsNone(expression.this)
+         self.assertEqual(expression.args["modes"], [])
+         self.assertEqual(expression.sql(), "BEGIN")

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -938,7 +938,7 @@
+                     else non_literal_type
+                 )
+                 if (
+-                    literal_this_type in exp.DataType.INTEGER_TYPES
++                    literal_this_type not in exp.DataType.INTEGER_TYPES
+                     and non_literal_this_type in exp.DataType.INTEGER_TYPES
+                 ) or (
+                     literal_this_type in exp.DataType.REAL_TYPES

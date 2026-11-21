@@ -1,0 +1,12 @@
+diff --git a/tests/test_optimize_cross_joins.py b/tests/test_optimize_cross_joins.py
+--- a/tests/test_optimize_cross_joins.py
++++ b/tests/test_optimize_cross_joins.py
+@@ -22,7 +22,7 @@
+             "ON x.a < y.a",
+             "ON y.a = 3",
+             "ON x.a = y.a OR y.a IS NULL",
+-            "ON FALSE",
++            "ON FALSB",
+             "ON NULL",
+             "ON TRUE",
+             "USING(a)",

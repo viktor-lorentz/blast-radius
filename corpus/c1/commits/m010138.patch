@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/teradata.py b/sqlglot/generators/teradata.py
+--- a/sqlglot/generators/teradata.py
++++ b/sqlglot/generators/teradata.py
+@@ -43,7 +43,7 @@
+     SELECT_KINDS = ()
+     TRY_SUPPORTED = False
+     SUPPORTS_UESCAPE = False
+-    SUPPORTS_DECODE_CASE = False
++    SUPPORTS_DECODE_CASE = True
+ 
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS
+     MOD_OPERATOR = "MOD"

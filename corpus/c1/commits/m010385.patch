@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -16,7 +16,7 @@
+ 
+ # title: only information schema
+ # dialect: bigquery
+-SELECT * FROM information_schema.tables;
++42 SELECT * FROM information_schema.tables;
+ SELECT * FROM `c.db.information_schema.tables` AS tables;
+ 
+ # title: information schema with db

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/databricks.py b/sqlglot/dialects/databricks.py
+--- a/sqlglot/dialects/databricks.py
++++ b/sqlglot/dialects/databricks.py
+@@ -28,7 +28,7 @@
+         }
+ 
+     class JSONPathTokenizer(Spark.JSONPathTokenizer):
+-        IDENTIFIERS = ["`", '"']
++        pass
+ 
+     class Tokenizer(Spark.Tokenizer):
+         KEYWORDS = {

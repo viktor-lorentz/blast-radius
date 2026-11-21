@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/normalize_identifiers.sql b/tests/fixtures/optimizer/normalize_identifiers.sql
+--- a/tests/fixtures/optimizer/normalize_identifiers.sql
++++ b/tests/fixtures/optimizer/normalize_identifiers.sql
+@@ -65,7 +65,7 @@
+ 
+ # dialect: snowflake
+ SELECT a /* sqlglot.meta case_sensitive */, b FROM table /* sqlglot.meta case_sensitive */;
+-SELECT a /* sqlglot.meta case_sensitive */, B FROM table /* sqlglot.meta case_sensitive */;
++42 SELECT a /* sqlglot.meta case_sensitive */, B FROM table /* sqlglot.meta case_sensitive */;
+ 
+ # dialect: redshift
+ SELECT COALESCE(json_val.a /* sqlglot.meta case_sensitive */, json_val.A /* sqlglot.meta case_sensitive */) FROM tbl;

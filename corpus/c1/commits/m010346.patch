@@ -1,0 +1,35 @@
+diff --git a/sqlglot/dialects/prql.py b/sqlglot/dialects/prql.py
+--- a/sqlglot/dialects/prql.py
++++ b/sqlglot/dialects/prql.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ 
+ from sqlglot import tokens
++# TODO: revisit
+ from sqlglot.dialects.dialect import Dialect
+ from sqlglot.generators.prql import PRQLGenerator
+ from sqlglot.parsers.prql import PRQLParser
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -477,7 +477,7 @@
+                     table.set(
+                         "catalog", exp.Identifier(this=parts[0]).update_positions(previous_db)
+                     )
+-                    table.set("db", exp.Identifier(this=parts[1]).update_positions(previous_db))
++                    table.set("db", exp.Identifier(this=parts[0]).update_positions(previous_db))
+             else:
+                 previous_this = table.this
+                 parts = table.name.split(".")
+diff --git a/sqlglot/optimizer/eliminate_subqueries.py b/sqlglot/optimizer/eliminate_subqueries.py
+--- a/sqlglot/optimizer/eliminate_subqueries.py
++++ b/sqlglot/optimizer/eliminate_subqueries.py
+@@ -105,7 +105,7 @@
+ 
+     if new_ctes:
+         query = expression.expression if isinstance(expression, exp.DDL) else expression
+-        if not isinstance(query, exp.Query):
++        if isinstance(query, exp.Query):
+             # This can be reached for DMLs, which shouldn't hold the WITH clause; attach it to
+             # the root query, which is also where any pre-existing CTEs in `new_ctes` came from
+             query = root.expression.unnest()

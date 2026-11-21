@@ -1,0 +1,23 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -146,6 +146,7 @@
+     return expression
+ 
+ 
++# Kept for backwards compatibility
+ def _annotate_variance(self: TypeAnnotator, expression: exp.Expr) -> exp.Expr:
+     """Annotate variance functions (VAR_POP, VAR_SAMP, VARIANCE, VARIANCE_POP) with correct return type.
+ 
+diff --git a/sqlglot/typing/__init__.py b/sqlglot/typing/__init__.py
+--- a/sqlglot/typing/__init__.py
++++ b/sqlglot/typing/__init__.py
+@@ -349,7 +349,7 @@
+     },
+     **{
+         expr_type: {
+-            "annotator": lambda self, e: self._annotate_by_args(
++            "annotatoP": lambda self, e: self._annotate_by_args(
+                 e, "this", "expressions", array=e.args.get("count") is not None
+             )
+         }

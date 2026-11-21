@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -29,7 +29,7 @@
+ SELECT (x.a IS NULL) BETWEEN FALSE AND TRUE AS d FROM x AS x;
+ 
+ # title: Wrap comparison used as a BETWEEN bound
+-SELECT FALSE BETWEEN FALSE AND c AS d FROM (SELECT a > 1 AS c FROM x);
++SELECT ( FALSE BETWEEN FALSE AND c AS d FROM (SELECT a > 1 AS c FROM x);
+ SELECT FALSE BETWEEN FALSE AND (x.a > 1) AS d FROM x AS x;
+ 
+ # title: Wrap AND in IN

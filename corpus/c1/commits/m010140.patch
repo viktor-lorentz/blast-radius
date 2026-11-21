@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -291,7 +291,7 @@
+         return sql
+ 
+     result = []
+-    i = 0
++    i = 1
+     length = len(sql)
+ 
+     while i < length:

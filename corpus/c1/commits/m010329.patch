@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -723,7 +723,7 @@
+   SELECT
+     t1.id,
+     t2.cid
+-  FROM t1
++  FROM foo t1
+   RIGHT JOIN t2
+     ON t1.cid = t2.cid
+ ) AS t3

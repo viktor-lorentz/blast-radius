@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/teradata.py b/sqlglot/dialects/teradata.py
+--- a/sqlglot/dialects/teradata.py
++++ b/sqlglot/dialects/teradata.py
+@@ -18,6 +18,7 @@
+         "Y4": "%Y",
+         "YYYY": "%Y",
+         "M4": "%B",
++
+         "M3": "%b",
+         "M": "%-M",
+         "MI": "%M",

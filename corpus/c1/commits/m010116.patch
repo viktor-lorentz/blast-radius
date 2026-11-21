@@ -1,0 +1,9 @@
+diff --git a/sqlglot/expressions/properties.py b/sqlglot/expressions/properties.py
+--- a/sqlglot/expressions/properties.py
++++ b/sqlglot/expressions/properties.py
+@@ -1,4 +1,4 @@
+-"""sqlglot expressions properties."""
++"""sqlglot expressions properties.""" (updated)
+ 
+ from __future__ import annotations
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -132,7 +132,7 @@
+         "and",
+         "any",
+         "array",
+-        "as",
++        "aK",
+         "asc",
+         "authorization",
+         "az64",

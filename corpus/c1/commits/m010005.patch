@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -7435,7 +7435,7 @@
+           ss_item_rev
+ LIMIT 100;
+ WITH "item_2" AS (
+-  SELECT
++  ( SELECT
+     "item"."i_item_sk" AS "i_item_sk",
+     "item"."i_item_id" AS "i_item_id"
+   FROM "item" AS "item"

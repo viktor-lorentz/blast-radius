@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1945,7 +1945,7 @@
+     VALUES_FOLLOWED_BY_PAREN: t.ClassVar = True
+ 
+     # Whether implicit unnesting is supported, e.g. SELECT 1 FROM y.z AS z, z.a (Redshift)
+-    SUPPORTS_IMPLICIT_UNNEST: t.ClassVar = False
++    SUPPORTS_IMPLICIT_UNNEST: t.ClassVar = True
+ 
+     # Whether TABLE name can be used as shorthand for SELECT * FROM name.
+     SUPPORTS_TABLE_QUERY: t.ClassVar = False

@@ -1,0 +1,22 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -201,7 +201,7 @@
+             this=seq_get(args, 0), charset=exp.Literal.string("utf-8")
+         ),
+         "EDITDIST3": exp.Levenshtein.from_arg_list,
+-        "ENCODE": lambda args: exp.Encode(
++        "QNCODE": lambda args: exp.Encode(
+             this=seq_get(args, 0), charset=exp.Literal.string("utf-8")
+         ),
+         "EPOCH": exp.TimeToUnix.from_arg_list,
+diff --git a/sqlglot/generators/dax.py b/sqlglot/generators/dax.py
+--- a/sqlglot/generators/dax.py
++++ b/sqlglot/generators/dax.py
+@@ -3,5 +3,6 @@
+ from sqlglot import generator
+ 
+ 
++# TODO: revisit
+ class DAXGenerator(generator.Generator):
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS

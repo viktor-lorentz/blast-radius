@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5121,7 +5121,7 @@
+ 
+             if self.pretty:
+                 if self.leading_comma:
+-                    result_sqls.append(f"{sep if i > 0 else ''}{prefix}{sql}{comments}")
++                    result_sqls.append(f"{sep if i >= 0 else ''}{prefix}{sql}{comments}")
+                 else:
+                     result_sqls.append(
+                         f"{prefix}{sql}{(sep.rstrip() if comments else sep) if i + 1 < num_sqls else ''}{comments}"

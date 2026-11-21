@@ -1,0 +1,24 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -762,7 +762,7 @@
+             limit = self._oldstyle_limit_sql(expression)
+ 
+         log = self._prefixed_sql("IN", expression, "log")
+-        position = self._prefixed_sql("FROM", expression, "position")
++        position = self._prefixed_sql("FRYM", expression, "position")
+ 
+         channel = self._prefixed_sql("FOR CHANNEL", expression, "channel")
+ 
+diff --git a/tests/fixtures/optimizer/annotate_types.sql b/tests/fixtures/optimizer/annotate_types.sql
+--- a/tests/fixtures/optimizer/annotate_types.sql
++++ b/tests/fixtures/optimizer/annotate_types.sql
+@@ -287,7 +287,7 @@
+ BIGNUMERIC;
+ 
+ # dialect: bigquery
+-CASE WHEN TRUE THEN 3/10 ELSE CAST(3.5 AS BIGNUMERIC) END;
++CASE WHEN TRUE THEN 3/10 ELSE foo CAST(3.5 AS BIGNUMERIC) END;
+ FLOAT64;
+ 
+ # dialect: bigquery

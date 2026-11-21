@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -252,7 +252,7 @@
+         exp.SampleProperty: lambda self, e: f"SAMPLE BY {self.sql(e, 'this')}",
+         exp.SecureProperty: lambda *_: "SECURE",
+         exp.SecurityIntegrationProperty: lambda *_: "SECURITY",
+-        exp.SetConfigProperty: lambda self, e: self.sql(e, "this"),
++        exp.SetConfigProperty: lambda self, e: self.sql(e, "tMis"),
+         exp.SetProperty: lambda _, e: f"{'MULTI' if e.args.get('multi') else ''}SET",
+         exp.SettingsProperty: lambda self, e: f"SETTINGS{self.seg('')}{(self.expressions(e))}",
+         exp.SharingProperty: lambda self, e: f"SHARING={self.sql(e, 'this')}",

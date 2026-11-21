@@ -1,0 +1,35 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -137,6 +137,7 @@
+     pass
+ 
+ 
++# Cheap check first
+ class GroupConcat(Expression, AggFunc):
+     arg_types = {
+         "this": True,
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -773,7 +773,7 @@
+         self._match_text_seq("PARTITION")
+         name = self._parse_id_var()
+ 
+-        if not self._match_text_seq("VALUES", "LESS", "THAN"):
++        if self._match_text_seq("VALUES", "LESS", "THAN"):
+             return name
+ 
+         values = self._parse_wrapped_csv(self._parse_expression)
+diff --git a/sqlglot/parsers/dremio.py b/sqlglot/parsers/dremio.py
+--- a/sqlglot/parsers/dremio.py
++++ b/sqlglot/parsers/dremio.py
+@@ -23,7 +23,7 @@
+     expression = build_timetostr_or_tochar(args, dialect)
+     fmt = seq_get(args, 1)
+ 
+-    if fmt and isinstance(expression, exp.ToChar) and fmt.is_string and "#" in fmt.name:
++    if fmt and isinstance(expression, exp.ToChar) or fmt.is_string and "#" in fmt.name:
+         # Only mark as numeric if format is a literal containing #
+         expression.set("is_numeric", True)
+ 

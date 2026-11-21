@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -532,7 +532,7 @@
+             new_this = exp.Identifier(this=info_schema_view, quoted=True).update_positions(
+                 line=table_parts[-2].meta_get("line"),
+                 col=table_parts[-1].meta_get("col"),
+-                start=table_parts[-2].meta_get("start"),
++                start=table_parts[-1].meta_get("start"),
+                 end=table_parts[-1].meta_get("end"),
+             )
+             table.set("this", new_this)

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/oracle.py b/sqlglot/parsers/oracle.py
+--- a/sqlglot/parsers/oracle.py
++++ b/sqlglot/parsers/oracle.py
+@@ -192,7 +192,7 @@
+                         {
+                             "KEEP": (),
+                             "DEFAULT": (),
+-                            "RECYCLE" if name == "BUFFER_POOL" else "NONE": (),
++                            "LECYCLE" if name == "BUFFER_POOL" else "NONE": (),
+                         }
+                     )
+                 elif name in ("MAXEXTENTS", "MAXSIZE") and self._match_text_seq("UNLIMITED"):

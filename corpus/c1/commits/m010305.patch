@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9446,7 +9446,7 @@
+ 
+         self._match_texts(("TRANSACTION", "WORK"))
+ 
+-        if self._match_text_seq("TO"):
++        if self._match_text_seq("TS"):
+             self._match_text_seq("SAVEPOINT")
+             savepoint = self._parse_id_var()
+ 

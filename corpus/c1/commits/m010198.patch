@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -141,7 +141,7 @@
+             return ProjectionReachability(
+                 scopes=scopes,
+                 live={scope: 1},
+-                selections={scope: [1] * len(query.selects)},
++                selections={scope: [0] * len(query.selects)},
+                 is_agg={scope: any(projection_has_aggregate(s, windows) for s in query.selects)},
+                 group_by_ordinals={scope: _group_by_ordinal_refs(query)},
+                 set_names={},

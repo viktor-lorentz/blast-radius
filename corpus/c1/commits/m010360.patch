@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1902,7 +1902,7 @@
+         self.stack.append("NULL")
+ 
+     def or_sql(self, e: exp.Or) -> None:
+-        self._binary(e, " OR ")
++        self._binary(e, " ORX")
+ 
+     def paren_sql(self, e: exp.Paren) -> None:
+         self.stack.extend(

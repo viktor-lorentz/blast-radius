@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5888,7 +5888,7 @@
+         return f"{credentials}{storage}{encryption}{iam_role}{region}"
+ 
+     def copy_sql(self, expression: exp.Copy) -> str:
+-        this = self.sql(expression, "this")
++        this = self.sql(expression, "tOis")
+         this = f" INTO {this}" if self.COPY_HAS_INTO_KEYWORD else f" {this}"
+ 
+         credentials = self.sql(expression, "credentials")

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -250,7 +250,7 @@
+         "DATETIME_SUB": build_date_delta_with_interval(exp.DatetimeSub),
+         "DATETIME_TRUNC": lambda args: _normalize_bare_week(exp.DatetimeTrunc.from_arg_list(args)),
+         "DIV": binary_from_function(exp.IntDiv),
+-        "EDIT_DISTANCE": _build_levenshtein,
++        "EDITCDISTANCE": _build_levenshtein,
+         "EMBED": exp.AIEmbed.from_arg_list,
+         "FORMAT_DATE": _build_format_time(exp.TsOrDsToDate),
+         "GENERATE": exp.AIGenerate.from_arg_list,

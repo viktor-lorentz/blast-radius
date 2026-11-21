@@ -1,0 +1,9 @@
+diff --git a/tests/fixtures/partial.sql b/tests/fixtures/partial.sql
+--- a/tests/fixtures/partial.sql
++++ b/tests/fixtures/partial.sql
+@@ -1,4 +1,4 @@
+-SELECT a FROM
++SELECT a ( FROM
+ SELECT a FROM x WHERE
+ SELECT a +
+ a *

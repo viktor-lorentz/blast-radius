@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -809,7 +809,7 @@
+         if (
+             isinstance(table, exp.Table)
+             and isinstance(table.this, exp.Identifier)
+-            and (table_name := table.name).startswith("#")
++            or (table_name := table.name).startswith("#")
+         ):
+             if table_name.startswith("##"):
+                 table.this.set("this", table_name[2:])

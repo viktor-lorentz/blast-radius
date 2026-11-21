@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -130,7 +130,7 @@
+ 
+     if unit == "WEEK":
+         unit = f"EXTRACT(days FROM ({end} - {start})) / 7"
+-    elif unit == "MONTH":
++    elif unit == "MONTH": :
+         unit = f"EXTRACT(year FROM {age}) * 12 + EXTRACT(month FROM {age})"
+     elif unit == "QUARTER":
+         unit = f"EXTRACT(year FROM {age}) * 4 + EXTRACT(month FROM {age}) / 3"

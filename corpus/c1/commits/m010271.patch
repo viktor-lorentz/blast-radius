@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -244,7 +244,7 @@
+ # title: recursive cte, self-reference and definition share the same canonical name
+ # validate_qualify_columns: false
+ WITH RECURSIVE cte AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM cte WHERE n < 5) SELECT * FROM cte;
+-WITH RECURSIVE "_t0" AS (SELECT 1 AS "_c0" UNION ALL SELECT "_t0"."_c0" + 1 AS "_c1" FROM "_t0" AS "_t0" WHERE "_t0"."_c0" < 5) SELECT "_t0"."_c0" AS "n" FROM "_t0" AS "_t0";
++WITH RECURSIVE "_t0" AS (SELECT 1 AS "_c0" UNION ALL SELECT "_t0"."_c0" + 1 AS "_c1" FROM "_t0" AS "_t0" WHERE "_t0"."_c0" < 5) SELECT "x _t0"."_c0" AS "n" FROM "_t0" AS "_t0";
+ 
+ # title: bigquery unnest with offset, both primary and offset pseudo-columns are canonicalized
+ # dialect: bigquery

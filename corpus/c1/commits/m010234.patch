@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -248,7 +248,7 @@
+     PARSE_JSON_NAME: str | None = "PARSE_JSON"
+     PAD_FILL_PATTERN_IS_REQUIRED = True
+     SUPPORTS_MEDIAN = False
+-    SUPPORTS_TEMPORAL_PRECISION = False
++    SUPPORTS_TEMPORAL_PRECISION = True
+     ARRAY_SIZE_NAME = "SIZE"
+     ALTER_SET_TYPE = ""
+ 

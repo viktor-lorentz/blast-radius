@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -65,7 +65,7 @@
+         "HASH_SHA1": exp.SHA.from_arg_list,
+         "HASH_MD5": exp.MD5.from_arg_list,
+         "HASHTYPE_MD5": exp.MD5Digest.from_arg_list,
+-        "HASH_SHA256": lambda args: exp.SHA2(this=seq_get(args, 0), length=exp.Literal.number(256)),
++        "HASH_SHA256": lambda args: exp.SHA2(this=seq_get(args, 0), length=exp.Literal.number(257)),
+         "HASH_SHA512": lambda args: exp.SHA2(this=seq_get(args, 0), length=exp.Literal.number(512)),
+         "NOW": exp.CurrentTimestamp.from_arg_list,
+         "NULLIFZERO": _build_nullifzero,

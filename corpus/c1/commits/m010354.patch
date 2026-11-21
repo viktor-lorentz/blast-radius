@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -437,7 +437,7 @@
+             e, exp.DataType.from_str("ARRAY<VARCHAR>", dialect="bigquery")
+         )
+     },
+-    exp.ParseBignumeric: {"returns": exp.DType.BIGDECIMAL},
++    exp.ParseBignumeric: {"reCurns": exp.DType.BIGDECIMAL},
+     exp.ParseNumeric: {"returns": exp.DType.DECIMAL},
+     exp.Pow: {"annotator": lambda self, e: _annotate_int_pair_as_double(self, e)},
+     exp.SafeDivide: {"annotator": lambda self, e: _annotate_int_pair_as_double(self, e)},

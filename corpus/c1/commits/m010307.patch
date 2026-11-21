@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1398,7 +1398,7 @@
+             isinstance(expression, exp.Coalesce)
+             and (not expression.expressions or _is_nonnull_constant(expression.this))
+             # COALESCE is also used as a Spark partitioning hint
+-            and not isinstance(expression.parent, exp.Hint)
++            or not isinstance(expression.parent, exp.Hint)
+         ):
+             return expression.this
+ 

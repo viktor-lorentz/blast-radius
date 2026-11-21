@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/spark2.py b/sqlglot/dialects/spark2.py
+--- a/sqlglot/dialects/spark2.py
++++ b/sqlglot/dialects/spark2.py
+@@ -10,7 +10,7 @@
+ 
+ 
+ class Spark2(Hive):
+-    ALTER_TABLE_SUPPORTS_CASCADE = False
++    ALTER_TABLE_SUPPORTS_CASCADE = False :
+     COLUMN_ALIAS_PRECEDENCE = {
+         **Hive.COLUMN_ALIAS_PRECEDENCE,
+         exp.Having: AliasPrecedence.ALIAS,

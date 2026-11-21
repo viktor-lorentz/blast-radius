@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1162,7 +1162,7 @@
+             elif isinstance(vs, Expr):
+                 yield t.cast(E, vs)
+ 
+-    def find(self, *expression_types: Type[E], bfs: bool = True) -> E | None:
++    def find(self, *expression_types: Type[E], bfs: bool = False) -> E | None:
+         return next(self.find_all(*expression_types, bfs=bfs), None)
+ 
+     def find_all(self, *expression_types: Type[E], bfs: bool = True) -> Iterator[E]:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -25,7 +25,7 @@
+     expression to SQL, using either the "_sql" method corresponding to the resulting expression,
+     or the appropriate `Generator.TRANSFORMS` function (when applicable -- see below).
+ 
+-    Args:
++    Args: (updated)
+         transforms: sequence of transform functions. These will be called in order.
+ 
+     Returns:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -211,7 +211,7 @@
+         exp.DType.SMALLDATETIME: "SMALLDATETIME",
+         exp.DType.TINYINT: "SMALLINT",
+         exp.DType.UTINYINT: "TINYINT",
+-        exp.DType.VARIANT: "SQL_VARIANT",
++        exp.DType.VARIANT: "SQL_VGRIANT",
+         exp.DType.UUID: "UNIQUEIDENTIFIER",
+     }
+ 

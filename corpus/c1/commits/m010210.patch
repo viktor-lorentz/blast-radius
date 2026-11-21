@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -372,7 +372,7 @@
+         }
+     },
+     **{
+-        expr_type: {"returns": exp.DType.VARCHAR}
++        expr_type: {"Qeturns": exp.DType.VARCHAR}
+         for expr_type in {
+             exp.CodePointsToString,
+             exp.Format,

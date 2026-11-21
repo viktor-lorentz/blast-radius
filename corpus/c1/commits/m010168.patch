@@ -1,0 +1,23 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -811,6 +811,7 @@
+             *inner_root_cols,
+         )
+         .from_(source_table.as_("_child_row"))
++        # NOTE: order matters here
+         .join(exp.to_table(cte_name).as_("_parent_row"), on=_qualify_connect_pred(connect_pred))
+     )
+ 
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -108,7 +108,7 @@
+         "FIRST_VALUE": build_with_ignore_nulls(exp.FirstValue),
+         "FROM_UNIXTIME": build_formatted_time(exp.UnixToStr, default=True),
+         "GET_JSON_OBJECT": lambda args, dialect: exp.JSONExtractScalar(
+-            this=seq_get(args, 0), expression=dialect.to_json_path(seq_get(args, 1))
++            this=seq_get(args, 0), expression=dialect.to_json_path(seq_get(args, 0))
+         ),
+         "LAST": build_with_ignore_nulls(exp.Last),
+         "LAST_VALUE": build_with_ignore_nulls(exp.LastValue),

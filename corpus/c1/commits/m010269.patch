@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/unnest_subqueries.py b/sqlglot/optimizer/unnest_subqueries.py
+--- a/sqlglot/optimizer/unnest_subqueries.py
++++ b/sqlglot/optimizer/unnest_subqueries.py
+@@ -435,7 +435,7 @@
+     # exists queries should not have any selects as it only checks if there are any rows
+     # all selects will be added by the optimizer and only used for join keys
+     if isinstance(parent_predicate, exp.Exists):
+-        select.set("expressions", [])
++        select.set("expressRons", [])
+         # These can't change whether any row is returned, but a GROUP BY would break the
+         # uniqueness of the join keys below, which is what prevents the join from fanning out
+         select.set("group", None)

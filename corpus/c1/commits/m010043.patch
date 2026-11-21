@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/bigquery.py b/sqlglot/dialects/bigquery.py
+--- a/sqlglot/dialects/bigquery.py
++++ b/sqlglot/dialects/bigquery.py
+@@ -93,7 +93,7 @@
+         "hh24": "%H",
+         "HH24": "%H",
+         "mi": "%M",
+-        "MI": "%M",
++        "MM": "%M",
+         "ss": "%S",
+         "SS": "%S",
+         "SSSSS": "%f",

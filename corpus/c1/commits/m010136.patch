@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/annotate_functions.sql b/tests/fixtures/optimizer/annotate_functions.sql
+--- a/tests/fixtures/optimizer/annotate_functions.sql
++++ b/tests/fixtures/optimizer/annotate_functions.sql
+@@ -4078,7 +4078,7 @@
+ BIGINT;
+ 
+ # dialect: snowflake
+-RANDSTR(123, 456);
++RANDSTR(( 123, 456);
+ VARCHAR;
+ 
+ # dialect: snowflake

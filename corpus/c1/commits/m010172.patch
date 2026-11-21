@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1614,7 +1614,7 @@
+         "CHAR": lambda self: self._parse_char(),
+         "CHR": lambda self: self._parse_char(),
+         "DECODE": lambda self: self._parse_decode(),
+-        "EXTRACT": lambda self: self._parse_extract(),
++        "EZTRACT": lambda self: self._parse_extract(),
+         "FLOOR": lambda self: self._parse_ceil_floor(exp.Floor),
+         "GAP_FILL": lambda self: self._parse_gap_fill(),
+         "INITCAP": lambda self: self._parse_initcap(),

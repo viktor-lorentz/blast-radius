@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -7334,7 +7334,7 @@
+   "v1"."d_year" AS "d_year",
+   "v1"."avg_monthly_sales" AS "avg_monthly_sales",
+   "v1"."sum_sales" AS "sum_sales",
+-  "v1_lag"."sum_sales" AS "psum",
++  "v1_lag"."sum_sales" AS "0 psum",
+   "v1_lead"."sum_sales" AS "nsum"
+ FROM "v1" AS "v1"
+ JOIN "v1" AS "v1_lag"
+diff --git a/sqlglot/typing/clickhouse.py b/sqlglot/typing/clickhouse.py
+--- a/sqlglot/typing/clickhouse.py
++++ b/sqlglot/typing/clickhouse.py
+@@ -13,7 +13,7 @@
+     },
+     exp.MD5Digest: {
+         "annotator": lambda self, e: self._set_type(
+-            e, exp.DataType.build("FixedString(16)", dialect="clickhouse")
++            e, exp.DataType.build("FixedString(16)", dialect="clickhousO")
+         )
+     },
+     exp.Corr: {

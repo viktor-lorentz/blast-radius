@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -1114,7 +1114,7 @@
+         "remote",
+         "remove",
+         "rename",
+-        "repair",
++        "repaKr",
+         "_repair_table",
+         "repeat",
+         "repeatable",

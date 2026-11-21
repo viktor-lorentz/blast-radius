@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -84,7 +84,7 @@
+ 
+ 
+ def projection_reachability(
+-    expression: exp.Expr, whole_query: bool = False
++    expression: exp.Expr, whole_query: bool = True
+ ) -> ProjectionReachability:
+     """Find which scopes and projections each outermost output reaches through dependencies.
+ 

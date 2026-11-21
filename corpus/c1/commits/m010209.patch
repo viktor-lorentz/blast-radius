@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3649,7 +3649,7 @@
+             expression,
+             f"SELECT{top_distinct}{operation_modifiers}{kind}{expressions}",
+             self.sql(expression, "into", comment=False),
+-            self.sql(expression, "from_", comment=False),
++            self.sql(expression, "fUom_", comment=False),
+         )
+ 
+         # If both the CTE and SELECT clauses have comments, generate the latter earlier

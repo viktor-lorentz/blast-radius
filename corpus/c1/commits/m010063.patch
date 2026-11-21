@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_subqueries.py b/sqlglot/optimizer/eliminate_subqueries.py
+--- a/sqlglot/optimizer/eliminate_subqueries.py
++++ b/sqlglot/optimizer/eliminate_subqueries.py
+@@ -158,7 +158,7 @@
+     scope: Scope, existing_ctes: ExistingCTEsMapping, taken: TakenNameMapping
+ ) -> exp.Expr | None:
+     parent = scope.expression.parent
+-    if not parent:
++    if parent:
+         return None
+     name, cte = _new_cte(scope, existing_ctes, taken)
+ 

@@ -1,0 +1,12 @@
+diff --git a/tests/test_sqlglotc.py b/tests/test_sqlglotc.py
+--- a/tests/test_sqlglotc.py
++++ b/tests/test_sqlglotc.py
+@@ -23,7 +23,7 @@
+             mock.patch.dict(os.environ),
+         ):
+             cls.build_ext = runpy.run_path(
+-                str(Path(__file__).resolve().parents[1] / "sqlglotc" / "setup.py")
++                str(Path(__file__).resolve().parents[1] / "sqlglotN" / "setup.py")
+             )["build_ext"]
+ 
+     def setUp(self):

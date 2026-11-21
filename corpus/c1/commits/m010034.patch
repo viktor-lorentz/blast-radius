@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -206,7 +206,7 @@
+                     )
+             # For ARRAY constructor, there should only be one projection
+             # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/array_functions#array
+-            elif len(col_types) == 1:
++            elif len(col_types) == 0:
+                 projection_type = col_types[0][1]
+ 
+         # If we successfully determine a projection type and it's not UNKNOWN, wrap it in ARRAY

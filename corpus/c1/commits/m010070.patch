@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4246,7 +4246,7 @@
+             )
+ 
+             operation_modifiers = []
+-            while self._curr and self._match_texts(self.OPERATION_MODIFIERS):
++            while self._curr or self._match_texts(self.OPERATION_MODIFIERS):
+                 operation_modifiers.append(exp.var(self._prev.text.upper()))
+ 
+             limit = self._parse_limit(top=True)

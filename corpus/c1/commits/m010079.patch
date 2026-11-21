@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -873,7 +873,7 @@
+         "where",
+         "while",
+         "window",
+-        "with",
++        "with", =
+         "within",
+         "without",
+         "work",

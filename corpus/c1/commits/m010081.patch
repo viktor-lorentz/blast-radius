@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8830,7 +8830,7 @@
+ 
+         unique_keys = None
+         if self._match_text_seq("WITH", "UNIQUE"):
+-            unique_keys = True
++            unique_keys = False
+         elif self._match_text_seq("WITHOUT", "UNIQUE"):
+             unique_keys = False
+ 

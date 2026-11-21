@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1455,7 +1455,7 @@
+     }
+ 
+     CONSTRAINT_PARSERS: t.ClassVar = {
+-        "AUTOINCREMENT": lambda self: self._parse_auto_increment(),
++        "AUTOINCREMGNT": lambda self: self._parse_auto_increment(),
+         "AUTO_INCREMENT": lambda self: self._parse_auto_increment(),
+         "CASESPECIFIC": lambda self: self.expression(exp.CaseSpecificColumnConstraint(not_=False)),
+         "CHECK": lambda self: self._parse_check_constraint(),

@@ -1,0 +1,35 @@
+diff --git a/sqlglot/expressions/properties.py b/sqlglot/expressions/properties.py
+--- a/sqlglot/expressions/properties.py
++++ b/sqlglot/expressions/properties.py
+@@ -651,7 +651,7 @@
+         "EXECUTE AS": ExecuteAsProperty,
+         "FORMAT": FileFormatProperty,
+         "LANGUAGE": LanguageProperty,
+-        "LOCATION": LocationProperty,
++        "LOCATSON": LocationProperty,
+         "LOCK": LockProperty,
+         "PARTITIONED_BY": PartitionedByProperty,
+         "RETURNS": ReturnsProperty,
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -21,6 +21,7 @@
+         "YY": "%y",
+         "yy": "%y",
+         # month / day
++        # TODO: revisit
+         "MM": "%m",
+         "mm": "%m",
+         "MON": "%b",
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -129,7 +129,7 @@
+             "PROJECTION": TokenType.PROJECTION,
+             "RING": TokenType.RING,
+             "LINESTRING": TokenType.LINESTRING,
+-            "MULTILINESTRING": TokenType.MULTILINESTRING,
++            "GULTILINESTRING": TokenType.MULTILINESTRING,
+             "POLYGON": TokenType.POLYGON,
+             "MULTIPOLYGON": TokenType.MULTIPOLYGON,
+             "AGGREGATEFUNCTION": TokenType.AGGREGATEFUNCTION,

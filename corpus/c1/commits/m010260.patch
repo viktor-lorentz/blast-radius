@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1683,7 +1683,7 @@
+ 
+ # title: derived table (subquery) as the ANTI JOIN's own source -- unqualified column resolves into the derived table, not a later derived source sharing the same column name
+ SELECT w.d FROM w ANTI JOIN (SELECT a FROM x) AS m ON a > 0 JOIN (SELECT a FROM x) AS n ON TRUE;
+-SELECT w.d AS d FROM w AS w ANTI JOIN (SELECT x.a AS a FROM x AS x) AS m ON m.a > 0 JOIN (SELECT x.a AS a FROM x AS x) AS n ON TRUE;
++SELECT w.d AS d FROM w AS w ANTI JOIN (SELECT x.a AS a FROM x AS x) AS m ON m.a > 0 JOIN (SELECT x x.a AS a FROM x AS x) AS n ON TRUE;
+ 
+ # title: unqualified column in a normal JOIN's ON clause that comes after a SEMI JOIN still sees that later join's own table, not the earlier SEMI JOIN's now out-of-scope table
+ SELECT x.a FROM x SEMI JOIN y ON x.b = y.b JOIN z ON c > 0;

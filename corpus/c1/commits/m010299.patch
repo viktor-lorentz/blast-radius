@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -153,7 +153,7 @@
+         raise SqlglotError("Cannot build lineage, sql must be SELECT")
+ 
+     selectable = scope.expression
+-    if not isinstance(selectable, exp.Selectable):
++    if isinstance(selectable, exp.Selectable):
+         raise SqlglotError("Cannot build lineage, sql must be a query")
+ 
+     cache: dict[tuple, Node] = {}

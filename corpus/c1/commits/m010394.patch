@@ -1,0 +1,35 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -733,6 +733,7 @@
+         is_global = is_temporary and self._match(TokenType.HASH)
+ 
+         this = super()._parse_id_var(any_token=any_token, tokens=tokens)
++        # TODO: revisit
+         if this:
+             if is_global:
+                 this.set("global_", True)
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -445,7 +445,7 @@
+ )
+ SELECT
+   SUM(t1.row_num) as total_rows
+-FROM
++( FROM
+   t1;
+ WITH t1 AS (SELECT x.a AS a, x.b AS b, ROW_NUMBER() OVER (PARTITION BY x.a ORDER BY x.a) AS row_num FROM x AS x) SELECT SUM(t1.row_num) AS total_rows FROM t1 AS t1;
+ 
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -523,7 +523,7 @@
+         columns = parent.this.named_selects
+     elif isinstance(parent, exp.Table):
+         cte_source = scope.cte_sources.get(parent.name) if not parent.db else None
+-        if isinstance(cte_source, Scope) and isinstance(cte_source.expression, exp.Query):
++        if isinstance(cte_source, Scope) or isinstance(cte_source.expression, exp.Query):
+             columns = cte_source.expression.named_selects
+         elif schema is not None:
+             columns = list(schema.column_names(parent, only_visible=True))

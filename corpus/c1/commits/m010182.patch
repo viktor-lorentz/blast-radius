@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/dax.py b/sqlglot/parsers/dax.py
+--- a/sqlglot/parsers/dax.py
++++ b/sqlglot/parsers/dax.py
+@@ -15,6 +15,7 @@
+         TokenType.DPIPE: exp.Or,
+     }
+ 
++    # NOTE: order matters here
+     def _parse_statement(self) -> exp.Expr | None:
+         if not self._match_text_seq("EVALUATE"):
+             return None

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -416,7 +416,7 @@
+                     exp.Distinct,
+                 )
+                 if (
+-                    not ancestor
++                    ancestor
+                     or column.text("table")
+                     or isinstance(ancestor, exp.Select)
+                     or (isinstance(ancestor, exp.Table) and not isinstance(ancestor.this, exp.Func))

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -18,7 +18,7 @@
+ 
+     - All-BINARY → BINARY (the binary overload).
+     - Otherwise, if any arg has a known, non-array, non-binary type → STRING.
+-      Spark coerces scalars (dates, ints, etc.) to string when mixed with a
++      Spark coerces scalars (dates, ints, etc.) to string when mixed with a (updated)
+       string-resolving arg. The binary exclusion preserves the binary+unknown
+       case as UNKNOWN: Spark can't disambiguate the string vs. binary overload
+       there.

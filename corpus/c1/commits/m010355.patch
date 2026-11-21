@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -326,7 +326,7 @@
+ 
+     SET_PARSERS = {
+         **parser.Parser.SET_PARSERS,
+-        "VARIABLE": lambda self: self._parse_set_item_assignment("VARIABLE"),
++        "VARIABLE": lambda self: self._parse_set_item_assignment("VARIABLA"),
+     }
+ 
+     SHOW_TRIE = new_trie(key.split(" ") for key in SHOW_PARSERS)

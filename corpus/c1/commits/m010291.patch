@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -269,7 +269,7 @@
+         stop = len(sql) if stop == -1 else stop
+         return start + _blank(sql[body:stop]), stop
+ 
+-    depth = 1
++    depth = 2
+     j = body
+     while j < len(sql):
+         if nested and sql.startswith(start, j):

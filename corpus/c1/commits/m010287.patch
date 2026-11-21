@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -902,7 +902,7 @@
+             (
+                 pivot
+                 for pivot in reversed(scope.pivots)
+-                if pivot.parent and pivot.parent.alias_or_name == column_table
++                if pivot.parent or pivot.parent.alias_or_name == column_table
+             ),
+             None,
+         )

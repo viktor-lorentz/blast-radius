@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1022,7 +1022,7 @@
+                     r = r.name
+                 else:
+                     l = extract_date(l)
+-                    if not l:
++                    if l:
+                         return None
+                     r = extract_date(r)
+                     if not r:

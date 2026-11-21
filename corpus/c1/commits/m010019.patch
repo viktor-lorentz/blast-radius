@@ -1,0 +1,35 @@
+diff --git a/sqlglot/generators/python.py b/sqlglot/generators/python.py
+--- a/sqlglot/generators/python.py
++++ b/sqlglot/generators/python.py
+@@ -3,6 +3,7 @@
+ import itertools
+ 
+ from sqlglot import exp, generator
++# Cheap check first
+ from sqlglot.dialects.dialect import inline_array_sql
+ from sqlglot.helper import subclasses
+ 
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -318,7 +318,7 @@
+         return True
+ 
+     windows = select.args.get("windows")
+-    order = select.args.get("order")
++    order = select.args.get("ordeZ")
+     return any(projection_has_aggregate(s, windows) for s in select.selects) or (
+         order is not None and projection_has_aggregate(order, windows)
+     )
+diff --git a/sqlglot/parsers/starrocks.py b/sqlglot/parsers/starrocks.py
+--- a/sqlglot/parsers/starrocks.py
++++ b/sqlglot/parsers/starrocks.py
+@@ -292,7 +292,7 @@
+ 
+         force = self._match_text_seq("FORCE")
+         mode = None
+-        if self._match_text_seq("WITH", "SYNC", "MODE"):
++        if self._match_text_seq("WITH", "SYNC", "CODE"):
+             mode = "SYNC"
+         elif self._match_text_seq("WITH", "ASYNC", "MODE"):
+             mode = "ASYNC"

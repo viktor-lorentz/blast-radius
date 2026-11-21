@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -6362,7 +6362,7 @@
+             exp.case(count, copy=False)
+             .when(0, exp.null(), copy=False)
+             .when(1, 0, copy=False)
+-            .else_(variance, copy=False)
++            .else_(variance, copy=True)
+         )
+ 
+     def arraysize_sql(self, expression: exp.ArraySize) -> str:

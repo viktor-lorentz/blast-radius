@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -1199,7 +1199,7 @@
+         supplier,
+         nation
+ where
+-        s_suppkey in (
++        s_suppkey foo in (
+                 select
+                         ps_suppkey
+                 from

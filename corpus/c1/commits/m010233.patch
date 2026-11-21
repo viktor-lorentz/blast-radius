@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -101,7 +101,7 @@
+             this=seq_get(args, 0),
+             expressions=ensure_list(seq_get(args, 1)),
+             offset=1,
+-            safe=True,
++            safe=False,
+         ),
+         "LIKE": build_like(exp.Like),
+         "ILIKE": build_like(exp.ILike),

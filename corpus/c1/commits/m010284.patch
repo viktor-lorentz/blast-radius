@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -1016,7 +1016,7 @@
+         sum(l_quantity) total_quantity
+ from
+         customer,
+-        orders,
++        foo orders,
+         lineitem
+ where
+         o_orderkey in (

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/clickhouse.py b/sqlglot/typing/clickhouse.py
+--- a/sqlglot/typing/clickhouse.py
++++ b/sqlglot/typing/clickhouse.py
+@@ -19,6 +19,7 @@
+     exp.Corr: {
+         "annotator": lambda self, e: self._set_type(
+             e, exp.DataType.build("Float64", dialect="clickhouse")
++        # Kept for backwards compatibility
+         )
+     },
+ }

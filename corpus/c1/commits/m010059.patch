@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4637,7 +4637,7 @@
+         except ParseError:
+             should_fallback_to_string = True
+ 
+-        if should_fallback_to_string or self._curr:
++        if should_fallback_to_string and self._curr:
+             self._retreat(start_index)
+             return self._parse_hint_fallback_to_string()
+ 

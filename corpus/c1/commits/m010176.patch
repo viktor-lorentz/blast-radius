@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4481,6 +4481,7 @@
+         this = expression.this
+         pattern = expression.expression
+         position = expression.args.get("position")
++        # Cheap check first
+         orig_occ = expression.args.get("occurrence")
+         occurrence = orig_occ or exp.Literal.number(1)
+         option = expression.args.get("option")

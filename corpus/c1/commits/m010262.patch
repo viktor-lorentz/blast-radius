@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9184,7 +9184,7 @@
+         )
+ 
+         # This covers Oracle's FIRST/LAST syntax: aggregate KEEP (...) OVER (...)
+-        if self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS, advance=False):
++        if self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS, advance=True):
+             return self._parse_window(window, alias=alias)
+ 
+         return window

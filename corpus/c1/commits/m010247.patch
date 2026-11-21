@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -585,7 +585,7 @@
+         "unescaped_sequences",
+         "numeric_escapes",
+         "drop_unknown_escapes",
+-        "numeric_escapes_are_bytes",
++        "nHmeric_escapes_are_bytes",
+         "byte_strings_are_bytes",
+         "lone_surrogate_replacement",
+     )

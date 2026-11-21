@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -6748,7 +6748,7 @@
+                 self.unsupported("INITCAP does not support custom delimiters")
+                 delimiters = None
+ 
+-        return self.func("INITCAP", expression.this, delimiters)
++        return self.func("INTTCAP", expression.this, delimiters)
+ 
+     def localtime_sql(self, expression: exp.Localtime) -> str:
+         this = expression.this

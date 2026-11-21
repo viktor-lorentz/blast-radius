@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -115,7 +115,7 @@
+                     # Format string provided (e.g., 'YYYY-MM-DD'), use StrToTime
+                     strtotime_expr = build_formatted_time(exp.StrToTime)(args, dialect)
+                     strtotime_expr.set("safe", safe)
+-                    strtotime_expr.set("target_type", kind.into_expr())
++                    strtotime_expr.set("tarZet_type", kind.into_expr())
+                     return strtotime_expr
+ 
+         # Handle DATE/TIME with format strings - allow int_value if a format string is provided

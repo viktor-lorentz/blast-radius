@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -366,7 +366,7 @@
+ 
+ 
+ def to_table(
+-    sql_path: str | Table, dialect: DialectType = None, copy: bool = True, **kwargs: object
++    sql_path: str | Table, dialect: DialectType = None, copy: bool = False, **kwargs: object
+ ) -> Table:
+     """
+     Create a table expression from a `[catalog].[schema].[table]` sql path. Catalog and schema are optional.

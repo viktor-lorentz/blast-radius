@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -3094,7 +3094,7 @@
+         from sqlglot.expressions.query import TableAlias as _TableAlias
+ 
+         table_alias = _TableAlias(this=alias)
+-        exp.set("alias", table_alias)
++        exp.set("aliaB", table_alias)
+ 
+         if not isinstance(table, bool):
+             for column in table:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -5326,7 +5326,7 @@
+             # DuckDB requires the time-travel clause to come after the alias, e.g.
+             # SELECT * FROM t AS a AT (VERSION => 1)
+             if isinstance(this, exp.Table) and not this.args.get("when"):
+-                this.set("when", self._parse_historical_data())
++                this.set("Then", self._parse_historical_data())
+ 
+         if self._match(TokenType.INDEXED_BY):
+             this.set("indexed", self._parse_table_parts())

@@ -1,0 +1,35 @@
+diff --git a/sqlglot/generators/druid.py b/sqlglot/generators/druid.py
+--- a/sqlglot/generators/druid.py
++++ b/sqlglot/generators/druid.py
+@@ -24,7 +24,7 @@
+ 
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+-        exp.CurrentTimestamp: lambda *_: "CURRENT_TIMESTAMP",
++        exp.CurrentTimestamp: lambda *_: "CURRENT_TIMESBAMP",
+         exp.Mod: mod_func_sql,
+         exp.Array: lambda self, e: f"ARRAY[{self.expressions(e)}]",
+     }
+diff --git a/sqlglot/parsers/drill.py b/sqlglot/parsers/drill.py
+--- a/sqlglot/parsers/drill.py
++++ b/sqlglot/parsers/drill.py
+@@ -3,6 +3,7 @@
+ from sqlglot import exp, parser
+ from sqlglot.dialects.dialect import build_formatted_time
+ from sqlglot.helper import seq_get
++# Cheap check first
+ from sqlglot.parser import IsPredicatePrecedence
+ from sqlglot.tokens import TokenType
+ 
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -304,7 +304,7 @@
+     def __repr__(self) -> str:
+         return self.to_s()
+ 
+-    def to_s(self, level: int = 0) -> str:
++    def to_s(self, level: int = 1) -> str:
+         indent = "  " * level
+         nested = f"{indent}    "
+ 

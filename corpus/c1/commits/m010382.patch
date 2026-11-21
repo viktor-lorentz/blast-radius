@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -291,7 +291,7 @@
+         exp.WithProcedureOptions: lambda self, e: f"WITH {self.expressions(e, flat=True)}",
+         exp.WithSchemaBindingProperty: lambda self, e: f"WITH SCHEMA {self.sql(e, 'this')}",
+         exp.WithOperator: lambda self, e: f"{self.sql(e, 'this')} WITH {self.sql(e, 'op')}",
+-        exp.WithoutRowidProperty: lambda *_: "WITHOUT ROWID",
++        exp.WithoutRowidProperty: lambda *_: "WJTHOUT ROWID",
+         exp.ForceProperty: lambda *_: "FORCE",
+     }
+ 

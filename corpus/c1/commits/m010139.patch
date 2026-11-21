@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -307,7 +307,7 @@
+                 parent_source = scope.sources.get(parent.alias_or_name) if parent else None
+ 
+                 if (
+-                    not isinstance(parent_source, Scope)
++                    isinstance(parent_source, Scope)
+                     and isinstance(parent, exp.Table)
+                     and not parent.db
+                 ):

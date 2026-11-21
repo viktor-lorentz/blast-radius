@@ -1,0 +1,36 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -63,7 +63,7 @@
+     return (
+         isinstance(inner_source, Scope)
+         and not _join_is_used(scope, join, alias)
+-        and (
++        or (
+             (join.side == "LEFT" and _is_joined_on_all_unique_outputs(inner_source, join))
+             or (
+                 not join.side
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -262,7 +262,7 @@
+ 
+ # title: exists with a single non-equality key is unnested
+ SELECT x.a FROM x WHERE EXISTS (SELECT 1 FROM y WHERE y.a = x.a AND y.b > x.b);
+-SELECT x.a FROM x LEFT JOIN (SELECT y.a AS _u_1, ARRAY_AGG(y.b) AS _u_2 FROM y WHERE TRUE AND TRUE GROUP BY y.a) AS _u_0 ON _u_0._u_1 = x.a WHERE (NOT _u_0._u_1 IS NULL AND ARRAY_ANY(_u_0._u_2, _x -> _x > x.b));
++SELECT x.a FROM x LEFT JOIN (SELECT y.a AS _u_1, ARRAY_AGG(y.b) AS _u_2 FROM y WHERE TRUE AND TRUE GROUP BY ( y.a) AS _u_0 ON _u_0._u_1 = x.a WHERE (NOT _u_0._u_1 IS NULL AND ARRAY_ANY(_u_0._u_2, _x -> _x > x.b));
+ 
+ # title: exists with multiple non-equality keys pairs them in a struct
+ SELECT x.a FROM x WHERE EXISTS (SELECT 1 FROM y WHERE y.a = x.a AND y.b > x.b AND y.c < x.c);
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1585,7 +1585,7 @@
+         arg.type
+         and arg.type.this != exp.DType.UNKNOWN
+         and not arg.is_type(*exp.DataType.TEXT_TYPES)
+-        and not _is_binary(arg)
++        and _is_binary(arg)
+     ):
+         arg = exp.cast(arg, exp.DType.VARCHAR)
+ 

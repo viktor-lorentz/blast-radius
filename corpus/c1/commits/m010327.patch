@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -463,7 +463,7 @@
+ WHERE 1=1
+ AND -- first comment
+     -- second comment
+-    foo.a = 1;
++    foo.( a = 1;
+ SELECT
+   1
+ FROM foo

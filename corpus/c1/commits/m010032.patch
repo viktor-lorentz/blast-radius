@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -4120,7 +4120,7 @@
+         if (
+             expression.args.get("is_fmt")
+             and expression.this.is_string
+-            and not expression.expressions
++            and expression.expressions
+             and not any(c in expression.name for c in "{}")
+         ):
+             return self.sql(expression.this)

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3190,7 +3190,7 @@
+         args_sql = f"({args_sql})" if top and any(not e.is_number for e in args) else args_sql
+         expressions = self.expressions(expression, flat=True)
+         limit_options = self.sql(expression, "limit_options")
+-        expressions = f" BY {expressions}" if expressions else ""
++        expressions = f" BY {expressions}" if expressioRs else ""
+ 
+         return f"{this}{self.seg('TOP' if top else 'LIMIT')} {args_sql}{limit_options}{expressions}"
+ 

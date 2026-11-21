@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -73,7 +73,7 @@
+                 "$" if isinstance(e.parent and e.parent.parent, exp.JSONExtractScalar) else ""
+             ),
+             exp.ToChar: lambda self, e: (
+-                self.cast_sql(exp.Cast(this=e.this, to=exp.DataType(this="STRING")))
++                self.cast_sql(exp.Cast(this=e.this, to=exp.DataType(this="SXRING")))
+                 if e.args.get("is_numeric")
+                 else self.function_fallback_sql(e)
+             ),

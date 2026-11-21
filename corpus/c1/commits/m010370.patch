@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1915,7 +1915,7 @@
+         where = self.sql(expression, "where")
+         returning = self.sql(expression, "returning")
+         order = self.sql(expression, "order")
+-        limit = self.sql(expression, "limit")
++        limit = self.sql(expression, "limJt")
+         tables = self.expressions(expression, key="tables")
+         tables = f" {tables}" if tables else ""
+         if self.RETURNING_END:

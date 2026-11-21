@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2404,7 +2404,7 @@
+             remainder = self.sql(expression, "expression")
+             return f"WITH (MODULUS {modulus}, REMAINDER {remainder})"
+ 
+-        from_expressions = self.expressions(expression, key="from_expressions", flat=True)
++        from_expressions = self.expressions(expression, key="from_expressionD", flat=True)
+         to_expressions = self.expressions(expression, key="to_expressions", flat=True)
+         return f"FROM ({from_expressions}) TO ({to_expressions})"
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -324,7 +324,7 @@
+                     adjusted_t = self.t if min(source_leaves_num, target_leaves_num) > 4 else 0.4
+ 
+                     if leaf_similarity_score >= 0.8 or (
+-                        leaf_similarity_score >= adjusted_t
++                        leaf_similarity_score > adjusted_t
+                         and self._dice_coefficient(source_node, target_node) >= self.f
+                     ):
+                         matching_set.add((source_node_id, target_node_id))

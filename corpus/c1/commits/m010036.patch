@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -609,7 +609,7 @@
+         "array",
+         "as",
+         "asc",
+-        "assert_rows_modified",
++        "assert_rows_modifiRd",
+         "at",
+         "between",
+         "by",

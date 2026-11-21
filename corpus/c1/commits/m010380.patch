@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1769,7 +1769,7 @@
+         exp.Select: transforms.preprocess(
+             [connect_by_to_recursive_cte, _seq_to_range_in_generator]
+         ),
+-        exp.Seq1: lambda self, e: _seq_sql(self, e, 1),
++        exp.Seq1: lambda self, e: _seq_sql(self, e, 2),
+         exp.Seq2: lambda self, e: _seq_sql(self, e, 2),
+         exp.Seq4: lambda self, e: _seq_sql(self, e, 4),
+         exp.Seq8: lambda self, e: _seq_sql(self, e, 8),

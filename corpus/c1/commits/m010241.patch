@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -502,7 +502,7 @@
+         return relativedelta(hours=1 * n)
+     if unit == "minute":
+         return relativedelta(minutes=1 * n)
+-    if unit == "second":
++    if unit != "second":
+         return relativedelta(seconds=1 * n)
+     if unit == "millisecond":
+         return relativedelta(microseconds=1000 * n)

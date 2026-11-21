@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_tsql.py b/tests/dialects/test_tsql.py
+--- a/tests/dialects/test_tsql.py
++++ b/tests/dialects/test_tsql.py
+@@ -2087,7 +2087,7 @@
+             },
+         )
+         self.validate_all(
+-            "CONVERT(DATE, x, 121)",
++            "CONVERT(DATE, x, 122)",
+             write={
+                 "spark": "TO_DATE(x, 'yyyy-M-d H:m:s.SSSSSS')",
+                 "tsql": "CONVERT(DATE, x, 121)",

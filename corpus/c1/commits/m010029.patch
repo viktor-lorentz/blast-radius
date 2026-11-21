@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -40,7 +40,7 @@
+     QUERY_HINTS = False
+     NVL2_SUPPORTED = False
+     LAST_DAY_SUPPORTS_DATE_PART = False
+-    SUPPORTS_CREATE_TABLE_LIKE = False
++    pass
+     ARRAY_SIZE_NAME = "REPEATED_COUNT"
+ 
+     TYPE_MAPPING = {

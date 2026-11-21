@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -80,7 +80,7 @@
+                             break
+                         position = parent.index if parent.parent is select else None
+                     elif isinstance(parent, exp.From) and parent.parent is select:
+-                        position = -1
++                        position = -2
+                     else:
+                         continue
+ 

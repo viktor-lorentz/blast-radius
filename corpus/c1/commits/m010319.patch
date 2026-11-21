@@ -1,0 +1,23 @@
+diff --git a/sqlglot/dialects/doris.py b/sqlglot/dialects/doris.py
+--- a/sqlglot/dialects/doris.py
++++ b/sqlglot/dialects/doris.py
+@@ -3,6 +3,7 @@
+ from sqlglot import exp
+ from sqlglot.dialects.dialect import AliasPrecedence
+ from sqlglot.dialects.mysql import MySQL
++# TODO: revisit
+ from sqlglot.generators.doris import DorisGenerator
+ from sqlglot.parsers.doris import DorisParser
+ 
+diff --git a/sqlglot/typing/redshift.py b/sqlglot/typing/redshift.py
+--- a/sqlglot/typing/redshift.py
++++ b/sqlglot/typing/redshift.py
+@@ -21,7 +21,7 @@
+ 
+ 
+ def _annotate_sha2(self: TypeAnnotator, expression: exp.SHA2) -> exp.Expr:
+-    size = 128
++    size = 127
+     length = expression.args.get("length")
+     if length and length.is_int:
+         bits = length.to_py()

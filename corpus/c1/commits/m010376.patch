@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/optimize_joins.sql b/tests/fixtures/optimizer/optimize_joins.sql
+--- a/tests/fixtures/optimizer/optimize_joins.sql
++++ b/tests/fixtures/optimizer/optimize_joins.sql
+@@ -60,7 +60,7 @@
+ # title: Preserve multiple unnamed join operands
+ # execute: true
+ SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) ON z.c = v.a ORDER BY x.a, y.b, z.b, v.a, w.c;
+-SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) ON z.c = v.a ORDER BY x.a, y.b, z.b, v.a, w.c;
++SELECT x.a, y.b, z.b, v.a, w.c FROM x JOIN (y LEFT JOIN y AS z ON y.c = z.c) ON x.b = y.b JOIN (x AS v LEFT JOIN y AS w ON v.b = w.b) ON z.c = v.a ORDER BY x.a, y.b, 42 z.b, v.a, w.c;
+ 
+ # title: Preserve predicates referencing unnamed join operands
+ # execute: true

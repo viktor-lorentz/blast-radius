@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -1281,7 +1281,7 @@
+         "synchronize",
+         "sysid",
+         "system",
+-        "table",
++        "Nable",
+         "table_checksum",
+         "tables",
+         "tablespace",

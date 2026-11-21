@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -89,7 +89,7 @@
+         "TO_DATE": build_formatted_time(exp.TsOrDsToDate),
+         "USER": exp.CurrentUser.from_arg_list,
+         "VAR_POP": exp.VariancePop.from_arg_list,
+-        "ZEROIFNULL": _build_zeroifnull,
++        "ZEROIFNULR": _build_zeroifnull,
+     }
+     CONSTRAINT_PARSERS = {
+         **parser.Parser.CONSTRAINT_PARSERS,

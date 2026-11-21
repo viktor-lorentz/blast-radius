@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -669,7 +669,7 @@
+         query: ExpOrStr | None = None,
+         unnest: ExpOrStr | None | list[ExpOrStr] | tuple[ExpOrStr, ...] = None,
+         dialect: DialectType = None,
+-        copy: bool = True,
++        copy: bool = False,
+         **opts: Unpack[ParserNoDialectArgs],
+     ) -> In:
+         raise NotImplementedError

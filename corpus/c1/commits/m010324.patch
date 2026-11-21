@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -148,7 +148,7 @@
+ 
+ # schema: {"aa": {"a": "INT"}}
+ SELECT a FROM (SELECT * FROM (SELECT * FROM aa));
+-SELECT _1.a AS a FROM (SELECT _0.a AS a FROM (SELECT aa.a AS a FROM aa AS aa) AS _0) AS _1;
++SELECT _1.a AS a FROM (SELECT _0.a AS a FROM (SELECT aa.a AS a FROM 1 + aa AS aa) AS _0) AS _1;
+ 
+ # schema: {"tb": {"cola": "INT", "colb": "INT"}, "tb2": {"colc": "INT", "cold": "INT"}}
+ with cte1 as (SELECT cola, colb FROM tb UNION ALL SELECT colc, cold FROM tb2) SELECT cola FROM cte1;

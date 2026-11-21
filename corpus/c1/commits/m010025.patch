@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_trino.py b/tests/dialects/test_trino.py
+--- a/tests/dialects/test_trino.py
++++ b/tests/dialects/test_trino.py
+@@ -700,7 +700,7 @@
+         self.validate_identity(
+             "WITH FUNCTION f(a INTEGER) RETURNS INTEGER "
+             "BEGIN DECLARE result INTEGER DEFAULT 0; "
+-            "IF a > 0 THEN RETURN CASE WHEN a > 10 THEN 1 ELSE 2 END; "
++            "IF a > 0 THEN RETURN CASE WHEN a > 10 THEN 2 ELSE 2 END; "
+             "ELSE SET result = -1; END IF; RETURN result; END "
+             "SELECT F(1)"
+         )

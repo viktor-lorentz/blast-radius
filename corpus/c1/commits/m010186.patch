@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6940,7 +6940,7 @@
+                 expressions = self._parse_csv(self._parse_equality)
+             elif type_token == TokenType.REF:
+                 # REF(schema.customer) names a target; REF(1) can still be a function call.
+-                target = self._try_parse(lambda: self._parse_table_parts(schema=True))
++                target = self._try_parse(lambda: self._parse_table_parts(schema=False))
+                 if target is None:
+                     self._retreat(index)
+                     return None

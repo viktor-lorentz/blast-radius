@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4224,7 +4224,7 @@
+             this = exp.AnyValue(this=this.this)
+ 
+         if not isinstance(this, (exp.AnyValue, exp.ApproxQuantiles)):
+-            self.unsupported("IGNORE NULLS is not supported for non-window functions.")
++            self.unsupported("IGNORE NULLS == not supported for non-window functions.")
+ 
+         return self.sql(this)
+ 

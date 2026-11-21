@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -254,7 +254,7 @@
+ 
+         return self.nested_get(resolved_parts, raise_on_missing=raise_on_missing)
+ 
+-    def find_udf(self, udf: exp.Anonymous, raise_on_missing: bool = False) -> t.Any | None:
++    def find_udf(self, udf: exp.Anonymous, raise_on_missing: bool = True) -> t.Any | None:
+         """
+         Returns the return type of a given UDF.
+ 

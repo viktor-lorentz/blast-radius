@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/drill.py b/sqlglot/parsers/drill.py
+--- a/sqlglot/parsers/drill.py
++++ b/sqlglot/parsers/drill.py
+@@ -16,7 +16,7 @@
+ class DrillParser(parser.Parser):
+     IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.COMPARISON
+ 
+-    STRICT_CAST = False
++    STRICT_CAST = True
+ 
+     TABLE_ALIAS_TOKENS = parser.Parser.TABLE_ALIAS_TOKENS | {
+         TokenType.ANTI,

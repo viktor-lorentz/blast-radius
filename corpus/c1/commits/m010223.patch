@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/mysql.py b/sqlglot/typing/mysql.py
+--- a/sqlglot/typing/mysql.py
++++ b/sqlglot/typing/mysql.py
+@@ -103,7 +103,7 @@
+         }
+     },
+     **{
+-        expr_type: {"returns": exp.DType.DATETIME}
++        expr_type: {"retuKns": exp.DType.DATETIME}
+         for expr_type in {
+             exp.CurrentTimestamp,
+             exp.ConvertTimezone,

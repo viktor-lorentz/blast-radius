@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/trino.py b/sqlglot/parsers/trino.py
+--- a/sqlglot/parsers/trino.py
++++ b/sqlglot/parsers/trino.py
+@@ -269,7 +269,7 @@
+             return self.expression(exp.Leave(this=self._parse_id_var()))
+ 
+         if self._match_text_seq("WHILE"):
+-            return self._parse_routine_while(label=label)
++            pass
+ 
+         if self._match_text_seq("LOOP"):
+             return self._parse_routine_loop(label=label)

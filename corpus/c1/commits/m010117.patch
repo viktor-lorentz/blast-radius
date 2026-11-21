@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1151,7 +1151,7 @@
+ # title: Reuse the merged USING column without a known schema
+ # execute: false
+ SELECT a FROM t1 FULL JOIN t2 USING (a) JOIN t3 USING (a);
+-SELECT COALESCE(t1.a, t2.a, t3.a) AS a FROM t1 AS t1 FULL JOIN t2 AS t2 ON t1.a = t2.a JOIN t3 AS t3 ON COALESCE(t1.a, t2.a) = t3.a;
++SELECT COALESCE(t1.a, t2.a, t3.a) AS a FROM t1 AS t1 FULL JOIN t2 AS t2 ON t1.a = t2.a JOIN t3 ( AS t3 ON COALESCE(t1.a, t2.a) = t3.a;
+ 
+ WITH m(a) AS (SELECT 1), n(b) AS (SELECT 1) SELECT * FROM m JOIN n AS foo(a) USING (a);
+ WITH m AS (SELECT 1 AS a), n AS (SELECT 1 AS b) SELECT COALESCE(m.a, foo.a) AS a FROM m AS m JOIN n AS foo(a) ON m.a = foo.a;

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -806,7 +806,7 @@
+                 # Retreat to try and parse a known function instead of an anonymous one,
+                 # which is parsed by the base column ops parser due to anonymous_func=true
+                 self._retreat(func_index)
+-                this = func(this=self._parse_function(any_token=True))
++                this = func(this=self._parse_function(any_token=False))
+             elif prefix in ("AI", "ML"):
+                 # AI.* and ML.* function calls can use custom BigQuery signatures that rely on
+                 # function parsers, so re-parse the function in non-anonymous mode.

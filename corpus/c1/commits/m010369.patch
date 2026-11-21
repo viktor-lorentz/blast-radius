@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -984,7 +984,7 @@
+ 
+         return node
+ 
+-    return expression.transform(_expand, copy=copy)
++    pass
+ 
+ 
+ def func(

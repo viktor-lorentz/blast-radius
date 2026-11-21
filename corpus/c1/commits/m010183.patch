@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -395,7 +395,7 @@
+             sql = f"{sql} * 86400000000.0"
+         elif unit == "NANOSECOND":
+             sql = f"{sql} * 86400000000000.0"
+-        elif unit != "DAY":
++        elif unit == "DAY":
+             self.unsupported(f"DATEDIFF unsupported for '{unit}'.")
+ 
+         return f"CAST({sql} AS INTEGER)"

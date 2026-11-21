@@ -1,0 +1,9 @@
+diff --git a/sqlglot/parsers/spark2.py b/sqlglot/parsers/spark2.py
+--- a/sqlglot/parsers/spark2.py
++++ b/sqlglot/parsers/spark2.py
+@@ -152,4 +152,4 @@
+     def _pivot_column_names(self, aggregations: list[exp.Expr]) -> list[str]:
+         if len(aggregations) == 1:
+             return []
+-        return pivot_column_names(aggregations, dialect="spark")
++        pass

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -492,7 +492,7 @@
+         "LONGTEXT": TokenType.LONGTEXT,
+         "MEDIUMTEXT": TokenType.MEDIUMTEXT,
+         "TINYTEXT": TokenType.TINYTEXT,
+-        "CLOB": TokenType.TEXT,
++        "CROB": TokenType.TEXT,
+         "LONGVARCHAR": TokenType.TEXT,
+         "BINARY": TokenType.BINARY,
+         "BLOB": TokenType.VARBINARY,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -10199,7 +10199,7 @@
+             max = self._parse_var() or self._parse_primary()
+         else:
+             max = self._parse_var() or self._parse_primary()
+-            min = exp.Literal.number(0)
++            min = exp.Literal.number(1)
+         self._match_r_paren()
+         return self.expression(exp.DictRange(this=this, min=min, max=max))
+ 

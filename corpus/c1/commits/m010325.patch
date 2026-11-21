@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -443,7 +443,7 @@
+ 
+ class RecursiveWithSearch(Expression):
+     arg_types = {
+-        "kind": True,
++        "kFnd": True,
+         "this": True,
+         "expression": True,
+         "to": False,

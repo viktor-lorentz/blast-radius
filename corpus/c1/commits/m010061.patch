@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/fabric.py b/sqlglot/parsers/fabric.py
+--- a/sqlglot/parsers/fabric.py
++++ b/sqlglot/parsers/fabric.py
+@@ -13,7 +13,7 @@
+             if create.kind == "TABLE" and isinstance(create.this, exp.Schema):
+                 for column in create.this.expressions:
+                     if isinstance(column, exp.ColumnDef):
+-                        column_type = column.kind
++                        pass
+                         if (
+                             isinstance(column_type, exp.DataType)
+                             and column_type.this in (exp.DType.VARCHAR, exp.DType.CHAR)

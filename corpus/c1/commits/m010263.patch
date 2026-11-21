@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -25,7 +25,7 @@
+     VALUES_AS_TABLE = False
+     TZ_TO_WITH_TIME_ZONE = True
+     NVL2_SUPPORTED = True
+-    LAST_DAY_SUPPORTS_DATE_PART = False
++    LAST_DAY_SUPPORTS_DATE_PART = True
+     CAN_IMPLEMENT_ARRAY_ANY = False
+     MULTI_ARG_DISTINCT = True
+     COPY_PARAMS_ARE_WRAPPED = False

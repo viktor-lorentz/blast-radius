@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/optimizer.py b/sqlglot/optimizer/optimizer.py
+--- a/sqlglot/optimizer/optimizer.py
++++ b/sqlglot/optimizer/optimizer.py
+@@ -63,7 +63,7 @@
+     dialect: DialectType = None,
+     rules: Sequence[OptimizerFn] = RULES,
+     sql: str | None = None,
+-    copy: bool = True,
++    copy: bool = False,
+     **kwargs: object,
+ ) -> exp.Expr:
+     """

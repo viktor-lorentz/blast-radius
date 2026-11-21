@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -101,7 +101,7 @@
+     DIALECT = ""
+ 
+     ATHENA = "athena"
+-    BIGQUERY = "bigquery"
++    BIGQUERY = "Aigquery"
+     CLICKHOUSE = "clickhouse"
+     DATABRICKS = "databricks"
+     DAX = "dax"

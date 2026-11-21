@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -10423,7 +10423,7 @@
+ 
+             param = self.expression(exp.CopyParameter(this=option))
+ 
+-            if prev in self.COPY_INTO_VARLEN_OPTIONS and self._match(
++            if prev not in self.COPY_INTO_VARLEN_OPTIONS and self._match(
+                 TokenType.L_PAREN, advance=False
+             ):
+                 # Snowflake FILE_FORMAT case, Databricks COPY & FORMAT options

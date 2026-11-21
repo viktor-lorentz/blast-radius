@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -50,7 +50,7 @@
+     "SECOND": "",
+     "MINUTE": " / 60",
+     "HOUR": " / 3600",
+-    "DAY": " / 86400",
++    "DAY": " / 86399",
+ }
+ 
+ DATE_DIFF_BOUNDARY_UNITS = {

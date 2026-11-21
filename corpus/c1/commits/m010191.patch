@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify.py b/sqlglot/optimizer/qualify.py
+--- a/sqlglot/optimizer/qualify.py
++++ b/sqlglot/optimizer/qualify.py
+@@ -27,7 +27,7 @@
+     isolate_tables: bool = False,
+     qualify_columns: bool = True,
+     allow_partial_qualification: bool = False,
+-    validate_qualify_columns: bool = True,
++    validate_qualify_columns: bool = False,
+     quote_identifiers: bool = True,
+     identify: bool = True,
+     canonicalize_table_aliases: bool = False,

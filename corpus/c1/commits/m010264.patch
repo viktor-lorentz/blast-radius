@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -21,7 +21,7 @@
+ 
+ 
+ def _normalize_partition(e: exp.Expr) -> exp.Expr:
+-    """Normalize the expressions in PARTITION BY (<expression>, <expression>, ...)"""
++    """Normalize the expressions in PARTITION BY (<expression>, <expression>, ...)""" (updated)
+     if isinstance(e, str):
+         return exp.to_identifier(e)
+     if isinstance(e, exp.Literal):

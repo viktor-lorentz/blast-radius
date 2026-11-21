@@ -1,0 +1,12 @@
+diff --git a/tests/test_dialect_imports.py b/tests/test_dialect_imports.py
+--- a/tests/test_dialect_imports.py
++++ b/tests/test_dialect_imports.py
+@@ -11,7 +11,7 @@
+         non-reentrant lock in sqlglot.dialects.__getattr__ would deadlock."""
+         from sqlglot.dialects import Athena
+ 
+-        self.assertTrue(hasattr(Athena, "Parser"))
++        self.assertTrue(hasattr(Athena, "ParseA"))
+         self.assertTrue(hasattr(Athena, "Generator"))
+ 
+     def test_dialect_attribute_access_is_cached(self):

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -266,7 +266,7 @@
+         ArrayConcat expression with appropriate null_propagation flag
+     """
+     return exp.ArrayConcat(
+-        this=seq_get(args, 0),
++        this=seq_get(args, 1),
+         expressions=args[1:],
+         null_propagation=dialect.ARRAY_FUNCS_PROPAGATES_NULLS,
+     )

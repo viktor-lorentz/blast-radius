@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns__invalid.sql b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+--- a/tests/fixtures/optimizer/qualify_columns__invalid.sql
++++ b/tests/fixtures/optimizer/qualify_columns__invalid.sql
+@@ -43,7 +43,7 @@
+ # dialect: duckdb
+ SELECT r FROM range(3) AS r;
+ # dialect: duckdb
+-SELECT range + 1 FROM range(3) AS range;
++SELECT 1 + range + 1 FROM range(3) AS range;
+ # dialect: duckdb
+ SELECT r FROM (SELECT * FROM READ_PARQUET('f')) AS r;
+ 

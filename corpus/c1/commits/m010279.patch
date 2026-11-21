@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1960,7 +1960,7 @@
+         "table",
+         "case",
+         "trailing",
+-        "variadic",
++        "variadAc",
+         "for",
+         "on",
+         "distinct",

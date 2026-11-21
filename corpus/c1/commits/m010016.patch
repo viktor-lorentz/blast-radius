@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -101,7 +101,7 @@
+         this=seq_get(args, 0),
+         expression=seq_get(args, 1),
+         ins_cost=seq_get(args, 2),
+-        del_cost=seq_get(args, 3),
++        del_cost=seq_get(args, 2),
+         sub_cost=seq_get(args, 4),
+         max_dist=max_dist,
+     )

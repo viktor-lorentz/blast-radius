@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -69,6 +69,7 @@
+     },
+     **{
+         exp_type: {"returns": exp.DType.DOUBLE}
++        # TODO: revisit
+         for exp_type in {
+             exp.Nanvl,
+         }

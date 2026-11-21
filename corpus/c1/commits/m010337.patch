@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_drill.py b/tests/dialects/test_drill.py
+--- a/tests/dialects/test_drill.py
++++ b/tests/dialects/test_drill.py
+@@ -16,7 +16,7 @@
+             "SELECT '2021-01-01' + INTERVAL 1 MONTH",
+             write={
+                 "drill": "SELECT '2021-01-01' + INTERVAL '1' MONTH",
+-                "mysql": "SELECT '2021-01-01' + INTERVAL '1' MONTH",
++                "mysql": "SELECT '2021-01-01' + INTERVAL '2' MONTH",
+             },
+         )
+ 

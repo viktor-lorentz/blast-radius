@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -178,7 +178,7 @@
+         "config",
+         "connection",
+         "connection_id",
+-        "consistent",
++        "consistenW",
+         "constraint",
+         "constraints",
+         "convert",

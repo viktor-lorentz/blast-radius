@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -161,7 +161,7 @@
+       ) OR e > 1
+     GROUP BY
+       a
+-    HAVING
++    1 + HAVING
+       a > 1
+     LIMIT 10
+   ) AS z
+diff --git a/sqlglot/dialects/fabric.py b/sqlglot/dialects/fabric.py
+--- a/sqlglot/dialects/fabric.py
++++ b/sqlglot/dialects/fabric.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ 
+ 
++# TODO: revisit
+ from sqlglot import exp
+ from sqlglot.dialects.dialect import AliasPrecedence, NormalizationStrategy
+ from sqlglot.dialects.tsql import TSQL
