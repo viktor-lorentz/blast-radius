@@ -8,9 +8,6 @@ ARG SQLGLOT_SHA=eb11aec4be8cb2122afe713a4816662c3f0fb2fa
 COPY tools/fetch_src.py /tmp/fetch_src.py
 RUN python /tmp/fetch_src.py "$SQLGLOT_SHA" /opt/sqlglot && rm /tmp/fetch_src.py
 
-# test_execute_tpcds compares against DuckDB. Versions match requirements.lock.
-RUN pip install --no-cache-dir 'duckdb==2.0.0' 'pandas==3.1.1' 'numpy==2.5.5'
-
 COPY selector.py /app/selector.py
 COPY blast /app/blast
 COPY maps /app/maps

@@ -445,6 +445,166 @@ def _tests_mentioning(words: set[str], maps) -> set[int]:
     return hit
 
 
+_FULL_MENTIONS = None
+_SQL_FUNC = _re.compile(r"^[A-Z][A-Z0-9_]*$")
+_IDENT_WORD = _re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_QUOTED = _re.compile(r"""(\"[^\"\\]*\"|'[^'\\]*')""")
+
+
+def _full_mention_index(maps):
+    """Whole test file plus fixture text. The slice index misses tests that spell the word later in the class."""
+    global _FULL_MENTIONS
+    if _FULL_MENTIONS is not None:
+        return _FULL_MENTIONS
+    tests = json.loads((DATA / "tests.json").read_text())["tests"]
+    by_file: dict[str, list] = {}
+    for t in tests:
+        by_file.setdefault(t["id"].split("::")[0], []).append(t["number"])
+    texts = {}
+    for rel, nums in by_file.items():
+        try:
+            texts[rel] = (SRC / rel).read_text(errors="replace")
+        except OSError:
+            texts[rel] = ""
+    _segs, fixtures = _mention_index(maps)
+    _FULL_MENTIONS = (by_file, texts, fixtures)
+    return _FULL_MENTIONS
+
+
+def _tests_mentioning_full(words: set[str], maps) -> set[int]:
+    by_file, texts, fixtures = _full_mention_index(maps)
+    pats = [_re.compile(rf"\b{_re.escape(w)}\b", _re.I) for w in words]
+    hit: set[int] = set()
+    for rel, text in texts.items():
+        if text and any(p.search(text) for p in pats):
+            hit.update(by_file[rel])
+    for rel, text in fixtures:
+        if not any(p.search(text) for p in pats):
+            continue
+        opened = maps.opened_by(rel)
+        if opened:
+            hit |= set(opened)
+    return hit
+
+
+def _assign_name(node, par: dict):
+    seen = 0
+    while id(node) in par and seen < 8:
+        node = par[id(node)]
+        seen += 1
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            return node.targets[0].id
+        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            return node.target.id
+    return None
+
+
+def _vocab_site(node, par: dict) -> bool:
+    """True when this string is a SQL spelling, not an arg name or a slot."""
+    parent = par.get(id(node))
+    if isinstance(parent, ast.Dict) and node in parent.keys:
+        name = _assign_name(parent, par)
+        if name in ("arg_types", "__slots__"):
+            return False
+        idx = parent.keys.index(node)
+        value = parent.values[idx]
+        # Function tables are often `{**base, "RPAD": lambda ...}`. The spelling is the token.
+        if isinstance(value, ast.Lambda) and isinstance(node.value, str) and _SQL_FUNC.match(node.value):
+            return True
+        if any(k is None for k in parent.keys):
+            return False
+        keys = [k for k in parent.keys if isinstance(k, ast.Constant) and isinstance(k.value, str)]
+        if len(keys) != len(parent.keys) or len(keys) < 8:
+            return False
+        if not all(isinstance(v, ast.Constant) and v.value in (True, False, None) for v in parent.values):
+            return False
+        return name != "arg_types"
+    if isinstance(parent, (ast.Set, ast.List, ast.Tuple)) and node in getattr(parent, "elts", ()):
+        name = _assign_name(parent, par)
+        if not name or "KEYWORD" not in name.upper() or name == "__slots__":
+            return False
+        elts = parent.elts
+        return len(elts) >= 4 and all(isinstance(e, ast.Constant) and isinstance(e.value, str) for e in elts)
+    return False
+
+
+def _changed_idents(old_line: str, new_line: str):
+    """Old identifier spellings on a line whose only edits are inside quotes."""
+    def parts(line):
+        bits, strs, pos = [], [], 0
+        for m in _QUOTED.finditer(line):
+            bits.append(line[pos:m.start()])
+            strs.append(m.group(0)[1:-1])
+            pos = m.end()
+        bits.append(line[pos:])
+        return bits, strs
+
+    old_bits, old_strs = parts(old_line)
+    new_bits, new_strs = parts(new_line)
+    if old_bits != new_bits or len(old_strs) != len(new_strs):
+        return None
+    changed = [a for a, b in zip(old_strs, new_strs) if a != b]
+    if not changed or any(not _IDENT_WORD.match(w) or len(w) < 3 for w in changed):
+        return None
+    return changed
+
+
+def _vocabulary_words(files) -> set[str] | None:
+    """Words whose only change is a SQL spelling in a keyword set, function table, or clause map.
+
+    None means the patch is not that shape: leave the coverage selection alone.
+    """
+    if not files:
+        return None
+    words: set[str] = set()
+    for fp in files:
+        if fp.special or not fp.path.endswith(".py") or fp.old_path != fp.new_path:
+            return None
+        old_text = (SRC / fp.path).read_text()
+        pairs = []
+        old_nos = []
+        for h in fp.hunks:
+            o = h.old_start
+            removed, added = [], []
+            for line in h.lines:
+                if line.startswith("-"):
+                    removed.append(line[1:])
+                    old_nos.append(o)
+                    o += 1
+                elif line.startswith("+"):
+                    added.append(line[1:])
+                else:
+                    o += 1
+            if len(removed) != len(added) or not removed:
+                return None
+            pairs.extend(zip(removed, added, old_nos[-len(removed):]))
+        if not pairs:
+            return None
+        try:
+            tree = ast.parse(old_text)
+        except SyntaxError:
+            return None
+        par = {}
+        for n in ast.walk(tree):
+            for c in ast.iter_child_nodes(n):
+                par[id(c)] = n
+        by_line: dict[int, list] = {}
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Constant) and isinstance(n.value, str):
+                by_line.setdefault(n.lineno, []).append(n)
+        for old_line, new_line, lineno in pairs:
+            changed = _changed_idents(old_line, new_line)
+            if not changed:
+                return None
+            nodes = by_line.get(lineno, [])
+            for word in changed:
+                hits = [n for n in nodes if n.value == word and _vocab_site(n, par)]
+                if len(hits) != 1:
+                    return None
+                words.add(word)
+    return words or None
+
+
 def _stored_names(stmt) -> set[str]:
     nodes = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
     return {n.id for t in nodes for n in ast.walk(t) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
@@ -755,6 +915,17 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                         out = shrunk
             except Exception as e:
                 log("escape skip:", repr(e))
+        # A keyword-set member, a SQL function name in a dispatch table, or a
+        # clause name in a fixed modifier map is observed only by tests that
+        # spell that word (or open a fixture that does). arg_types, slots, and
+        # other string edits stay on the coverage set: those fail tests that
+        # never spell the name.
+        try:
+            vocab = _vocabulary_words(files)
+            if vocab and maps is not None:
+                out &= _tests_mentioning_full(vocab, maps)
+        except Exception as e:
+            log("vocab skip:", repr(e))
         return out
     except All as e:
         log("ALL:", e)
