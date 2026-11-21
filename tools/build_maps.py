@@ -47,6 +47,12 @@ def run_suite():
             f"--junitxml {WORK}/pass2.xml tests")
     print("+", cmd2, flush=True)
     subprocess.run(cmd2, shell=True, cwd=SRC, env=env2)
+    # pass 3: which lazily loaded modules (dialects/generators/parsers) does each test need? (no coverage, no pre-import)
+    env3 = dict(env, BR_IMPORTS="1")
+    cmd3 = ("python -m pytest -p maps_plugin -n 4 -q --no-header -p no:cacheprovider "
+            f"--junitxml {WORK}/pass3.xml tests")
+    print("+", cmd3, flush=True)
+    subprocess.run(cmd3, shell=True, cwd=SRC, env=env3)
 
 
 def junit_failed(path):
@@ -157,6 +163,18 @@ def main():
                 opens[rel] |= by_file.get(fl, set()) if fl else set(range(len(test_ids)))
             else:
                 opens[rel] |= set(range(len(test_ids)))
+    # lazily imported modules (pass 3): module -> tests that fail if it cannot be imported
+    imps: dict[str, set] = defaultdict(set)
+    for fn in glob.glob(str(OPENS / "imports-*.json")):
+        for mod, phase, owner in json.load(open(fn)):
+            if phase == "call":
+                imps[mod].add(tid(owner))
+            elif phase in ("setup", "teardown", "collect"):
+                fl = owner.split("::")[0]
+                imps[mod] |= by_file.get(fl, set()) if fl else set(range(len(test_ids)))
+            else:
+                imps[mod] |= set(range(len(test_ids)))
+    (OUT / "imports.json").write_text(json.dumps({k: sorted(v) for k, v in imps.items()}, separators=(",", ":")))
     # class-attribute reads (pass 2)
     attrs: dict[str, set] = defaultdict(set)
     for fn in glob.glob(str(OPENS / "attrs-*.json")):

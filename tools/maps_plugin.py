@@ -15,7 +15,19 @@ _cur = [("global", "")]
 _seen = set()
 
 
+_IMPORTS = os.environ.get("BR_IMPORTS") == "1"
+_imps = set()  # (module, kind, owner) for lazily loaded sqlglot modules
+_LAZY_PKGS = ("sqlglot.dialects.", "sqlglot.generators.", "sqlglot.parsers.")
+_eager = set()
+
+
 def _hook(event, args):
+    if event == "import" and _IMPORTS:
+        name = args[0]
+        if isinstance(name, str) and name.startswith(_LAZY_PKGS) and name not in _eager:
+            kind, owner = _cur[-1]
+            _imps.add((name, kind, owner))
+        return
     if event != "open":
         return
     p = args[0]
@@ -39,7 +51,35 @@ def _hook(event, args):
     _seen.add((rel, kind, owner))
 
 
+if _IMPORTS:
+    import sqlglot  # noqa: F401  (everything it imports eagerly is not "lazy")
+
+    _eager.update(m for m in sys.modules if m.startswith("sqlglot"))
 sys.addaudithook(_hook)
+
+
+def _unload_lazy():
+    """Forget lazily loaded modules so the next importer really re-imports (and logs) them."""
+    if not _IMPORTS:
+        return
+    gone = [m for m in list(sys.modules) if m.startswith(_LAZY_PKGS) and m not in _eager]
+    for m in gone:
+        mod = sys.modules.pop(m, None)
+        parent, _, leaf = m.rpartition(".")
+        pm = sys.modules.get(parent)
+        if pm is not None and getattr(pm, leaf, None) is mod:
+            try:
+                delattr(pm, leaf)
+            except Exception:
+                pass
+    try:
+        from sqlglot.dialects.dialect import Dialect
+
+        gm = set(gone)
+        for k in [k for k, c in Dialect._classes.items() if c.__module__ in gm]:
+            del Dialect._classes[k]
+    except Exception:
+        pass
 
 
 # --- run process-pool work in-process so coverage/contexts/opens are attributed to the calling test
@@ -148,6 +188,8 @@ def _install_descriptors():
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_collection(session):
+    if _IMPORTS:
+        return
     """Import every sqlglot module up-front (outside any test) so that import-time lines are
     attributed to import time (empty context), not to whichever test triggers a lazy import."""
     import importlib
@@ -258,6 +300,7 @@ def pytest_collectstart(collector):
 
 
 def pytest_collectreport(report):
+    _unload_lazy()
     if len(_cur) > 1 and _cur[-1][0] == "collect":
         _cur.pop()
     _set_reads(*_cur[-1])
@@ -284,6 +327,7 @@ def pytest_runtest_teardown(item):
 
 
 def pytest_runtest_logfinish(nodeid, location):
+    _unload_lazy()
     _restore()
     if len(_cur) > 1:
         _cur.pop()
@@ -294,6 +338,9 @@ def pytest_sessionfinish(session):
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, f"opens-{os.getpid()}.json"), "w") as f:
         json.dump(sorted(_seen), f)
+    if _IMPORTS:
+        with open(os.path.join(OUT, f"imports-{os.getpid()}.json"), "w") as f:
+            json.dump(sorted(_imps), f)
     if _ATTRS:
         with open(os.path.join(OUT, f"attrs-{os.getpid()}.json"), "w") as f:
             json.dump([[k, o, sorted(v)] for (k, o), v in _reads.items() if v], f)
