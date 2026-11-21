@@ -1,5 +1,8 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~11:30 PST) — do not submit ae1babf
+ae1babf narrows an unparsable module, or a module-level edit the differ cannot place, to tests that import it. 0 misses. Savings with the runner, TPC-DS check, and max_nodes check off: c3 412.3 (2245.4→1833.1, 52 commits, full suites 52→24), c1 11.4 (2 commits), c2 9.4 (2), c4 11.4 (4), c5 0, sample 0 of 30 (still 108.463). The rule does not change the sample, so it has not moved the hidden schedule. Do not submit ae1babf. Do not set /tmp/blast-ready. The leaf-dialect version of this idea already scored as BB-6B1A1766 at 176.0 with sim 172.712. Best pinned remains BB-8F41C77F at 175.6. Slot is open this hour; leave it. A same-sim resubmission ranks behind the earlier pin.
+
 ## STATE (2026-11-21 ~10:50 PST) — do not submit 7b1cc94
 HEAD 7b1cc94 (on origin) is 9739683 plus a named-function builder fix. Vocab narrowing is 0 misses on sample, c1, c2, c3, c4, and c5, and it saves 112.9 / 40.4 / 40.3 on c1 / c2 / c4. It matches 0 of 30 sample commits, so the sample stays 108.5 (oracle 94.4) with the runner, TPC-DS check, and max_nodes check off. A rule that does not change the sample has not moved the hidden schedule. Do not submit 7b1cc94 or 9739683. Do not set /tmp/blast-ready. Best pinned remains BB-8F41C77F at 175.6. Slot was 0 of 1 at 10:11 PST (BB-83E9C695). Next slot ~11:09 PST. Submitting this sha would add an AST walk on every commit and a full-file mention scan on hits, for no hidden sim change.
 
