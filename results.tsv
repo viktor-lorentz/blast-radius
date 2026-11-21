@@ -5,4 +5,4 @@ WIP	-	no		semantic diff wired, untested with new maps
 7a87a09+	165.2 (0 miss)	no		v2 semantic diff (fingerprint + attr-read map); native CPU 2.06s/30
 next	165.2 (0 miss); c1 360: 0 miss	pending		v2b: cache-isolated maps, class-valued attrs, docstring fix
 7a83571	296.7 (0 miss)	yes	449.3 (0 missed, cpu 0.79)	v1 server score
-v2c	165.2 (0 miss); c1 0; c2 0 (after fix)	pending		helper-module importers, property removal line mapping
+v2c	165.2 (0 miss); c1 0; c2 0 (after fix)	yes (BB-8F41C77F)		helper-module importers, property removal line mapping
