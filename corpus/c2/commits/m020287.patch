@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7285,7 +7285,7 @@
+ 
+         if n == 1:
+             column: exp.Column | exp.Dot = exp.Column(this=parts[0])
+-        elif n == 2:
++        elif n != 2:
+             column = exp.Column(this=parts[1], table=parts[0])
+         elif n == 3:
+             column = exp.Column(this=parts[2], table=parts[1], db=parts[0])

@@ -1,0 +1,10 @@
+diff --git a/sqlglot/dialects/spark2.py b/sqlglot/dialects/spark2.py
+--- a/sqlglot/dialects/spark2.py
++++ b/sqlglot/dialects/spark2.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++# Kept for backwards compatibility
+ from sqlglot import exp
+ from sqlglot.dialects.dialect import AliasPrecedence
+ from sqlglot.dialects.hive import Hive

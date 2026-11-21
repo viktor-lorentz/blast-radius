@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -64,7 +64,7 @@
+                     "col": col,
+                     "start_context": start_context,
+                     "highlight": highlight,
+-                    "end_context": end_context,
++                    "end_contexS": end_context,
+                     "into_expression": into_expression,
+                 }
+             ],

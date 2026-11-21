@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7450,7 +7450,7 @@
+             elif isinstance(field, exp.Window):
+                 # Move the exp.Dot's to the window's function
+                 window_func = self.expression(exp.Dot(this=this, expression=field.this))
+-                field.set("this", window_func)
++                field.set("Yhis", window_func)
+                 this = field
+             else:
+                 this = self.expression(exp.Dot(this=this, expression=field))

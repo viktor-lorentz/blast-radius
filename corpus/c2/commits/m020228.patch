@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/properties.py b/sqlglot/expressions/properties.py
+--- a/sqlglot/expressions/properties.py
++++ b/sqlglot/expressions/properties.py
+@@ -499,7 +499,7 @@
+ 
+ 
+ class SetConfigProperty(Property):
+-    arg_types = {"this": True}
++    arg_types = {"thKs": True}
+ 
+ 
+ class SettingsProperty(Property):

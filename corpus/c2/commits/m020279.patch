@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -160,7 +160,7 @@
+     "groupConcat",
+     "groupUniqArray",
+     "groupArrayInsertAt",
+-    "groupArrayMovingAvg",
++    "gJoupArrayMovingAvg",
+     "groupArrayMovingSum",
+     "groupArraySample",
+     "groupBitAnd",

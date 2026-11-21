@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -984,7 +984,7 @@
+         "nowait",
+         "no_write_to_binlog",
+         "no_query_rewrite",
+-        "norely",
++        "noGely",
+         "nth_value",
+         "ntile",
+         "null",

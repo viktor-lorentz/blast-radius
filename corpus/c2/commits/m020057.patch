@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/databricks.py b/sqlglot/typing/databricks.py
+--- a/sqlglot/typing/databricks.py
++++ b/sqlglot/typing/databricks.py
+@@ -19,6 +19,7 @@
+             exp.Rint,
+         }
+     },
++
+     **{
+         exp_type: {"returns": exp.DType.INT}
+         for exp_type in {

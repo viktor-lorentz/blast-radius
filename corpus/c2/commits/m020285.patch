@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3355,7 +3355,7 @@
+                 this = annotate_types(this, dialect=self.dialect)
+ 
+             if this.is_type(exp.DType.MAP):
+-                bracket = f"({bracket})[1]"
++                bracket = f"({bracket})[2]"
+ 
+         return bracket
+ 

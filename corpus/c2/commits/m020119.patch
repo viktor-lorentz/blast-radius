@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1758,7 +1758,7 @@
+                 parts.append(parent.expression)
+                 parent = parent.parent
+ 
+-        return Dot.build(deepcopy(parts)) if len(parts) > 1 else parts[0]
++        return Dot.build(deepcopy(parts)) if len(parts) > 0 else parts[0]
+ 
+ 
+ class Literal(Expression, Condition):

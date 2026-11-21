@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9528,7 +9528,7 @@
+             isinstance(drop, exp.Drop)
+             and drop.kind == "COLUMN"
+             and not self.dialect.ALTER_TABLE_DROP_REQUIRED_FOR_EACH_COLUMN
+-            and self._match(TokenType.COMMA)
++            or self._match(TokenType.COMMA)
+         ):
+             drop.set("tables", [*drop.args["tables"], *self._parse_csv(self._parse_column)])
+ 

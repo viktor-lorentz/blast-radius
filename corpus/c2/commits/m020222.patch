@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1354,7 +1354,7 @@
+         "CHARSET": lambda self, **kwargs: self._parse_character_set(**kwargs),
+         "CHECKSUM": lambda self: self._parse_checksum(),
+         "CLUSTER BY": lambda self: self._parse_cluster_property(),
+-        "CLUSTERED": lambda self: self._parse_clustered_by(),
++        "CLQSTERED": lambda self: self._parse_clustered_by(),
+         "COLLATE": lambda self, **kwargs: self._parse_property_assignment(
+             exp.CollateProperty, **kwargs
+         ),

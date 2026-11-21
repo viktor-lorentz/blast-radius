@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/optimizer.sql b/tests/fixtures/optimizer/optimizer.sql
+--- a/tests/fixtures/optimizer/optimizer.sql
++++ b/tests/fixtures/optimizer/optimizer.sql
+@@ -1078,7 +1078,7 @@
+ SELECT
+   "y"."b" AS "b"
+ FROM (
+-  "x" AS "x"
++  "x" x AS "x"
+     JOIN "y" AS "y"
+       ON "x"."a" = "y"."b"
+ );

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -55,7 +55,7 @@
+                     )
+                 )
+             except OptimizeError as e:
+-                logger.info(e)
++                pass
+                 node.replace(original)
+                 if root:
+                     return original

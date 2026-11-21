@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -166,7 +166,7 @@
+ 
+     distance = normalization_distance(expression, dnf=dnf, max_=max_distance)
+ 
+-    if distance > max_distance:
++    if distance >= max_distance:
+         raise OptimizeError(f"Normalization distance {distance} exceeds max {max_distance}")
+ 
+     exp.replace_children(expression, lambda e: distributive_law(e, dnf, max_distance))

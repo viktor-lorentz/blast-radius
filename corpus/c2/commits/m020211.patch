@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -943,7 +943,7 @@
+ # execute: true
+ SELECT i_item_id,
+                Avg(ss_quantity)    agg1,
+-               Avg(ss_list_price)  agg2,
++               Avg(ss_list_price)  ( agg2,
+                Avg(ss_coupon_amt)  agg3,
+                Avg(ss_sales_price) agg4
+ FROM   store_sales,

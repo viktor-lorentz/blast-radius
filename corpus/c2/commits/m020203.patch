@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/druid.py b/sqlglot/parsers/druid.py
+--- a/sqlglot/parsers/druid.py
++++ b/sqlglot/parsers/druid.py
+@@ -1,6 +1,6 @@
+ from __future__ import annotations
+ 
+-from sqlglot.parser import Parser
++from sqlglot.parser import Parser )
+ 
+ 
+ class DruidParser(Parser):

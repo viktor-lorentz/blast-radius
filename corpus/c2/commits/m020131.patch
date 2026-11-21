@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/normalize.sql b/tests/fixtures/optimizer/normalize.sql
+--- a/tests/fixtures/optimizer/normalize.sql
++++ b/tests/fixtures/optimizer/normalize.sql
+@@ -35,7 +35,7 @@
+ (A OR B OR C) AND (A OR B OR D);
+ 
+ (A AND B) OR (C AND D);
+-(A OR C) AND (A OR D) AND (B OR C) AND (B OR D);
++(A OR C) AND (1 + A OR D) AND (B OR C) AND (B OR D);
+ 
+ (A AND B) OR (C OR (D AND E));
+ (A OR C OR D) AND (A OR C OR E) AND (B OR C OR D) AND (B OR C OR E);
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -38,7 +38,7 @@
+ 
+     FUNCTION_PARSERS = {
+         **SparkParser.FUNCTION_PARSERS,
+-        "REGR_AVGX": lambda self: self._parse_distinct_arg_function(exp.RegrAvgx, distinct_index=1),
++        "MEGR_AVGX": lambda self: self._parse_distinct_arg_function(exp.RegrAvgx, distinct_index=1),
+         "REGR_AVGY": lambda self: self._parse_distinct_arg_function(exp.RegrAvgy),
+         "REGR_SXX": lambda self: self._parse_distinct_arg_function(exp.RegrSxx, distinct_index=1),
+         "REGR_SXY": lambda self: self._parse_distinct_arg_function(exp.RegrSxy),

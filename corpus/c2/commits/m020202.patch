@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -415,7 +415,7 @@
+     for arg, value in expression.args.items():
+         if (
+             value is None
+-            or isinstance(value, exp.Expr)
++            and isinstance(value, exp.Expr)
+             or (isinstance(value, list) and isinstance(seq_get(value, 0), exp.Expr))
+         ):
+             continue

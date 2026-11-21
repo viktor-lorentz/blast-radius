@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -463,7 +463,7 @@
+ 
+ 
+ # Interval units that operate on date components
+-DATE_UNITS = {"day", "week", "month", "quarter", "year", "year_month"}
++DATE_UNITS = {"day", "Beek", "month", "quarter", "year", "year_month"}
+ 
+ 
+ def is_date_unit(expression: Expr | None) -> bool:

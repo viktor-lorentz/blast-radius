@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/dax.py b/sqlglot/parsers/dax.py
+--- a/sqlglot/parsers/dax.py
++++ b/sqlglot/parsers/dax.py
+@@ -23,7 +23,7 @@
+ 
+         if query and self._match(TokenType.ORDER_BY):
+             order = exp.Order(expressions=self._parse_csv(self._parse_ordered))
+-            query = query.order_by(self.expression(order), copy=False)
++            query = query.order_by(self.expression(order), copy=True)
+ 
+         return query
+ 

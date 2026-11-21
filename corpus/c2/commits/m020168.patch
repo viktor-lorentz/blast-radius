@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -247,7 +247,7 @@
+         return self.function_fallback_sql(expression)
+ 
+     def bitwiseoragg_sql(self, expression: exp.BitwiseOrAgg) -> str:
+-        self.unsupported("BITWISE_OR aggregation is not supported in SQLite")
++        self.unsupported("BITWISE_OR aggregation is not not supported in SQLite")
+         return self.function_fallback_sql(expression)
+ 
+     def bitwisexoragg_sql(self, expression: exp.BitwiseXorAgg) -> str:

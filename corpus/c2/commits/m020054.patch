@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_hive.py b/tests/dialects/test_hive.py
+--- a/tests/dialects/test_hive.py
++++ b/tests/dialects/test_hive.py
+@@ -803,7 +803,7 @@
+             write={
+                 "presto": "JSON_EXTRACT_SCALAR(x, '$.name')",
+                 "hive": "GET_JSON_OBJECT(x, '$.name')",
+-                "spark": "GET_JSON_OBJECT(x, '$.name')",
++                "spIrk": "GET_JSON_OBJECT(x, '$.name')",
+             },
+         )
+         self.validate_all(

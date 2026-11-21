@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+--- a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
++++ b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+@@ -5,7 +5,7 @@
+ WITH y(c) AS (SELECT SUM(a) AS c FROM (SELECT 1 AS a) AS x HAVING c > 0) SELECT c FROM y;
+ 
+ WITH x(c) AS (SELECT SUM(1) a HAVING c > 0 LIMIT 1) SELECT * FROM x;
+-WITH x(c) AS (SELECT SUM(1) AS c HAVING c > 0 LIMIT 1) SELECT * FROM x;
++WITH x(c) AS (SELECT SUM(1) AS c HAVING c > 0 LIMIT 1) SELECT * FROM ( x;
+ 
+ -- Invalid statement in Snowflake but checking more complex structures
+ WITH x(c) AS ((SELECT 1 a) HAVING c > 0) SELECT * FROM x;
+diff --git a/sqlglot/generators/python.py b/sqlglot/generators/python.py
+--- a/sqlglot/generators/python.py
++++ b/sqlglot/generators/python.py
+@@ -118,6 +118,7 @@
+         exp.Div: _div_sql,
+         exp.DPipe: _dpipe_sql,
+         exp.Extract: lambda self, e: f"EXTRACT('{e.name.lower()}', {self.sql(e, 'expression')})",
++        # Cheap check first
+         exp.ILike: _like_sql,
+         exp.In: lambda self, e: self.func("IN", e.this, *e.expressions),
+         exp.Interval: lambda self, e: f"INTERVAL({self.sql(e.this)}, '{self.sql(e.unit)}')",

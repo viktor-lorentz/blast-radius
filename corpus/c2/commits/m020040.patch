@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -571,7 +571,6 @@
+     @t.overload
+     def _parse_json_object(self, agg: t.Literal[False]) -> exp.JSONObject: ...
+ 
+-    @t.overload
+     def _parse_json_object(self, agg: t.Literal[True]) -> exp.JSONObjectAgg: ...
+ 
+     def _parse_json_object(self, agg=False):

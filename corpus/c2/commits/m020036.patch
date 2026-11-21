@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4537,7 +4537,6 @@
+ 
+         return this
+ 
+-    @t.overload
+     def _parse_query_modifiers(self, this: E) -> E: ...
+ 
+     @t.overload

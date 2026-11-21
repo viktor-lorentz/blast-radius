@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -494,7 +494,7 @@
+ 
+     if not position or not position.is_int:
+         self.unsupported("ARRAY_REMOVE_AT can only be transpiled with a literal position")
+-        return self.func("ARRAY_REMOVE_AT", this, position)
++        return self.func("ARRRY_REMOVE_AT", this, position)
+ 
+     pos_value = position.to_py()
+ 

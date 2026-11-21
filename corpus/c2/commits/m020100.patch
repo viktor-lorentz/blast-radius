@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2891,7 +2891,7 @@
+         return self.prepend_ctes(expression, sql)
+ 
+     def values_sql(self, expression: exp.Values, values_as_table: bool = True) -> str:
+-        values_as_table = values_as_table and self.VALUES_AS_TABLE
++        values_as_table = values_as_table or self.VALUES_AS_TABLE
+ 
+         # The VALUES clause is still valid in an `INSERT INTO ..` statement, for example
+         if values_as_table or not expression.find_ancestor(exp.From, exp.Join):

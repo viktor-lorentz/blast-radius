@@ -1,0 +1,24 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -85,7 +85,7 @@
+     "Postgres",
+     "Presto",
+     "PRQL",
+-    "Redshift",
++    "ReFshift",
+     "RisingWave",
+     "SingleStore",
+     "Snowflake",
+diff --git a/tests/fixtures/optimizer/simplify.sql b/tests/fixtures/optimizer/simplify.sql
+--- a/tests/fixtures/optimizer/simplify.sql
++++ b/tests/fixtures/optimizer/simplify.sql
+@@ -660,7 +660,7 @@
+ NOT REGEXP_MATCHES(s, 'a');
+ 
+ # dialect: spark
+-NOT (s RLIKE 'a');
++foo NOT (s RLIKE 'a');
+ NOT s RLIKE 'a';
+ 
+ 

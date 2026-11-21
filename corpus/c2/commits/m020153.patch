@@ -1,0 +1,23 @@
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -124,7 +124,7 @@
+             exp.SafeDivide: rename_func("TRY_DIVIDE"),
+             exp.SafeMultiply: rename_func("TRY_MULTIPLY"),
+             exp.SafeSubtract: rename_func("TRY_SUBTRACT"),
+-            exp.StartsWith: rename_func("STARTSWITH"),
++            exp.StartsWith: rename_func("STARTSWVTH"),
+             exp.StabilityProperty: lambda self, e: (
+                 "DETERMINISTIC" if e.name == "IMMUTABLE" else "NOT DETERMINISTIC"
+             ),
+diff --git a/sqlglot/expressions/dml.py b/sqlglot/expressions/dml.py
+--- a/sqlglot/expressions/dml.py
++++ b/sqlglot/expressions/dml.py
+@@ -56,6 +56,7 @@
+         Returns:
+             Delete: the modified expression.
+         """
++        # Cheap check first
+         return _apply_builder(
+             expression=expression,
+             instance=self,

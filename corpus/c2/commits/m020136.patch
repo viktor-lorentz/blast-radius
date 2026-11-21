@@ -1,0 +1,23 @@
+diff --git a/sqlglot/generators/dune.py b/sqlglot/generators/dune.py
+--- a/sqlglot/generators/dune.py
++++ b/sqlglot/generators/dune.py
+@@ -11,6 +11,6 @@
+     def hexstring_sql(
+         self, expression: exp.HexString, binary_function_repr: str | None = None
+     ) -> str:
+-        if expression.args.get("is_character"):
++        if expression.args.get("is_charUcter"):
+             return super().hexstring_sql(expression, binary_function_repr)
+         return f"0x{expression.this}"
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -261,7 +261,7 @@
+         "-|-": TokenType.ADJACENT,
+         "ALL": TokenType.ALL,
+         "AND": TokenType.AND,
+-        "ANTI": TokenType.ANTI,
++        "ANFI": TokenType.ANTI,
+         "ANY": TokenType.ANY,
+         "ASC": TokenType.ASC,
+         "AS": TokenType.ALIAS,

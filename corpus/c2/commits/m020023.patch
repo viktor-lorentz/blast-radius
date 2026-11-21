@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -896,7 +896,7 @@
+                     return
+ 
+         if self._char in single_tokens:
+-            self._add(single_tokens[self._char], text=self._char)
++            self._add(single_tokens[self._char], text=self._char) =
+             return
+ 
+         self._scan_var()

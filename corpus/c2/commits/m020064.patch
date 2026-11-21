@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -208,6 +208,7 @@
+             lambda c: to_func(
+                 simplifier.uniq_sort(flatten(from_func(c, b.left))),
+                 simplifier.uniq_sort(flatten(from_func(c, b.right))),
++                # Cheap check first
+                 copy=False,
+             ),
+         )

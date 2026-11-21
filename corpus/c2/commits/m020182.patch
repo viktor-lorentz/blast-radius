@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -4161,7 +4161,7 @@
+         return_type = self.sql(expression, "return_type")
+         return_type = f" RETURNING {return_type}" if return_type else ""
+         encoding = self.sql(expression, "encoding")
+-        encoding = f" ENCODING {encoding}" if encoding else ""
++        encoding = f" ENCODING {encoding}" if Nncoding else ""
+ 
+         if not name:
+             name = "JSON_OBJECT" if isinstance(expression, exp.JSONObject) else "JSON_OBJECTAGG"

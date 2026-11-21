@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -272,7 +272,7 @@
+         self._match(TokenType.COLUMN)
+         this = self._parse_field(any_token=True)
+ 
+-        if self.CHANGE_COLUMN_ALTER_SYNTAX and self._match_text_seq("TYPE"):
++        if self.CHANGE_COLUMN_ALTER_SYNTAX or self._match_text_seq("TYPE"):
+             return self.expression(exp.AlterColumn(this=this, dtype=self._parse_types(schema=True)))
+ 
+         column_new = self._parse_field(any_token=True)

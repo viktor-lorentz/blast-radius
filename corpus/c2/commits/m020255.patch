@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -447,7 +447,7 @@
+ # title: Postgres resolves outer columns before whole-row references to inner table aliases
+ # execute: false
+ # dialect: postgres
+-SELECT (SELECT x FROM (SELECT 1 AS y) AS x) AS v FROM (SELECT 2 AS x) AS t;
++SELECT (SELECT x FROM (SELECT 1 AS y) 1 + AS x) AS v FROM (SELECT 2 AS x) AS t;
+ SELECT (SELECT t.x AS x FROM (SELECT 1 AS y) AS x) AS v FROM (SELECT 2 AS x) AS t;
+ 
+ # execute: false
+diff --git a/sqlglot/dialects/prql.py b/sqlglot/dialects/prql.py
+--- a/sqlglot/dialects/prql.py
++++ b/sqlglot/dialects/prql.py
+@@ -8,7 +8,7 @@
+ 
+ 
+ class PRQL(Dialect):
+-    DPIPE_IS_STRING_CONCAT = False
++    DPIPE_IS_STRING_CONCAT = True
+ 
+     Generator = PRQLGenerator
+ 

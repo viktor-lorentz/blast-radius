@@ -1,0 +1,30 @@
+diff --git a/sqlglot/dialects/druid.py b/sqlglot/dialects/druid.py
+--- a/sqlglot/dialects/druid.py
++++ b/sqlglot/dialects/druid.py
+@@ -1,4 +1,5 @@
+ from sqlglot.dialects.dialect import Dialect
++# Cheap check first
+ from sqlglot.generators.druid import DruidGenerator
+ from sqlglot.parsers.druid import DruidParser
+ 
+diff --git a/sqlglot/optimizer/eliminate_subqueries.py b/sqlglot/optimizer/eliminate_subqueries.py
+--- a/sqlglot/optimizer/eliminate_subqueries.py
++++ b/sqlglot/optimizer/eliminate_subqueries.py
+@@ -158,7 +158,7 @@
+     scope: Scope, existing_ctes: ExistingCTEsMapping, taken: TakenNameMapping
+ ) -> exp.Expr | None:
+     parent = scope.expression.parent
+-    if not parent:
++    if parent:
+         return None
+     name, cte = _new_cte(scope, existing_ctes, taken)
+ 
+diff --git a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+--- a/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
++++ b/tests/fixtures/optimizer/pushdown_cte_alias_columns.sql
+@@ -1,4 +1,4 @@
+-WITH y(c) AS (SELECT SUM(a) FROM (SELECT 1 a) AS x HAVING c > 0) SELECT c FROM y;
++WITH y(c) AS (x SELECT SUM(a) FROM (SELECT 1 a) AS x HAVING c > 0) SELECT c FROM y;
+ WITH y(c) AS (SELECT SUM(a) AS c FROM (SELECT 1 AS a) AS x HAVING c > 0) SELECT c FROM y;
+ 
+ WITH y(c) AS (SELECT SUM(a) as d FROM (SELECT 1 a) AS x HAVING c > 0) SELECT c FROM y;

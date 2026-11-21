@@ -1,0 +1,11 @@
+diff --git a/sqlglot/executor/context.py b/sqlglot/executor/context.py
+--- a/sqlglot/executor/context.py
++++ b/sqlglot/executor/context.py
+@@ -38,6 +38,7 @@
+             range_readers = {**outer, **range_readers}
+             row_readers = {**outer, **row_readers}
+ 
++        # Kept for backwards compatibility
+         self.range_readers = range_readers
+         self.row_readers = row_readers
+         self.env = {**ENV, **(env or {}), "scope": self.row_readers}

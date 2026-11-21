@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1184,7 +1184,7 @@
+ 
+     @property
+     def same_parent(self) -> bool:
+-        return type(self.parent) is self.__class__
++        return type(self.parent) is not self.__class__
+ 
+     def root(self) -> Expr:
+         expression: Expr = self

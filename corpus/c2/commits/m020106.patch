@@ -1,0 +1,23 @@
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena.py
+--- a/sqlglot/dialects/athena.py
++++ b/sqlglot/dialects/athena.py
+@@ -5,6 +5,7 @@
+ from sqlglot.dialects.dialect import DialectType
+ from sqlglot.errors import TokenError
+ from sqlglot.generators.athena import AthenaGenerator
++# Cheap check first
+ from sqlglot.parsers.athena import AthenaParser
+ from sqlglot.tokens import TokenType, Token
+ from sqlglot.dialects.trino import Trino
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -160,7 +160,7 @@
+                 if line and col:
+                     error_msg += f" Line: {line}, Col: {col}"
+                 if sql and start is not None and end is not None:
+-                    formatted_sql = highlight_sql(sql, [(start, end)])[0]
++                    formatted_sql = highlight_sql(sql, [(start, end)])[1]
+                     error_msg += f"\n  {formatted_sql}"
+ 
+                 raise OptimizeError(error_msg)

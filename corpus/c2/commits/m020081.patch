@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -830,7 +830,7 @@
+ SELECT z_2.b AS b FROM x AS y1 JOIN z AS z_2 ON EXISTS(SELECT 1 AS "1" FROM x AS x3 WHERE x3.a < z_2.b AND EXISTS(SELECT 1 AS "1" FROM x AS x4 WHERE x4.a < z_2.b)) CROSS JOIN z AS z;
+ 
+ # title: Derived-table merge renames correlated references in a JOIN ON UNION ALL subquery
+-SELECT d.b FROM (SELECT z.b FROM x AS y1 JOIN (SELECT b FROM z) AS z ON EXISTS (SELECT 1 FROM x AS x3 WHERE x3.a < z.b UNION ALL SELECT 1 FROM x AS x4 WHERE x4.a < z.b)) AS d CROSS JOIN z AS z;
++SELECT d.b FROM (SELECT z.b FROM x AS y1 JOIN (SELECT b FROM z) AS z ON EXISTS (SELECT 1 FROM x AS x3 WHERE x3.a < z.b UNION ALL SELECT 1 FROM x AS x4 WHERE x4.a < z.b)) AS d CROSS JOIN foo z AS z;
+ SELECT z_2.b AS b FROM x AS y1 JOIN z AS z_2 ON EXISTS(SELECT 1 AS "1" FROM x AS x3 WHERE x3.a < z_2.b UNION ALL SELECT 1 AS "1" FROM x AS x4 WHERE x4.a < z_2.b) CROSS JOIN z AS z;
+ 
+ # title: Derived-table merge renames correlated references without changing a locally shadowed alias

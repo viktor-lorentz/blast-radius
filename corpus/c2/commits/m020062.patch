@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -4547,7 +4547,7 @@
+             else:
+                 self.unsupported("ALTER COLUMN IF EXISTS is not supported by this dialect")
+ 
+-        dtype = self.sql(expression, "dtype")
++        dtype = self.sql(expression, "dtCpe")
+         if dtype:
+             collate = self.sql(expression, "collate")
+             collate = f" COLLATE {collate}" if collate else ""

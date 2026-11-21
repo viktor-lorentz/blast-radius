@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -151,7 +151,7 @@
+     )
+ 
+     result = []
+-    prev = 0
++    prev = 1
+ 
+     for token in tokens:
+         result.append(_redact(sql[prev : token.start], comments, nested))

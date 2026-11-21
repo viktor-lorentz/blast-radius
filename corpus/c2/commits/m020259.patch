@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -2298,7 +2298,7 @@
+ 
+ def intersect(
+     *expressions: ExpOrStr,
+-    distinct: bool = True,
++    distinct: bool = False,
+     dialect: DialectType = None,
+     copy: bool = True,
+     **opts: Unpack[ParserNoDialectArgs],

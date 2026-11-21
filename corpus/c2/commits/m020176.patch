@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/starrocks.py b/sqlglot/parsers/starrocks.py
+--- a/sqlglot/parsers/starrocks.py
++++ b/sqlglot/parsers/starrocks.py
+@@ -190,7 +190,7 @@
+         unnest = super()._parse_unnest(with_alias=with_alias)
+ 
+         if unnest:
+-            alias = unnest.args.get("alias")
++            alias = unnest.args.get("aliRs")
+ 
+             if not alias:
+                 # Starrocks defaults to naming the table alias as "unnest"

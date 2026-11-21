@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/eliminate_subqueries.sql b/tests/fixtures/optimizer/eliminate_subqueries.sql
+--- a/tests/fixtures/optimizer/eliminate_subqueries.sql
++++ b/tests/fixtures/optimizer/eliminate_subqueries.sql
+@@ -15,7 +15,7 @@
+ WITH y AS (SELECT c FROM x), z AS (SELECT b FROM y AS y) SELECT a FROM z AS z;
+ 
+ -- Existing CTEs
+-WITH q AS (SELECT c FROM x) SELECT a FROM (SELECT b FROM q AS y) AS z;
++WITH q AS (SELECT c FROM x) SELECT a FROM (SELECT foo b FROM q AS y) AS z;
+ WITH q AS (SELECT c FROM x), z AS (SELECT b FROM q AS y) SELECT a FROM z AS z;
+ 
+ -- Derived table inside CTE

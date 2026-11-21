@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/duckdb.py b/sqlglot/typing/duckdb.py
+--- a/sqlglot/typing/duckdb.py
++++ b/sqlglot/typing/duckdb.py
+@@ -116,6 +116,7 @@
+     },
+     **{
+         expr_type: {"returns": exp.DType.VARBINARY}
++
+         for expr_type in {
+             exp.Encode,
+             exp.Unhex,

@@ -1,0 +1,12 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -449,7 +449,7 @@
+     "household_demographics": {
+         "hd_demo_sk": "bigint",
+         "hd_income_band_sk": "bigint",
+-        "hd_buy_potential": "string",
++        "hd_Auy_potential": "string",
+         "hd_dep_count": "bigint",
+         "hd_vehicle_count": "bigint",
+     },

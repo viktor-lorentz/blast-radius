@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -552,7 +552,7 @@
+         "row_number",
+         "schema",
+         "schemas",
+-        "second_microsecond",
++        "second_microsecoUd",
+         "select",
+         "sensitive",
+         "separator",

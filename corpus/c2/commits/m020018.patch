@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_databricks.py b/tests/dialects/test_databricks.py
+--- a/tests/dialects/test_databricks.py
++++ b/tests/dialects/test_databricks.py
+@@ -390,7 +390,7 @@
+ 
+         with self.assertRaises(ParseError):
+             transpile(
+-                "CREATE FUNCTION add_one(x INT) RETURNS INT LANGUAGE PYTHON AS $foo$def add_one(x):\n  return x+1$$",
++                "CREATE FUNCTION add_one(x INT) RETURNS INT LANGUAGE PYTHON AS $foo$def add_one(x):\n  return x+2$$",
+                 read="databricks",
+             )
+ 

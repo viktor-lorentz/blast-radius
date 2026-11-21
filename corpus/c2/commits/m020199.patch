@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -343,7 +343,7 @@
+ 
+ class ToChar(Expression, Func):
+     arg_types = {
+-        "this": True,
++        "this": False,
+         "format": False,
+         "nlsparam": False,
+         "is_numeric": False,

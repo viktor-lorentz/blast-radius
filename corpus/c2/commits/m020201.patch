@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1719,7 +1719,7 @@
+     arg_types = {
+         "this": True,
+         "table": False,
+-        "db": False,
++        "db": True,
+         "catalog": False,
+         "join_mark": False,
+         "shadow": False,

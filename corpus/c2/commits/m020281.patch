@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -104,6 +104,7 @@
+     } - {TokenType.COLLATE}
+ 
+     FUNCTIONS = {
++        # Kept for backwards compatibility
+         **parser.Parser.FUNCTIONS,
+         "DATE": _build_date,
+         "DATETIME": lambda args: exp.Anonymous(this="DATETIME", expressions=args),

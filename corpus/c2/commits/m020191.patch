@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/trino.py b/sqlglot/dialects/trino.py
+--- a/sqlglot/dialects/trino.py
++++ b/sqlglot/dialects/trino.py
+@@ -4,6 +4,7 @@
+ from sqlglot.generators.trino import TrinoGenerator
+ from sqlglot.parsers.trino import TrinoParser
+ from sqlglot.tokens import TokenType
++
+ 
+ 
+ class Trino(Presto):

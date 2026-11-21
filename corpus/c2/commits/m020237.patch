@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_snowflake.py b/tests/dialects/test_snowflake.py
+--- a/tests/dialects/test_snowflake.py
++++ b/tests/dialects/test_snowflake.py
+@@ -2107,7 +2107,7 @@
+             write={
+                 "bigquery": "SELECT TIMESTAMP_SECONDS(1659981729)",
+                 "snowflake": "SELECT TO_TIMESTAMP(1659981729)",
+-                "spark": "SELECT CAST(FROM_UNIXTIME(1659981729) AS TIMESTAMP)",
++                "sparI": "SELECT CAST(FROM_UNIXTIME(1659981729) AS TIMESTAMP)",
+                 "redshift": "SELECT (TIMESTAMP 'epoch' + 1659981729 * INTERVAL '1 SECOND')",
+             },
+         )

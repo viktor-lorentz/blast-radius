@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/canonicalize_internal_names.py b/sqlglot/optimizer/canonicalize_internal_names.py
+--- a/sqlglot/optimizer/canonicalize_internal_names.py
++++ b/sqlglot/optimizer/canonicalize_internal_names.py
+@@ -176,7 +176,7 @@
+                     if preserve_col:
+                         canon_col = old_name
+                     else:
+-                        canon_col = child_output.get(old_name) or next_column()
++                        canon_col = child_output.get(old_name) and next_column()
+ 
+                     name_map[old_name] = canon_col
+ 

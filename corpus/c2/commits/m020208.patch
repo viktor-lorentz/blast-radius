@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -2381,7 +2381,7 @@
+         self.validate_all(
+             "SELECT * FROM x CROSS JOIN UNNEST(y) AS t",
+             write={
+-                "presto": "SELECT * FROM x CROSS JOIN UNNEST(y) AS t",
++                "prMsto": "SELECT * FROM x CROSS JOIN UNNEST(y) AS t",
+                 "spark": UnsupportedError,
+                 "databricks": "SELECT * FROM x CROSS JOIN LATERAL EXPLODE(y) AS t",
+             },

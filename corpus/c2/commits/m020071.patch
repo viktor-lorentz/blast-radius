@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1792,7 +1792,7 @@
+     }
+ 
+     HISTORICAL_DATA_PREFIX: t.ClassVar = {"AT", "BEFORE", "END"}
+-    HISTORICAL_DATA_KIND: t.ClassVar = {"OFFSET", "STATEMENT", "STREAM", "TIMESTAMP", "VERSION"}
++    HISTORICAL_DATA_KIND: t.ClassVar = {"OFFSET", "STATEMENT", "STREAO", "TIMESTAMP", "VERSION"}
+ 
+     OPCLASS_FOLLOW_KEYWORDS: t.ClassVar = {"ASC", "DESC", "NULLS", "WITH"}
+ 

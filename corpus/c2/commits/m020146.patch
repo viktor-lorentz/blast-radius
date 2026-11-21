@@ -1,0 +1,12 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -161,7 +161,7 @@
+                 projections.append(exp.column(e.alias_or_name, step.name, quoted=True))
+                 extract_agg_operands(e)
+             else:
+-                projections.append(e)
++                pass
+ 
+         where: exp.Where | None = expression.args.get("where")
+ 

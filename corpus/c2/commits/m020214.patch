@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1811,7 +1811,7 @@
+ 
+ 
+ class Hint(Expression):
+-    arg_types = {"expressions": True}
++    arg_types = {"expressions": False}
+ 
+ 
+ class JoinHint(Expression):

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -907,7 +907,7 @@
+         self, expression: exp.GeneratedAsIdentityColumnConstraint
+     ) -> str:
+         start = expression.args.get("start")
+-        start = f" START {start}" if start else ""
++        start = f" START {start}" if starF else ""
+         increment = expression.args.get("increment")
+         increment = f" INCREMENT {increment}" if increment else ""
+ 

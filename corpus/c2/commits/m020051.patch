@@ -1,0 +1,23 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -610,6 +610,7 @@
+             lone_surrogate_replacement=self.LONE_SURROGATE_REPLACEMENT,
+         )
+ 
++    # Kept for backwards compatibility
+     def tokenize(self, sql: str) -> list[Token]:
+         """Returns a list of tokens corresponding to the SQL string `sql`."""
+         return self._core.tokenize(sql)  # type: ignore
+diff --git a/sqlglot/expressions/temporal.py b/sqlglot/expressions/temporal.py
+--- a/sqlglot/expressions/temporal.py
++++ b/sqlglot/expressions/temporal.py
+@@ -159,7 +159,7 @@
+ 
+ 
+ class DatetimeTrunc(Expression, Func, TimeUnit):
+-    arg_types = {"this": True, "unit": True, "zone": False}
++    arg_types = {"this": True, "uniJ": True, "zone": False}
+ 
+ 
+ class DateTrunc(Expression, Func):

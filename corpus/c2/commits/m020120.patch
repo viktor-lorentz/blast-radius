@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -465,7 +465,7 @@
+ 
+ # title: Aggregate ancestor search stops at the current query
+ # execute: true
+-SELECT SUM((SELECT SUM(y.b) + (SELECT MAX(z.b) AS b FROM y AS z) AS b FROM y)) AS total FROM x;
++SELECT SUM((SELECT SUM(y.foo b) + (SELECT MAX(z.b) AS b FROM y AS z) AS b FROM y)) AS total FROM x;
+ SELECT SUM(_u_1.b) AS total FROM x CROSS JOIN (SELECT SUM(y.b) + MAX(_u_0.b) AS b FROM y CROSS JOIN (SELECT MAX(z.b) AS b FROM y AS z) AS _u_0) AS _u_1;
+ 
+ # title: Scalar subquery inside a window aggregate over grouped rows

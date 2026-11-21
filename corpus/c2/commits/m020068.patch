@@ -1,0 +1,12 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -75,7 +75,7 @@
+             - Join: x (4347985296)
+               Context:
+                 y:
+-                On: x.a = y.a
++                On: x.a = y.a (updated)
+               Projections:
+               Dependencies:
+               - Scan: x (4347983136)

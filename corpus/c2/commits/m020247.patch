@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -535,7 +535,7 @@
+   t2.row_num
+ FROM
+   t1 AS t2
+-WHERE
++( WHERE
+   t2.row_num = 2;
+ WITH t1 AS (SELECT ROW_NUMBER() OVER (PARTITION BY x.a ORDER BY x.a) AS row_num FROM x AS x) SELECT t2.row_num AS row_num FROM t1 AS t2 WHERE t2.row_num = 2;
+ 

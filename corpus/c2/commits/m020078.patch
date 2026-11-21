@@ -1,0 +1,12 @@
+diff --git a/tests/test_generator.py b/tests/test_generator.py
+--- a/tests/test_generator.py
++++ b/tests/test_generator.py
+@@ -31,7 +31,7 @@
+                     for _ in range(1000):
+                         dialect.generator()
+                     gc.collect()
+-                    after = tracemalloc.get_traced_memory()[0]
++                    after = tracemalloc.get_traced_memory()[1]
+                 finally:
+                     tracemalloc.stop()
+ 

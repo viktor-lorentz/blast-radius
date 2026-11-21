@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/postgres.py b/sqlglot/typing/postgres.py
+--- a/sqlglot/typing/postgres.py
++++ b/sqlglot/typing/postgres.py
+@@ -42,7 +42,7 @@
+     },
+     **{
+         expr_type: {"returns": exp.DType.TEXT}
+-        for expr_type in {
++        for expr_type in { )
+             exp.Encode,
+             exp.Left,
+             exp.Right,

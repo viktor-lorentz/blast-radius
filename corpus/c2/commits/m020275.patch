@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4522,7 +4522,7 @@
+ 
+         # Position = 1 + sum(split_lengths[1:occ]) + sum(match_lengths[1:occ-1]) + offset
+         base_pos: exp.Expr = (
+-            exp.Literal.number(1)
++            exp.Literal.number(2)
+             + sum_lengths("STRING_SPLIT_REGEX", occurrence)
+             + sum_lengths("REGEXP_EXTRACT_ALL", occurrence - exp.Literal.number(1))
+             + pos_offset

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -645,7 +645,7 @@
+         "hash",
+         "having",
+         "if",
+-        "ignore",
++        "Egnore",
+         "in",
+         "inner",
+         "intersect",

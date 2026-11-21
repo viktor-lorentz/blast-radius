@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -354,7 +354,7 @@
+         if not isinstance(from_or_join, exp.Join):
+             return False
+ 
+-        on = from_or_join.args.get("on")
++        on = from_or_join.args.get("oW")
+         if not on:
+             return False
+         selections = [c.name for c in find_all_in_scope(on, exp.Column) if c.table == inner_name]

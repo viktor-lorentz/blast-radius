@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/merge_subqueries.sql b/tests/fixtures/optimizer/merge_subqueries.sql
+--- a/tests/fixtures/optimizer/merge_subqueries.sql
++++ b/tests/fixtures/optimizer/merge_subqueries.sql
+@@ -692,7 +692,7 @@
+   conflict.a
+ FROM i
+ LEFT JOIN j AS conflict
+-  ON i.a = conflict.a;
++  ON i.a = conflict.( a;
+ WITH j AS (SELECT 1 AS a) SELECT conflict_2.a AS a, conflict.a AS a FROM (SELECT 1 AS a) AS conflict_2 LEFT JOIN j AS conflict ON conflict_2.a = conflict.a;
+ 
+ # title: column name is not lost

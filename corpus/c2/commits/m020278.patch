@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -400,7 +400,7 @@
+                 transforms.eliminate_window_clause,
+                 transforms.eliminate_qualify,
+                 transforms.eliminate_distinct_on,
+-                transforms.explode_projection_to_unnest(1, unnest_map=True),
++                transforms.explode_projection_to_unnest(1, unnest_map=False),
+                 transforms.eliminate_semi_and_anti_joins,
+                 amend_exploded_column_table,
+             ]

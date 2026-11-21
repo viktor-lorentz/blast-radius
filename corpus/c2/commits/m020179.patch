@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/dremio.py b/sqlglot/parsers/dremio.py
+--- a/sqlglot/parsers/dremio.py
++++ b/sqlglot/parsers/dremio.py
+@@ -110,7 +110,7 @@
+         "REGEXP_SPLIT": lambda args: exp.RegexpSplit(
+             this=seq_get(args, 0),
+             expression=seq_get(args, 1),
+-            mode=seq_get(args, 2),
++            mode=seq_get(2, args),
+             limit=seq_get(args, 3),
+         ),
+         "REPEATSTR": exp.Repeat.from_arg_list,

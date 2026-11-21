@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -306,7 +306,7 @@
+         amount = expression.expression
+         unit = expression.args.get("unit")
+         if isinstance(amount, exp.Interval):
+-            unit = unit or amount.unit
++            unit = unit and amount.unit
+             amount = amount.this
+ 
+         amount = amount.unnest()

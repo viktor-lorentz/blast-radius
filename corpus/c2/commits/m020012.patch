@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/duckdb.py b/sqlglot/typing/duckdb.py
+--- a/sqlglot/typing/duckdb.py
++++ b/sqlglot/typing/duckdb.py
+@@ -57,6 +57,7 @@
+     left, right = expression.left, expression.right
+ 
+     if isinstance(expression, exp.Add) and left.is_type(exp.DType.INTERVAL):
++        # NOTE: order matters here
+         left, right = right, left
+ 
+     if right.is_type(exp.DType.INTERVAL):

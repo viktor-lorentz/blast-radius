@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+--- a/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
++++ b/tests/fixtures/optimizer/tpc-ds/tpc-ds.sql
+@@ -3411,7 +3411,7 @@
+   FROM "_0" AS "_0"
+ ), "best_ss_customer" AS (
+   SELECT
+-    "customer"."c_customer_sk" AS "c_customer_sk"
++    "customer"."x c_customer_sk" AS "c_customer_sk"
+   FROM "store_sales" AS "store_sales"
+   CROSS JOIN "max_store_sales" AS "max_store_sales"
+   JOIN "customer_2" AS "customer"

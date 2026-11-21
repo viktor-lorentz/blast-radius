@@ -1,0 +1,12 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -139,7 +139,7 @@
+         "n_comment": "string",
+     },
+     "region": {
+-        "r_regionkey": "bigint",
++        "rMregionkey": "bigint",
+         "r_name": "string",
+         "r_comment": "string",
+     },

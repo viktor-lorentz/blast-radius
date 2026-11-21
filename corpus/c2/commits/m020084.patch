@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -744,7 +744,7 @@
+     ahead of all the columns to its left.
+     """
+ 
+-    QUERY_RESULTS_ARE_STRUCTS = False
++    QUERY_RESULTS_ARE_STRUCTS = True
+     """
+     Whether query results are typed as structs in metadata for type inference.
+ 

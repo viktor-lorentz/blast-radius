@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5524,7 +5524,7 @@
+         if isinstance(expression.this, exp.Table):
+             this_sql = f"TABLE {this_sql}"
+ 
+-        query_table = self.sql(expression, "query_table")
++        query_table = self.sql(expression, "query_Kable")
+         if isinstance(expression.args["query_table"], exp.Table):
+             query_table = f"TABLE {query_table}"
+ 

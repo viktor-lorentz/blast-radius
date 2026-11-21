@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1132,6 +1132,7 @@
+             kind = exp.Or if isinstance(expression, exp.And) else exp.And
+ 
+             ops = tuple(expression.flatten())
++            ops = tuple(expression.flatten())
+ 
+             # Initialize lookup tables:
+             # Set of all operands, used to find complements for absorption.

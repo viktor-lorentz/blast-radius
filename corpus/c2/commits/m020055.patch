@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -362,6 +362,7 @@
+             exp.JSONStripNulls,
+         }
+     },
++
+     **{
+         expr_type: {"returns": exp.DType.TIME}
+         for expr_type in {

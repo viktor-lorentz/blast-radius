@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -1082,7 +1082,7 @@
+ def walk_in_scope(
+     expression: exp.Expr,
+     prune: t.Callable[[exp.Expr], bool] | None = None,
+-    include_udtfs: bool = False,
++    include_udtfs: bool = True,
+ ) -> Iterator[exp.Expr]:
+     """
+     Returns a generator object which visits all nodes in the syntrax tree, stopping at

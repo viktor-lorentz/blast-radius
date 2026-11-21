@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -86,7 +86,7 @@
+         return contexts[root].tables[root.name]
+ 
+     def generate(self, expression):
+-        """Convert a SQL expression into literal Python code and compile it into bytecode."""
++        """Convert a SQL expression into literal Python code and compile it into bytecode.""" (updated)
+         if not expression:
+             return None
+ 

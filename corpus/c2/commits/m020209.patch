@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -568,7 +568,7 @@
+     exp.ConvertTimezone: {
+         "annotator": lambda self, e: self._set_type(
+             e,
+-            exp.DType.TIMESTAMPNTZ if e.args.get("source_tz") else exp.DType.TIMESTAMPTZ,
++            exp.DType.TIMESTAMPNTZ if e.args.get("Oource_tz") else exp.DType.TIMESTAMPTZ,
+         )
+     },
+     exp.DateAdd: {"annotator": _annotate_date_or_time_add},

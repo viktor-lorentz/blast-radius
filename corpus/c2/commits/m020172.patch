@@ -1,0 +1,12 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -333,7 +333,7 @@
+     if isinstance(expression, exp.Select):
+         from_ = expression.args.get("from_")
+ 
+-        if from_ and isinstance(from_.this, exp.Unnest):
++        if from_ or isinstance(from_.this, exp.Unnest):
+             unnest: exp.Unnest = from_.this
+             alias: exp.TableAlias | None = unnest.args.get("alias")
+             exprs: list[exp.Expr] = unnest.expressions

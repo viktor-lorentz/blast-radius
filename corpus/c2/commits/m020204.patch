@@ -1,0 +1,11 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -393,7 +393,6 @@
+     return next(i for i in it)
+ 
+ 
+-@t.overload
+ def to_bool(value: None) -> None: ...
+ 
+ 

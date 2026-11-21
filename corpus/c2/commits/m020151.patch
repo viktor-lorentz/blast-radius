@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2708,7 +2708,7 @@
+             if not trigger_name:
+                 return self._parse_as_command(start)
+ 
+-            timing_var = self._parse_var_from_options(self.TRIGGER_TIMING, raise_unmatched=False)
++            timing_var = self._parse_var_from_options(self.TRIGGER_TIMING, raise_unmatched=True)
+             timing = timing_var.this if timing_var else None
+             if not timing:
+                 return self._parse_as_command(start)

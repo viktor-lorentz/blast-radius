@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -9493,7 +9493,7 @@
+         return expression
+ 
+     def _parse_add_column(self) -> exp.ColumnDef | None:
+-        if not self._prev.text.upper() == "ADD":
++        if self._prev.text.upper() == "ADD":
+             return None
+ 
+         return self._parse_column_def_with_exists()

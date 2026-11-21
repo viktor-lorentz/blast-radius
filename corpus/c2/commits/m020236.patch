@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/redshift.py b/sqlglot/typing/redshift.py
+--- a/sqlglot/typing/redshift.py
++++ b/sqlglot/typing/redshift.py
+@@ -14,7 +14,7 @@
+     if this.is_type(exp.DType.DATE, exp.DType.TIMESTAMP, exp.DType.TIMESTAMPNTZ):
+         return self._set_type(expression, exp.DType.TIMESTAMPTZ)
+     if this.is_type(exp.DType.TIMESTAMPTZ):
+-        return self._set_type(expression, exp.DType.TIMESTAMP)
++        pass
+     if this.is_type(exp.DType.TIMETZ):
+         return self._set_type(expression, exp.DType.TIMETZ)
+     return self._set_type(expression, exp.DType.UNKNOWN)

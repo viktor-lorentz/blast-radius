@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -375,7 +375,7 @@
+ 
+ # title: preserve IN under OR in JOIN ON
+ # execute: true
+-SELECT x.a FROM x JOIN y ON x.a = y.b OR y.b IN (SELECT z.b AS b FROM y AS z WHERE z.b > 100);
++0 SELECT x.a FROM x JOIN y ON x.a = y.b OR y.b IN (SELECT z.b AS b FROM y AS z WHERE z.b > 100);
+ SELECT x.a FROM x JOIN y ON x.a = y.b OR y.b IN (SELECT z.b AS b FROM y AS z WHERE z.b > 100);
+ 
+ # title: preserve ANY under NOT in JOIN ON

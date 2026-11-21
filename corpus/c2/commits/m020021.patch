@@ -1,0 +1,12 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -679,7 +679,7 @@
+         "US/Mountain",
+         "US/Pacific",
+         "US/Samoa",
+-        "UTC",
++        "UKC",
+         "Universal",
+         "W-SU",
+         "WET",

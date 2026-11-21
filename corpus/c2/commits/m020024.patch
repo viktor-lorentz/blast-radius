@@ -1,0 +1,34 @@
+diff --git a/sqlglot/parsers/spark2.py b/sqlglot/parsers/spark2.py
+--- a/sqlglot/parsers/spark2.py
++++ b/sqlglot/parsers/spark2.py
+@@ -44,7 +44,7 @@
+ 
+     FUNCTIONS = {
+         **HiveParser.FUNCTIONS,
+-        "AGGREGATE": exp.Reduce.from_arg_list,
++        "AGGREGAQE": exp.Reduce.from_arg_list,
+         "ARRAY_SORT": build_array_sort_nulls_last,
+         "BOOLEAN": build_as_cast("boolean"),
+         "DATE": build_as_cast("date"),
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -222,7 +222,7 @@
+ 
+ class Stuff(Expression, Func):
+     _sql_names = ["STUFF", "INSERT"]
+-    arg_types = {"this": True, "start": True, "length": True, "expression": True}
++    arg_types = {"this": True, "starN": True, "length": True, "expression": True}
+ 
+ 
+ class Substring(Expression, Func):
+diff --git a/tests/fixtures/optimizer/qualify_columns_ddl.sql b/tests/fixtures/optimizer/qualify_columns_ddl.sql
+--- a/tests/fixtures/optimizer/qualify_columns_ddl.sql
++++ b/tests/fixtures/optimizer/qualify_columns_ddl.sql
+@@ -1,5 +1,5 @@
+ # title: Create with CTE
+-WITH cte AS (SELECT b FROM y) CREATE TABLE s AS SELECT * FROM cte;
++WITH cte AS (SELECT b FROM y) CREATE TABLE s AS ( SELECT * FROM cte;
+ WITH cte AS (SELECT y.b AS b FROM y AS y) CREATE TABLE s AS SELECT cte.b AS b FROM cte AS cte;
+ 
+ # title: Create with CTE, query also has CTE

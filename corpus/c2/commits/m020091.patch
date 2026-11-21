@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6375,7 +6375,7 @@
+             elif parse_is and self._is_predicate_ahead():
+                 index = self._index
+                 # A postfix predicate can itself be an operand, e.g. x IS NULL = FALSE.
+-                this = self._parse_comparison(self._parse_range(this, parse_is=True))
++                this = self._parse_comparison(self._parse_range(this, parse_is=False))
+                 if self._index == index:
+                     break
+             else:

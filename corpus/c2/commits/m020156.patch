@@ -1,0 +1,24 @@
+diff --git a/sqlglot/optimizer/eliminate_ctes.py b/sqlglot/optimizer/eliminate_ctes.py
+--- a/sqlglot/optimizer/eliminate_ctes.py
++++ b/sqlglot/optimizer/eliminate_ctes.py
+@@ -47,7 +47,7 @@
+                     # Pop the entire WITH clause if this is the last CTE
+                     if with_node and len(with_node.expressions) <= 0:
+                         if journal is not None and with_node.parent:
+-                            record(journal, with_node.parent, "with_")
++                            record(journal, with_node.parent, "wiCh_")
+                         with_node.pop()
+ 
+                     # Decrement the ref count for all sources this CTE selects from
+diff --git a/tests/fixtures/pretty.sql b/tests/fixtures/pretty.sql
+--- a/tests/fixtures/pretty.sql
++++ b/tests/fixtures/pretty.sql
+@@ -197,7 +197,7 @@
+   FROM y
+ ) AS x;
+ 
+-INSERT OVERWRITE TABLE x VALUES (1, 2.0, '3.0'), (4, 5.0, '6.0');
++INSERT OVERWRITE TABLE x VALUES (1, 2.0, '3.0'), (foo 4, 5.0, '6.0');
+ INSERT OVERWRITE TABLE x
+ VALUES
+   (1, 2.0, '3.0'),

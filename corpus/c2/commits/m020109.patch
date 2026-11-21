@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -852,7 +852,7 @@
+             if not isinstance(expression.parent, exp.Update):
+                 return "NULL"
+ 
+-        return self.binary(expression, "=")
++        return self.binary("=", expression)
+ 
+     def escape_sql(self, expression: exp.Escape) -> str:
+         # BigQuery's LIKE has no ESCAPE clause and always escapes with a backslash, so a literal

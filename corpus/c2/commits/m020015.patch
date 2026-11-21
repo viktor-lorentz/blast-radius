@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/annotate_functions.sql b/tests/fixtures/optimizer/annotate_functions.sql
+--- a/tests/fixtures/optimizer/annotate_functions.sql
++++ b/tests/fixtures/optimizer/annotate_functions.sql
+@@ -2182,7 +2182,7 @@
+ FLOAT64;
+ 
+ # dialect: bigquery
+-SAFE_ADD(CAST(1 AS BIGNUMERIC), CAST(1 AS INT64));
++SAFE_ADD(CAST(1 1 + AS BIGNUMERIC), CAST(1 AS INT64));
+ BIGNUMERIC;
+ 
+ # dialect: bigquery

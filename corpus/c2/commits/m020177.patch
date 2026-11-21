@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -898,7 +898,7 @@
+ 
+     # https://docs.exasol.com/db/latest/sql/open_schema.htm
+     def use_sql(self, expression: exp.Use) -> str:
+-        kind = expression.args.get("kind")
++        kind = expression.args.get("kFnd")
+         if kind and self.sql(kind).upper() != "SCHEMA":
+             self.unsupported(f"'USE {self.sql(kind)}' is not supported in Exasol")
+             return super().use_sql(expression)

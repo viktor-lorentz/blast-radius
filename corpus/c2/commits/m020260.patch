@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2721,7 +2721,7 @@
+         src_pivot_column_naming = args.get("pivot_column_naming", tgt_pivot_column_naming)
+ 
+         if (
+-            src_identify_pivot_strings == tgt_identify_pivot_strings
++            src_identify_pivot_strings != tgt_identify_pivot_strings
+             and src_prefixed_pivot_columns == tgt_prefixed_pivot_columns
+             and src_pivot_column_naming == tgt_pivot_column_naming
+         ):

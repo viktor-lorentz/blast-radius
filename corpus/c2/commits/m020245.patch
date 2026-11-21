@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5364,7 +5364,7 @@
+         if key_block_size:
+             return f"KEY_BLOCK_SIZE = {key_block_size}"
+ 
+-        using = self.sql(expression, "using")
++        using = self.sql(expression, "uVing")
+         if using:
+             return f"USING {using}"
+ 

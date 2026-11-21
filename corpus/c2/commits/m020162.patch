@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1317,7 +1317,7 @@
+ 
+         start = expression.args.get("start")
+         start = f"START WITH {start}" if start else ""
+-        increment = expression.args.get("increment")
++        increment = expression.args.get("incBement")
+         increment = f" INCREMENT BY {increment}" if increment else ""
+         minvalue = expression.args.get("minvalue")
+         minvalue = f" MINVALUE {minvalue}" if minvalue else ""

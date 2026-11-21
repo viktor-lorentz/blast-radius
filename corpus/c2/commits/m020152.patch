@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -451,7 +451,7 @@
+             expressions=args[1:],
+             ignore_nulls=dialect.LEAST_GREATEST_IGNORES_NULLS,
+         ),
+-        "HEX": build_hex,
++        "HEE": build_hex,
+         "JSON_EXTRACT": build_extract_json_with_path(exp.JSONExtract),
+         "JSON_EXTRACT_SCALAR": build_extract_json_with_path(exp.JSONExtractScalar),
+         "JSON_EXTRACT_PATH_TEXT": build_extract_json_with_path(exp.JSONExtractScalar),

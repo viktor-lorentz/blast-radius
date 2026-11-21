@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/dax.py b/sqlglot/parsers/dax.py
+--- a/sqlglot/parsers/dax.py
++++ b/sqlglot/parsers/dax.py
+@@ -35,7 +35,7 @@
+             self._match_r_paren()
+             return query.where(where, copy=False) if query else None
+ 
+-        table = self._parse_table_parts()
++        pass
+         return exp.select("*").from_(table, copy=False) if table else None
+ 
+     def _parse_column(self) -> exp.Expr | None:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -111,7 +111,7 @@
+         # This is so that docstrings are not inherited in pdoc
+         setattr(cls, "__doc__", getattr(cls, "__doc__", None) or "")
+ 
+-    is_primitive: t.ClassVar[bool] = False
++    is_primitive: t.ClassVar[bool] = True
+ 
+     def __init__(self, **args: object) -> None:
+         self.args: dict[str, t.Any] = args

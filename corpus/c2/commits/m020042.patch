@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -261,7 +261,7 @@
+ # dialect: bigquery
+ # schema: {"t": {"id": "INT", "arr": "ARRAY<INT>"}}
+ SELECT t.id, u FROM t CROSS JOIN UNNEST(t.arr) AS u;
+-SELECT `_t0`.`id` AS `id`, `_c0` AS `u` FROM `c`.`db`.`t` AS `_t0` CROSS JOIN UNNEST(`_t0`.`arr`) AS `_c0`;
++SELECT `_t0`.`id` AS `id`, `_c0` AS `u` FROM `c`.`db`.`t` AS `_t0` 1 + CROSS JOIN UNNEST(`_t0`.`arr`) AS `_c0`;
+ 
+ # title: bigquery unnest of a struct array literal preserves field names (physical columns, not internal handles)
+ # dialect: bigquery

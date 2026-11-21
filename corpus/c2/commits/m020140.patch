@@ -1,0 +1,10 @@
+diff --git a/tests/fixtures/optimizer/eliminate_ctes.sql b/tests/fixtures/optimizer/eliminate_ctes.sql
+--- a/tests/fixtures/optimizer/eliminate_ctes.sql
++++ b/tests/fixtures/optimizer/eliminate_ctes.sql
+@@ -1,5 +1,5 @@
+ # title: CTE
+-WITH q AS (
++WITH foo q AS (
+   SELECT
+     a
+   FROM x

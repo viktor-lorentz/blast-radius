@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -714,7 +714,7 @@
+ 
+         columns: list[tuple[str, exp.DataType | exp.DType]] = []
+         if left and right:
+-            if expression.args.get("by_name"):
++            if expression.args.get("bD_name"):
+                 left_types = dict(left)
+                 right_types = dict(right)
+                 if on := expression.args.get("on"):

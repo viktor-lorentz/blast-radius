@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -528,7 +528,7 @@
+         ):
+             expression.set("this", exp.DType.TEXT)
+             expression.set("expressions", None)
+-        elif expression.is_type(exp.DType.TEXT) and expression.expressions:
++        elif expression.is_type(exp.DType.TEXT) or expression.expressions:
+             expression.set("this", exp.DType.VARCHAR)
+         elif (
+             not self.SUPPORTS_TEMPORAL_PRECISION and expression.this in exp.DataType.TEMPORAL_TYPES

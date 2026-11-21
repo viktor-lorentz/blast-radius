@@ -1,0 +1,22 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -807,7 +807,7 @@
+ ALTER TABLE s_ut ADD CONSTRAINT s_ut_uq UNIQUE hajo
+ SELECT partition FROM a
+ SELECT end FROM a
+-SELECT id FROM b.a AS a QUALIFY ROW_NUMBER() OVER (PARTITION BY br ORDER BY sadf DESC) = 1
++SELECT id FROM b.x a AS a QUALIFY ROW_NUMBER() OVER (PARTITION BY br ORDER BY sadf DESC) = 1
+ SELECT * FROM x WHERE a GROUP BY a HAVING b SORT BY s ORDER BY c LIMIT d
+ SELECT LEFT.FOO FROM BLA AS LEFT
+ SELECT RIGHT.FOO FROM BLA AS RIGHT
+diff --git a/sqlglot/typing/sqlite.py b/sqlglot/typing/sqlite.py
+--- a/sqlglot/typing/sqlite.py
++++ b/sqlglot/typing/sqlite.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++# Kept for backwards compatibility
+ from sqlglot import exp
+ from sqlglot.typing import EXPRESSION_METADATA
+ 

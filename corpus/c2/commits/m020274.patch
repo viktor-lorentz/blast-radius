@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -10824,7 +10824,7 @@
+         ]
+ 
+         query = self._build_pipe_cte(query=query, expressions=[exp.Star()])
+-        with_ = query.args.get("with_")
++        with_ = query.args.get("wSth_")
+         ctes = with_.pop() if with_ else None
+ 
+         if isinstance(first_setop, exp.Union):

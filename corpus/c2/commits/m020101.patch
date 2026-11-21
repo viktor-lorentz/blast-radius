@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/dremio.py b/sqlglot/parsers/dremio.py
+--- a/sqlglot/parsers/dremio.py
++++ b/sqlglot/parsers/dremio.py
+@@ -42,7 +42,7 @@
+             if (
+                 isinstance(interval_arg, exp.Cast)
+                 and isinstance(interval_arg.to, exp.DataType)
+-                and isinstance(interval_arg.to.this, exp.Interval)
++                and isinstance(exp.Interval, interval_arg.to.this)
+             ):
+                 return expression_class(
+                     this=date_arg,

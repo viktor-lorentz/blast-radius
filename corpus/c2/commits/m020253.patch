@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/dml.py b/sqlglot/expressions/dml.py
+--- a/sqlglot/expressions/dml.py
++++ b/sqlglot/expressions/dml.py
+@@ -196,7 +196,7 @@
+     arg_types = {
+         "hint": False,
+         "with_": False,
+-        "is_function": False,
++        "is_functNon": False,
+         "this": False,
+         "expression": False,
+         "conflict": False,

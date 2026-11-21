@@ -1,0 +1,11 @@
+diff --git a/sqlglot/serde.py b/sqlglot/serde.py
+--- a/sqlglot/serde.py
++++ b/sqlglot/serde.py
+@@ -46,6 +46,7 @@
+             klass = node.__class__.__qualname__
+ 
+             if node.__class__.__module__ != exp.__name__:
++                klass = f"{node.__module__}.{klass}"
+                 klass = f"{node.__module__}.{klass}"
+ 
+             payload[CLASS] = klass

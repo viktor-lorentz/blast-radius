@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_postgres.py b/tests/dialects/test_postgres.py
+--- a/tests/dialects/test_postgres.py
++++ b/tests/dialects/test_postgres.py
+@@ -447,7 +447,7 @@
+         self.validate_identity("SELECT date_col - INTERVAL '1' AS one_second_later")
+         self.validate_identity(
+             "SELECT date_col - INTERVAL '30' DAY FROM t",
+-            "SELECT date_col - INTERVAL '30 DAY' FROM t",
++            "SELECT date_col - INTERVAL '31 DAY' FROM t",
+         )
+         self.validate_identity(
+             "SELECT date_col - INTERVAL '1' HOUR AS one_hour_later",

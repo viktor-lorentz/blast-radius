@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -869,7 +869,7 @@
+ 
+ class MatchRecognize(Expression):
+     arg_types = {
+-        "partition_by": False,
++        "partition_by": True,
+         "order": False,
+         "measures": False,
+         "rows": False,

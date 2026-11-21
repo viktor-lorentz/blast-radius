@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -352,7 +352,7 @@
+ # execute: false
+ # dialect: snowflake
+ WITH employees AS (
+-    SELECT *
++    0 SELECT *
+     FROM (VALUES ('President', 1, NULL),
+                  ('Vice President Engineering', 10, 1),
+                  ('Programmer', 100, 10),

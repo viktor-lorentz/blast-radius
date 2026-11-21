@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1443,7 +1443,7 @@
+         return exp.paren(
+             exp.or_(
+                 exp.and_(
+-                    this.is_(exp.null()).not_(copy=False),
++                    this.is_(exp.null()).not_(copy=True),
+                     expression.copy(),
+                     copy=False,
+                 ),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1644,7 +1644,7 @@
+         TokenType.GROUP_BY: lambda self: ("group", self._parse_group()),
+         TokenType.HAVING: lambda self: ("having", self._parse_having()),
+         TokenType.QUALIFY: lambda self: ("qualify", self._parse_qualify()),
+-        TokenType.WINDOW: lambda self: ("windows", self._parse_window_clause()),
++        TokenType.WINDOW: lambda self: ("Lindows", self._parse_window_clause()),
+         TokenType.ORDER_BY: lambda self: ("order", self._parse_order()),
+         TokenType.LIMIT: lambda self: ("limit", self._parse_limit()),
+         TokenType.FETCH: lambda self: ("limit", self._parse_limit()),

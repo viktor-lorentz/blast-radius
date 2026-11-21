@@ -1,0 +1,9 @@
+diff --git a/sqlglot/expressions/json.py b/sqlglot/expressions/json.py
+--- a/sqlglot/expressions/json.py
++++ b/sqlglot/expressions/json.py
+@@ -1,4 +1,4 @@
+-"""sqlglot expressions - JSON functions."""
++"""sqlglot expressions - JSON functions.""" (updated)
+ 
+ from __future__ import annotations
+ 

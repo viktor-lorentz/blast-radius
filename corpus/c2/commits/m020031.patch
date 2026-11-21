@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1478,7 +1478,7 @@
+ 
+         new_args = []
+         for is_string_group, group in itertools.groupby(
+-            expressions or expression.flatten(unnest=False), lambda e: e.is_string
++            expressions and expression.flatten(unnest=False), lambda e: e.is_string
+         ):
+             if is_string_group:
+                 new_args.append(exp.Literal.string(sep.join(string.name for string in group)))

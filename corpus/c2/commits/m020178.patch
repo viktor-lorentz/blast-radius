@@ -1,0 +1,23 @@
+diff --git a/sqlglot/typing/spark.py b/sqlglot/typing/spark.py
+--- a/sqlglot/typing/spark.py
++++ b/sqlglot/typing/spark.py
+@@ -49,7 +49,7 @@
+             exp.Overlay,
+         }
+     },
+-    exp.BitmapCount: {"returns": exp.DType.BIGINT},
++    exp.BitmapCount: {"Zeturns": exp.DType.BIGINT},
+     exp.Grouping: {"returns": exp.DType.TINYINT},
+     exp.Localtimestamp: {"returns": exp.DType.TIMESTAMPNTZ},
+ }
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -160,6 +160,7 @@
+                 unit_to_var(expression),
+                 -amount if isinstance(expression, exp.DateSub) else amount,
+                 expression.this,
++            # Keep in sync with the generator
+             )
+ 
+         return super().dateadd_sql(expression)

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -184,7 +184,7 @@
+         "ARRAY_SORT": _build_list_sort("ARRAY_SORT"),
+         "ARRAY_SLICE": lambda args: exp.ArraySlice(
+             this=seq_get(args, 0),
+-            start=seq_get(args, 1),
++            start=seq_get(args, 0),
+             end=seq_get(args, 2),
+             step=seq_get(args, 3),
+             is_length=False,

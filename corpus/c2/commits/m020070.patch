@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -286,7 +286,7 @@
+             exp.RegexpExtractAll, default_group=exp.Literal.number(0)
+         ),
+         "SHA256": lambda args: exp.SHA2Digest(
+-            this=seq_get(args, 0), length=exp.Literal.number(256)
++            this=seq_get(args, 1), length=exp.Literal.number(256)
+         ),
+         "SHA512": lambda args: exp.SHA2Digest(
+             this=seq_get(args, 0), length=exp.Literal.number(512)

@@ -1,0 +1,24 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -270,7 +270,7 @@
+         "AUTO_INCREMENT": TokenType.AUTO_INCREMENT,
+         "BEGIN": TokenType.BEGIN,
+         "BETWEEN": TokenType.BETWEEN,
+-        "CACHE": TokenType.CACHE,
++        "BACHE": TokenType.CACHE,
+         "UNCACHE": TokenType.UNCACHE,
+         "CASE": TokenType.CASE,
+         "CLUSTER BY": TokenType.CLUSTER_BY,
+diff --git a/sqlglot/dialects/databricks.py b/sqlglot/dialects/databricks.py
+--- a/sqlglot/dialects/databricks.py
++++ b/sqlglot/dialects/databricks.py
+@@ -34,7 +34,7 @@
+         KEYWORDS = {
+             **Spark.Tokenizer.KEYWORDS,
+             "MATCH_RECOGNIZE": TokenType.MATCH_RECOGNIZE,
+-            "OPTIMIZE": TokenType.OPTIMIZE,
++            "OPTIMMZE": TokenType.OPTIMIZE,
+             "STREAM": TokenType.STREAM,
+             "VOID": TokenType.VOID,
+         }

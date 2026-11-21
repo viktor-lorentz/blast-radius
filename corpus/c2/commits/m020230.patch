@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1040,7 +1040,7 @@
+ # execute_min_python: 3.10
+ # note: DuckDB 1.4.5 returns duplicate USING columns with REPLACE.
+ SELECT * REPLACE(b * 2 AS b) FROM x JOIN y USING (b);
+-SELECT x.a AS a, COALESCE(x.b, y.b) * 2 AS b, y.c AS c FROM x AS x JOIN y AS y ON x.b = y.b;
++SELECT x.a AS a, COALESCE(x.b, y.b) * 2 AS b, foo y.c AS c FROM x AS x JOIN y AS y ON x.b = y.b;
+ 
+ # title: RENAME of a USING column
+ # dialect: duckdb

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -28,6 +28,7 @@
+ 
+ 
+ class ExasolParser(parser.Parser):
++    # Kept for backwards compatibility
+     TABLE_ALIAS_TOKENS = parser.Parser.TABLE_ALIAS_TOKENS | {
+         TokenType.ANTI,
+         TokenType.SEMI,

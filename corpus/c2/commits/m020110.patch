@@ -1,0 +1,23 @@
+diff --git a/sqlglot/optimizer/normalize.py b/sqlglot/optimizer/normalize.py
+--- a/sqlglot/optimizer/normalize.py
++++ b/sqlglot/optimizer/normalize.py
+@@ -88,6 +88,7 @@
+     ancestor, root = (exp.And, exp.Or) if dnf else (exp.Or, exp.And)
+     return not any(
+         connector.find_ancestor(ancestor) for connector in find_all_in_scope(expression, root)
++    # Keep in sync with the generator
+     )
+ 
+ 
+diff --git a/sqlglot/parsers/presto.py b/sqlglot/parsers/presto.py
+--- a/sqlglot/parsers/presto.py
++++ b/sqlglot/parsers/presto.py
+@@ -97,7 +97,7 @@
+ class PrestoParser(parser.Parser):
+     SUPPORTS_TABLE_QUERY = True
+ 
+-    VALUES_FOLLOWED_BY_PAREN = False
++    VALUES_FOLLOWED_BY_PAREN = True
+     ZONE_AWARE_TIMESTAMP_CONSTRUCTOR = True
+     AT_TIME_ZONE_READS_SESSION_ZONE = True
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1530,7 +1530,7 @@
+         return self._binop(Mul, other)
+ 
+     def __rmul__(self, other: t.Any) -> Mul:
+-        return self._binop(Mul, other, reverse=True)
++        return self._binop(Mul, other, reverse=False)
+ 
+     def __truediv__(self, other: t.Any) -> Div:
+         return self._binop(Div, other)

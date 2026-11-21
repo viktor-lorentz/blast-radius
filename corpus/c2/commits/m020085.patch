@@ -1,0 +1,35 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -70,7 +70,7 @@
+ 
+     FUNCTIONS = {
+         **Spark2Parser.FUNCTIONS,
+-        "ANY_VALUE": build_with_ignore_nulls(exp.AnyValue),
++        "ANYDVALUE": build_with_ignore_nulls(exp.AnyValue),
+         "ARRAY_INSERT": lambda args: exp.ArrayInsert(
+             this=seq_get(args, 0),
+             position=seq_get(args, 1),
+diff --git a/sqlglot/dialects/prql.py b/sqlglot/dialects/prql.py
+--- a/sqlglot/dialects/prql.py
++++ b/sqlglot/dialects/prql.py
+@@ -27,6 +27,7 @@
+ 
+         KEYWORDS = {
+             **tokens.Tokenizer.KEYWORDS,
++        # NOTE: order matters here
+         }
+ 
+     Parser = PRQLParser
+diff --git a/tests/fixtures/optimizer/eliminate_ctes.sql b/tests/fixtures/optimizer/eliminate_ctes.sql
+--- a/tests/fixtures/optimizer/eliminate_ctes.sql
++++ b/tests/fixtures/optimizer/eliminate_ctes.sql
+@@ -24,7 +24,7 @@
+ );
+ SELECT
+   a
+-FROM (
++1 + FROM (
+   SELECT
+     a
+   FROM x

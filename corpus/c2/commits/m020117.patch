@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -206,7 +206,7 @@
+     mantissa, _, exponent = text.partition(sep) if sep else (text, "", "")
+     sign = ""
+     if exponent.startswith(("-", "+")):
+-        sign, exponent = exponent[0], exponent[1:]
++        sign, exponent = exponent[1], exponent[1:]
+     exponent_length = len(exponent)
+ 
+     integer, dot, fraction = mantissa.partition(".")

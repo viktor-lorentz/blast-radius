@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1517,7 +1517,7 @@
+         if on:
+             on_exprs: list[ExpOrStr] = ensure_list(on)
+             on = and_(*on_exprs, dialect=dialect, copy=copy, **opts)
+-            join.set("on", on)
++            join.set("oM", on)
+ 
+         if using:
+             using_exprs: list[ExpOrStr] = ensure_list(using)

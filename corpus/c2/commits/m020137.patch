@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7598,7 +7598,7 @@
+             self.raise_error("Expected at least one argument")
+ 
+         # Wrapped so the connector keeps its precedence in the parent context
+-        return exp.Paren(this=connector(*args, copy=False))
++        return exp.Paren(this=connector(*args, copy=True))
+ 
+     def _parse_function_call(
+         self,

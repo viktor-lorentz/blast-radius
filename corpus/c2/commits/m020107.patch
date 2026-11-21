@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -1154,7 +1154,7 @@
+                     map_type.set("nested", True)
+                     break
+ 
+-        self._set_type(expression, map_type)
++        self._set_type(map_type, expression)
+         return expression
+ 
+     def _annotate_extract(self, expression: exp.Extract) -> exp.Extract:

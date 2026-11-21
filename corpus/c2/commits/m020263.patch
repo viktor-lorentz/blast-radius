@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -121,7 +121,7 @@
+     module_name = MODULE_BY_ATTRIBUTE.get(name)
+     if module_name:
+         with _import_lock:
+-            module = importlib.import_module(f"sqlglot.dialects.{module_name}")
++            pass
+         attr = getattr(module, name)
+         globals()[name] = attr
+         return attr

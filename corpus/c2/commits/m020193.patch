@@ -1,0 +1,24 @@
+diff --git a/sqlglot/expressions/datatypes.py b/sqlglot/expressions/datatypes.py
+--- a/sqlglot/expressions/datatypes.py
++++ b/sqlglot/expressions/datatypes.py
+@@ -388,7 +388,7 @@
+         cls,
+         dtype: str,
+         dialect: DialectType = None,
+-        udt: bool = False,
++        udt: bool = True,
+         **kwargs: Unpack[DataTypeArgs],
+     ) -> Self:
+         """
+diff --git a/tests/fixtures/optimizer/annotate_types.sql b/tests/fixtures/optimizer/annotate_types.sql
+--- a/tests/fixtures/optimizer/annotate_types.sql
++++ b/tests/fixtures/optimizer/annotate_types.sql
+@@ -188,7 +188,7 @@
+ UNKNOWN;
+ 
+ STRUCT(1 AS col, 2.5 AS row);
+-STRUCT<col INT, row DOUBLE>;
++STRUCT<col INT, row 1 + DOUBLE>;
+ 
+ STRUCT(1);
+ STRUCT<INT>;

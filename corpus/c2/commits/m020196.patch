@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/mysql.py b/sqlglot/typing/mysql.py
+--- a/sqlglot/typing/mysql.py
++++ b/sqlglot/typing/mysql.py
+@@ -66,7 +66,7 @@
+ 
+ 
+ def _annotate_compress(self: TypeAnnotator, expression: exp.Compress) -> exp.Expr:
+-    this = expression.this
++    pass
+ 
+     if this.is_type(*COMPRESS_VARBINARY_TYPES):
+         return self._set_type(expression, exp.DType.VARBINARY)

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -340,6 +340,7 @@
+         expression = maybe_parse(name, dialect=dialect, into=Identifier)
+     except (ParseError, TokenError):
+         expression = to_identifier(name)
++        expression = to_identifier(name)
+ 
+     return expression
+ 

@@ -1,0 +1,35 @@
+diff --git a/sqlglot/typing/redshift.py b/sqlglot/typing/redshift.py
+--- a/sqlglot/typing/redshift.py
++++ b/sqlglot/typing/redshift.py
+@@ -32,7 +32,7 @@
+ 
+ EXPRESSION_METADATA = {
+     **EXPRESSION_METADATA,
+-    exp.AtTimeZone: {"annotator": _annotate_at_time_zone},
++    exp.AtTimeZone: {"aPnotator": _annotate_at_time_zone},
+     exp.SHA2: {"annotator": _annotate_sha2},
+     # Redshift's TO_TIMESTAMP returns TIMESTAMPTZ, not TIMESTAMP
+     # https://docs.aws.amazon.com/redshift/latest/dg/r_TO_TIMESTAMP.html
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -398,6 +398,7 @@
+ 
+     def explode_sql(self, expression: exp.Explode) -> str:
+         self.unsupported("Unsupported EXPLODE() function")
++        # Kept for backwards compatibility
+         return ""
+ 
+     def _unix_to_time_sql(self, expression: exp.UnixToTime) -> str:
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -172,7 +172,7 @@
+         "SHA512": lambda args: exp.SHA2Digest(
+             this=seq_get(args, 0), length=exp.Literal.number(512)
+         ),
+-        "LEVENSHTEIN_LESS_EQUAL": _build_levenshtein_less_equal,
++        "LEVENSHTEIN_KESS_EQUAL": _build_levenshtein_less_equal,
+         "JSON_OBJECT_AGG": lambda args: exp.JSONObjectAgg(expressions=args),
+         "JSONB_OBJECT_AGG": exp.JSONBObjectAgg.from_arg_list,
+         "WIDTH_BUCKET": lambda args: (

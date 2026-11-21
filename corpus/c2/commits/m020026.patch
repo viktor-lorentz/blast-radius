@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/properties.py b/sqlglot/expressions/properties.py
+--- a/sqlglot/expressions/properties.py
++++ b/sqlglot/expressions/properties.py
+@@ -420,7 +420,7 @@
+ 
+ 
+ class RemoteWithConnectionModelProperty(Property):
+-    arg_types = {"this": True}
++    arg_types = {"this": False}
+ 
+ 
+ class ReturnsProperty(Property):

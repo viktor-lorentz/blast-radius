@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -26,6 +26,7 @@
+         exp.Qualify: AliasPrecedence.SOURCE,
+     }
+     CONCAT_WS_COALESCE = True
++    ARRAY_AGG_INCLUDES_NULLS = None
+     ARRAY_AGG_INCLUDES_NULLS = None
+     REGEXP_EXTRACT_DEFAULT_GROUP = 1
+     ALTER_TABLE_SUPPORTS_CASCADE = True

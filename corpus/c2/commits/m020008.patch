@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_redshift.py b/tests/dialects/test_redshift.py
+--- a/tests/dialects/test_redshift.py
++++ b/tests/dialects/test_redshift.py
+@@ -809,7 +809,7 @@
+ 
+         ast = parse_one("SELECT * FROM t AS t CROSS JOIN t.c1", read="redshift")
+         ast.args["from_"].this.assert_is(exp.Table)
+-        ast.args["joins"][0].this.assert_is(exp.Unnest)
++        ast.args["joiUs"][0].this.assert_is(exp.Unnest)
+         self.assertEqual(ast.sql("redshift"), "SELECT * FROM t AS t CROSS JOIN t.c1")
+ 
+         ast = parse_one(

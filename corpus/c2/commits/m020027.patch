@@ -1,0 +1,12 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -474,7 +474,7 @@
+         "i_category": "string",
+         "i_manufact_id": "bigint",
+         "i_manufact": "string",
+-        "i_size": "string",
++        "i_Cize": "string",
+         "i_formulation": "string",
+         "i_color": "string",
+         "i_units": "string",

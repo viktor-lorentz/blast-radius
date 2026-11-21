@@ -180,6 +180,57 @@ def edit_docstring(rng, src: str):
     return new
 
 
+def remove_decorator(rng, src: str):
+    tree = ast.parse(src)
+    cands = [d for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.ClassDef))
+             for d in n.decorator_list if d.lineno == d.end_lineno]
+    if not cands:
+        return None
+    d = rng.choice(cands)
+    lines = src.split("\n")
+    del lines[d.lineno - 1]
+    new = "\n".join(lines)
+    try:
+        ast.parse(new)
+    except SyntaxError:
+        return None
+    return new
+
+
+def swap_args(rng, src: str):
+    tree = ast.parse(src)
+    cands = [c for c in ast.walk(tree) if isinstance(c, ast.Call) and len(c.args) >= 2
+             and c.lineno == c.end_lineno and all(a.lineno == c.lineno for a in c.args[:2])]
+    if not cands:
+        return None
+    c = rng.choice(cands)
+    a, b = c.args[0], c.args[1]
+    lines = src.split("\n")
+    l = lines[c.lineno - 1]
+    ta, tb = l[a.col_offset:a.end_col_offset], l[b.col_offset:b.end_col_offset]
+    if ta == tb:
+        return None
+    lines[c.lineno - 1] = l[:a.col_offset] + tb + l[a.end_col_offset:b.col_offset] + ta + l[b.end_col_offset:]
+    new = "\n".join(lines)
+    try:
+        ast.parse(new)
+    except SyntaxError:
+        return None
+    return new
+
+
+def duplicate_stmt(rng, src: str):
+    tree = ast.parse(src)
+    cands = [n for n in ast.walk(tree) if isinstance(n, (ast.Expr, ast.AugAssign, ast.Assign))
+             and n.lineno == n.end_lineno and not (isinstance(n, ast.Expr) and isinstance(n.value, ast.Constant))]
+    if not cands:
+        return None
+    n = rng.choice(cands)
+    lines = src.split("\n")
+    lines.insert(n.lineno, lines[n.lineno - 1])
+    return "\n".join(lines)
+
+
 def whitespace(rng, src: str):
     lines_idx, _ = code_lines(src)
     lines = src.split("\n")
@@ -218,6 +269,8 @@ def main():
 
     mix = [("code", 50), ("fixture", 18), ("comment", 6), ("multi", 8), ("syntax", 3), ("testfile", 5),
            ("delete", 4), ("docstring", 3), ("whitespace", 2), ("misc_file", 1)]
+    if a.seed != 1:
+        mix += [("decorator", 3), ("swap_args", 4), ("duplicate", 3), ("helpers", 2)]
     names, wts = zip(*mix)
     made = 0
     while made < a.n:
@@ -259,6 +312,18 @@ def main():
             r and parts.append(r)
         elif kind == "docstring":
             r = one_code(fn=edit_docstring)
+            r and parts.append(r)
+        elif kind == "decorator":
+            r = one_code(fn=remove_decorator)
+            r and parts.append(r)
+        elif kind == "swap_args":
+            r = one_code(fn=swap_args)
+            r and parts.append(r)
+        elif kind == "duplicate":
+            r = one_code(fn=duplicate_stmt)
+            r and parts.append(r)
+        elif kind == "helpers":
+            r = one_code(fn=mutate_code, pool=[src / "tests" / "helpers.py", src / "tests" / "dialects" / "test_dialect.py"])
             r and parts.append(r)
         elif kind == "whitespace":
             r = one_code(fn=whitespace)

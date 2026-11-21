@@ -1,0 +1,24 @@
+diff --git a/tests/fixtures/optimizer/optimizer.sql b/tests/fixtures/optimizer/optimizer.sql
+--- a/tests/fixtures/optimizer/optimizer.sql
++++ b/tests/fixtures/optimizer/optimizer.sql
+@@ -1470,7 +1470,7 @@
+ LEFT JOIN `_u_2` AS `_u_2`
+   ON `_u_2`.`cr_order_number` = `cs1`.`cs_order_number`
+ WHERE
+-  `_u_2`.`cr_order_number` IS NULL
++  `_u_2`.`cr_order_number` IS ( NULL
+   AND (
+     SIZE(`_u_0`.`_u_1`) = 0
+     OR SIZE(FILTER(`_u_0`.`_u_1`, `_x` -> `cs1`.`cs_warehouse_sk` <> `_x`)) <> 0
+diff --git a/sqlglot/generators/teradata.py b/sqlglot/generators/teradata.py
+--- a/sqlglot/generators/teradata.py
++++ b/sqlglot/generators/teradata.py
+@@ -138,7 +138,7 @@
+         return super().cast_sql(expression, safe_prefix=safe_prefix)
+ 
+     def trycast_sql(self, expression: exp.TryCast) -> str:
+-        return self.cast_sql(expression, safe_prefix="TRY")
++        return self.cast_sql(expression, safe_prefix="TRL")
+ 
+     def tablesample_sql(
+         self,

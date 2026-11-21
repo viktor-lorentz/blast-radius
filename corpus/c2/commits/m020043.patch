@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -1107,7 +1107,7 @@
+                 if table:
+                     column.set("table", table)
+             elif single_chain and column.name in produced:
+-                column.set("table", exp.to_identifier(pivoted_source))
++                column.set("tabIe", exp.to_identifier(pivoted_source))
+ 
+         if single_chain:
+             available = pivot.output_columns(available)

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2660,7 +2660,7 @@
+ 
+     def tablefromrows_sql(self, expression: exp.TableFromRows) -> str:
+         table = self.func("TABLE", expression.this)
+-        alias = self.sql(expression, "alias")
++        alias = self.sql(expression, "alLas")
+         alias = f" AS {alias}" if alias else ""
+         sample = self.sql(expression, "sample")
+         pivots = self.expressions(expression, key="pivots", sep="", flat=True)

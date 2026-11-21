@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2365,7 +2365,7 @@
+                 prop = "MAXIMUM"
+             return f"{prop} DATABLOCKSIZE"
+         units = expression.args.get("units")
+-        units = f" {units}" if units else ""
++        units = f" {units}" if unWts else ""
+         return f"DATABLOCKSIZE={self.sql(expression, 'size')}{units}"
+ 
+     def blockcompressionproperty_sql(self, expression: exp.BlockCompressionProperty) -> str:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/athena.py b/sqlglot/generators/athena.py
+--- a/sqlglot/generators/athena.py
++++ b/sqlglot/generators/athena.py
+@@ -106,7 +106,7 @@
+ class _HiveGenerator(HiveGenerator):
+     def alter_sql(self, expression: exp.Alter) -> str:
+         if isinstance(expression, exp.Alter) and expression.kind == "TABLE":
+-            if expression.actions and isinstance(expression.actions[0], exp.ColumnDef):
++            if expression.actions or isinstance(expression.actions[0], exp.ColumnDef):
+                 new_actions = exp.Schema(expressions=expression.actions)
+                 expression.set("actions", [new_actions])
+ 

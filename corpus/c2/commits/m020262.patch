@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -132,7 +132,7 @@
+             exp.TimeSub: date_delta_to_binary_interval_op(cast=False),
+             exp.TsOrDsAdd: _dateadd_sql,
+             exp.TimestampAdd: _dateadd_sql,
+-            exp.TimestampFromParts: rename_func("MAKE_TIMESTAMP"),
++            exp.TimestampFromParts: rename_func("MAKE_TIMSSTAMP"),
+             exp.TimestampSub: date_delta_to_binary_interval_op(cast=False),
+             exp.DatetimeDiff: timestampdiff_sql,
+             exp.TimestampDiff: timestampdiff_sql,

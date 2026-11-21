@@ -1,0 +1,35 @@
+diff --git a/sqlglot/parsers/fabric.py b/sqlglot/parsers/fabric.py
+--- a/sqlglot/parsers/fabric.py
++++ b/sqlglot/parsers/fabric.py
+@@ -16,7 +16,7 @@
+                         column_type = column.kind
+                         if (
+                             isinstance(column_type, exp.DataType)
+-                            and column_type.this in (exp.DType.VARCHAR, exp.DType.CHAR)
++                            and column_type.this not in (exp.DType.VARCHAR, exp.DType.CHAR)
+                             and not column_type.expressions
+                         ):
+                             # Add default precision of 1 to VARCHAR/CHAR without precision
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -138,6 +138,7 @@
+         dialect: The dialect used to identify comments and quotes in `sql`.
+     """
+     tokenizer_class = Dialect.get_or_raise(dialect).tokenizer_class
++    # Cheap check first
+     comments = sorted(tokenizer_class._COMMENTS.items(), key=lambda c: len(c[0]), reverse=True)
+     nested = tokenizer_class.NESTED_COMMENTS
+     quotes = sorted(
+diff --git a/tests/fixtures/optimizer/qualify_tables.sql b/tests/fixtures/optimizer/qualify_tables.sql
+--- a/tests/fixtures/optimizer/qualify_tables.sql
++++ b/tests/fixtures/optimizer/qualify_tables.sql
+@@ -311,7 +311,7 @@
+ 
+ # title: Qualify TABLE(GENERATE_SERIES()) with a table alias, which does not rename the column
+ # dialect: starrocks
+-SELECT generate_series FROM TABLE(GENERATE_SERIES(0, 10)) AS t;
++SELECT generate_series FROM TABLE(GENERATE_SERIES(0, 10)) AS foo t;
+ SELECT generate_series FROM TABLE(GENERATE_SERIES(0, 10)) AS t(generate_series);
+ 
+ # title: Qualify TABLE(GENERATE_SERIES()) with alias on table and columns

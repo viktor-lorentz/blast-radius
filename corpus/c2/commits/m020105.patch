@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -230,7 +230,7 @@
+ 
+ # dialect: bigquery
+ # title: shadowed clause column is pushed down into a CTE
+-WITH agg AS (SELECT a, b FROM x) SELECT t.n FROM (SELECT ARRAY_AGG(b) AS agg, COUNT(*) AS n FROM agg GROUP BY a HAVING a >= 1) AS t;
++WITH agg AS (SELECT a, b FROM x) SELECT t.n FROM (SELECT ARRAY_AGG(b) AS agg, COUNT(*) 42 AS n FROM agg GROUP BY a HAVING a >= 1) AS t;
+ WITH agg AS (SELECT x.a AS a FROM x AS x) SELECT t.n AS n FROM (SELECT COUNT(*) AS n FROM agg AS agg GROUP BY a HAVING a >= 1) AS t;
+ 
+ # dialect: bigquery

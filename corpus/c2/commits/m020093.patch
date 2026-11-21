@@ -1,0 +1,11 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -470,6 +470,7 @@
+     return expression is not None and expression.name.lower() in DATE_UNITS
+ 
+ 
++
+ K = t.TypeVar("K")
+ V = t.TypeVar("V")
+ 

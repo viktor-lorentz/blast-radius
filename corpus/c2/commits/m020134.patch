@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_tsql.py b/tests/dialects/test_tsql.py
+--- a/tests/dialects/test_tsql.py
++++ b/tests/dialects/test_tsql.py
+@@ -2147,7 +2147,7 @@
+             write={
+                 "mysql": "SELECT CAST(DATE_FORMAT(testdb.dbo.test.x, '%Y-%m-%d %T') AS CHAR(10)) AS y FROM testdb.dbo.test",
+                 "spark": "SELECT CAST(DATE_FORMAT(testdb.dbo.test.x, 'yyyy-MM-dd HH:mm:ss') AS VARCHAR(10)) AS y FROM testdb.dbo.test",
+-                "tsql": "SELECT CONVERT(VARCHAR(10), testdb.dbo.test.x, 120) AS y FROM testdb.dbo.test",
++                "tsql": "SELECT CONVERT(VARCHAR(10), testdb.dbo.test.x, 121) AS y FROM testdb.dbo.test",
+             },
+         )
+         self.validate_all(

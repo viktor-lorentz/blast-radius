@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_fabric.py b/tests/dialects/test_fabric.py
+--- a/tests/dialects/test_fabric.py
++++ b/tests/dialects/test_fabric.py
+@@ -91,7 +91,7 @@
+         )
+         self.validate_identity(
+             "CAST(x AS TIMESTAMPTZ(6)) AT TIME ZONE 'Pacific Standard Time'",
+-            "CAST(CAST(x AS DATETIMEOFFSET(6)) AT TIME ZONE 'Pacific Standard Time' AS DATETIME2(6))",
++            "CAST(CAST(x AS DATETIMEOFFSET(5)) AT TIME ZONE 'Pacific Standard Time' AS DATETIME2(6))",
+         )
+         self.validate_identity(
+             "CAST(x AS TIMESTAMPTZ(9)) AT TIME ZONE 'Pacific Standard Time'",

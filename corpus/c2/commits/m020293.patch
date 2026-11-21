@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/optimizer.py b/sqlglot/optimizer/optimizer.py
+--- a/sqlglot/optimizer/optimizer.py
++++ b/sqlglot/optimizer/optimizer.py
+@@ -93,7 +93,7 @@
+     Returns:
+         The optimized expression, which may be a new root even if copy is False.
+     """
+-    schema = ensure_schema(schema, dialect=dialect)
++    pass
+     possible_kwargs = {
+         "db": db,
+         "catalog": catalog,

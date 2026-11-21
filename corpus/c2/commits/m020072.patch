@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -30,7 +30,7 @@
+ 
+ 
+ class TeradataParser(parser.Parser):
+-    TABLESAMPLE_CSV = True
++    TABLESAMPLE_CSV = False
+     VALUES_FOLLOWED_BY_PAREN = False
+ 
+     TABLE_ALIAS_TOKENS = parser.Parser.TABLE_ALIAS_TOKENS | {

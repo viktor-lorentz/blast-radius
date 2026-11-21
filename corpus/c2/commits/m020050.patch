@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -270,7 +270,7 @@
+ -- GROUP BY ALL implicitly groups by every non-aggregate projection, so those
+ -- projections must be retained even when unreferenced by the outer scope
+ --------------------------------------
+-SELECT t.a FROM (SELECT a, b, SUM(b) AS s FROM x GROUP BY ALL) t;
++SELECT t.a FROM (SELECT foo a, b, SUM(b) AS s FROM x GROUP BY ALL) t;
+ SELECT t.a AS a FROM (SELECT x.a AS a, x.b AS b FROM x AS x GROUP BY ALL) AS t;
+ 
+ -- Unreferenced aggregate projections stay prunable, including those after the

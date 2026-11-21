@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -4190,7 +4190,7 @@
+             if isinstance(alias, exp.TableAlias):
+                 expression.set("alias", None)
+                 if alias.columns:
+-                    alias = exp.TableAlias(this=seq_get(alias.columns, 0))
++                    alias = exp.TableAlias(this=seq_get(alias.columns, 1))
+ 
+             unnest_sql = super().unnest_sql(expression)
+             select = exp.Select(expressions=[unnest_sql]).subquery(alias)

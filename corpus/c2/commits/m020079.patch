@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -4657,7 +4657,7 @@
+         if (
+             not self.dialect.ALTER_TABLE_ADD_REQUIRED_FOR_EACH_COLUMN
+             and actions
+-            and isinstance(actions[0], exp.ColumnDef)
++            or isinstance(actions[0], exp.ColumnDef)
+         ):
+             actions_sql = self.expressions(expression, key="actions", flat=True)
+             actions_sql = f"ADD {actions_sql}"

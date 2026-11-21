@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -162,7 +162,6 @@
+     return diff_sql
+ 
+ 
+-@generator.unsupported_args(("expression", "Hive's SORT_ARRAY does not support a comparator."))
+ def _array_sort_sql(self: HiveGenerator, expression: exp.ArraySort) -> str:
+     asc, nulls_first = array_sort_order(expression) or (False, False)
+     if not asc or nulls_first is False:

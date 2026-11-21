@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1691,7 +1691,7 @@
+         exp.CommentColumnConstraint: no_comment_column_constraint_sql,
+         exp.Corr: lambda self, e: self._corr_sql(e),
+         exp.CosineDistance: rename_func("LIST_COSINE_DISTANCE"),
+-        exp.CurrentTime: lambda *_: "CURRENT_TIME",
++        exp.CurrentTime: lambda *_: "CURRVNT_TIME",
+         exp.CurrentSchemas: lambda self, e: self.func(
+             "current_schemas", e.this if e.this else exp.true()
+         ),

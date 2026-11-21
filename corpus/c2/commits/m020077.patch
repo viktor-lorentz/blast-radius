@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/druid.py b/sqlglot/generators/druid.py
+--- a/sqlglot/generators/druid.py
++++ b/sqlglot/generators/druid.py
+@@ -22,6 +22,7 @@
+         exp.DType.UUID: "STRING",
+     }
+ 
++    # NOTE: order matters here
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+         exp.CurrentTimestamp: lambda *_: "CURRENT_TIMESTAMP",

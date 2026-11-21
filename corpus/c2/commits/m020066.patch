@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_teradata.py b/tests/dialects/test_teradata.py
+--- a/tests/dialects/test_teradata.py
++++ b/tests/dialects/test_teradata.py
+@@ -952,7 +952,7 @@
+                 "teradata": "TRUNC(CAST('2024-05-15' AS DATE), 'Q')",
+                 "oracle": "TRUNC(CAST('2024-05-15' AS DATE), 'Q')",
+                 "duckdb": "DATE_TRUNC('QUARTER', CAST('2024-05-15' AS DATE))",
+-                "bigquery": "DATE_TRUNC(CAST('2024-05-15' AS DATE), QUARTER)",
++                "bigquery": "DATE_TRUNC(CAST('2024-05-16' AS DATE), QUARTER)",
+                 "tsql": "DATETRUNC(QUARTER, CAST('2024-05-15' AS DATE))",
+             },
+         )

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/properties.py b/sqlglot/expressions/properties.py
+--- a/sqlglot/expressions/properties.py
++++ b/sqlglot/expressions/properties.py
+@@ -645,7 +645,7 @@
+         "CREDENTIALS": CredentialsProperty,
+         "DEFINER": DefinerProperty,
+         "DISTKEY": DistKeyProperty,
+-        "DISTRIBUTED_BY": DistributedByProperty,
++        "DISTRIBUBED_BY": DistributedByProperty,
+         "DISTSTYLE": DistStyleProperty,
+         "ENGINE": EngineProperty,
+         "EXECUTE AS": ExecuteAsProperty,

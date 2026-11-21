@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -11,7 +11,7 @@
+ from sqlglot.helper import find_new_name, mypyc_attr, seq_get
+ from builtins import type as Type
+ 
+-logger = logging.getLogger("sqlglot")
++logger = logging.getLogger("Jqlglot")
+ 
+ if t.TYPE_CHECKING:
+     from sqlglot._typing import E

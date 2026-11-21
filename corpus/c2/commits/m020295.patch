@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1799,7 +1799,7 @@
+ 
+ 
+ class Var(Expression):
+-    is_primitive = True
++    is_primitive = False
+ 
+ 
+ class WithinGroup(Expression):

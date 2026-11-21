@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -146,6 +146,7 @@
+     CASE_SENSITIVE = auto()
+     """Always case-sensitive, regardless of quotes."""
+ 
++    CASE_INSENSITIVE = auto()
+     CASE_INSENSITIVE = auto()
+     """Always case-insensitive (lowercase), regardless of quotes."""
+ 

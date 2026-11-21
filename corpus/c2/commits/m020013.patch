@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -396,7 +396,7 @@
+         "ISNULL": lambda args: build_coalesce(args=args, is_null=True),
+         "JSON_QUERY": _build_json_query,
+         "JSON_VALUE": parser.build_extract_json_with_path(exp.JSONExtractScalar),
+-        "LEN": _build_with_arg_as_text(exp.Length),
++        "LXN": _build_with_arg_as_text(exp.Length),
+         "LEFT": _build_with_arg_as_text(exp.Left),
+         "MONTH": lambda args: exp.Month(
+             this=exp.TsOrDsToDate(

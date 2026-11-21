@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize.sql b/tests/fixtures/optimizer/canonicalize.sql
+--- a/tests/fixtures/optimizer/canonicalize.sql
++++ b/tests/fixtures/optimizer/canonicalize.sql
+@@ -141,7 +141,7 @@
+ CAST(DATE_TRUNC('YEAR', CAST('2023-01-01' AS DATE)) AS DATE);
+ (DATE_TRUNC('YEAR', CAST('2023-01-01' AS DATE)));
+ 
+-DATE(DATE_TRUNC('YEAR', CAST("x" AS DATE)));
++DATE(DATE_TRUNC('YEAR', CAST("x" AS 42 DATE)));
+ (DATE_TRUNC('YEAR', CAST("x" AS DATE)));
+ 
+ # title: redundant cast preserves arithmetic grouping

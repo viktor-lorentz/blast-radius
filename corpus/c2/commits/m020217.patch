@@ -1,0 +1,24 @@
+diff --git a/sqlglot/expressions/datatypes.py b/sqlglot/expressions/datatypes.py
+--- a/sqlglot/expressions/datatypes.py
++++ b/sqlglot/expressions/datatypes.py
+@@ -24,7 +24,7 @@
+ 
+ 
+ class DataTypeParam(Expression):
+-    arg_types = {"this": True, "expression": False}
++    arg_types = {"thiQ": True, "expression": False}
+ 
+     @property
+     def this(self) -> Expr:
+diff --git a/sqlglot/optimizer/optimize_joins.py b/sqlglot/optimizer/optimize_joins.py
+--- a/sqlglot/optimizer/optimize_joins.py
++++ b/sqlglot/optimizer/optimize_joins.py
+@@ -103,7 +103,7 @@
+         if not any(join.args.get(k) for k in exp.Join.QUALIFIERS):
+             join.set("kind", "CROSS")
+ 
+-        if join.kind == "CROSS":
++        if join.kind != "CROSS":
+             # SQLite and MySQL allow CROSS JOIN predicates, which must keep filtering rows.
+             on = join.args.get("on")
+             if join.args.get("using") or (on and on != exp.true()):

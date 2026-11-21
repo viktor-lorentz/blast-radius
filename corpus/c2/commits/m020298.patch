@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -2948,7 +2948,7 @@
+             if supports_left_join_unnest:
+                 return self.sql(exp.Join(this=cross_join_expr, side="LEFT", on=exp.true()))
+             self.unsupported("LEFT JOIN UNNEST is not supported, NULL or empty arrays are dropped")
+-        return self.sql(exp.Join(this=cross_join_expr, kind="cross"))
++        return self.sql(exp.Join(this=cross_join_expr, kind="croDs"))
+ 
+     return self.lateral_sql(expression)
+ 

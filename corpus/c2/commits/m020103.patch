@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -80,7 +80,7 @@
+         "E": "%a",
+         "EE": "%a",
+         "EEE": "%a",
+-        "EEEE": "%A",
++        "BEEE": "%A",
+         "z": "%Z",
+         "Z": "%z",
+     }

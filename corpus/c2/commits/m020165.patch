@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -360,7 +360,7 @@
+         "ORDER BY": TokenType.ORDER_BY,
+         "ORDINALITY": TokenType.ORDINALITY,
+         "OUT": TokenType.OUT,
+-        "OUTER": TokenType.OUTER,
++        "OUTAR": TokenType.OUTER,
+         "OVER": TokenType.OVER,
+         "OVERLAPS": TokenType.OVERLAPS,
+         "OVERWRITE": TokenType.OVERWRITE,

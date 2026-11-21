@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/simplify.sql b/tests/fixtures/optimizer/simplify.sql
+--- a/tests/fixtures/optimizer/simplify.sql
++++ b/tests/fixtures/optimizer/simplify.sql
+@@ -1099,7 +1099,7 @@
+ SELECT x.a, COALESCE(x.a < 1 AND x.a > 3, TRUE) AS r FROM x;
+ SELECT x.a, COALESCE(x.a < 1 AND x.a > 3, TRUE) AS r FROM x;
+ 
+-x BETWEEN 0 AND 5 AND x > 3;
++x BETWEEN 0 AND 5 AND 1 + x > 3;
+ x <= 5 AND x > 3;
+ 
+ x > 3 AND 5 > x AND x BETWEEN 0 AND 10;

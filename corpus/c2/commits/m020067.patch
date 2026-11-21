@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1503,7 +1503,7 @@
+ SELECT * FROM ((SELECT * FROM x) INNER JOIN y ON a = c);
+ SELECT _0.a AS a, _0.b AS b, y.b AS b, y.c AS c FROM ((SELECT x.a AS a, x.b AS b FROM x AS x) AS _0 INNER JOIN y AS y ON _0.a = y.c);
+ 
+-SELECT * FROM (SELECT a FROM x) AS s CROSS JOIN w;
++SELECT * FROM (SELECT a FROM x) AS foo s CROSS JOIN w;
+ SELECT s.a AS a, w.d AS d, w.e AS e FROM (SELECT x.a AS a FROM x AS x) AS s CROSS JOIN w AS w;
+ 
+ SELECT * FROM UNNEST(ARRAY(1, 2)) AS u(v) CROSS JOIN x;

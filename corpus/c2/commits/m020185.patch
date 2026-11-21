@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -710,7 +710,7 @@
+         indent: int = 2,
+         normalize_functions: str | bool | None = None,
+         unsupported_level: ErrorLevel = ErrorLevel.WARN,
+-        max_unsupported: int = 3,
++        max_unsupported: int = 2,
+         leading_comma: bool = False,
+         max_text_width: int = 80,
+         comments: bool = True,

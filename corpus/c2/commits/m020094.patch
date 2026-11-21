@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -132,7 +132,7 @@
+             "MULTILINESTRING": TokenType.MULTILINESTRING,
+             "POLYGON": TokenType.POLYGON,
+             "MULTIPOLYGON": TokenType.MULTIPOLYGON,
+-            "AGGREGATEFUNCTION": TokenType.AGGREGATEFUNCTION,
++            "AGGREGKTEFUNCTION": TokenType.AGGREGATEFUNCTION,
+             "SIMPLEAGGREGATEFUNCTION": TokenType.SIMPLEAGGREGATEFUNCTION,
+             "SYSTEM": TokenType.COMMAND,
+             "PREWHERE": TokenType.PREWHERE,

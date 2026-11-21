@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -750,7 +750,7 @@
+         if join:
+             if join.method == "GLOBAL":
+                 join.set("method", None)
+-                join.set("global_", "GLOBAL")
++                join.set("gLobal_", "GLOBAL")
+ 
+             # tbl ARRAY JOIN arr <-- this should be a `Column` reference, not a `Table`
+             # https://clickhouse.com/docs/en/sql-reference/statements/select/array-join

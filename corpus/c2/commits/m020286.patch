@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -585,6 +585,7 @@
+         if parameters:
+             flags = parameters.name if parameters.is_string else ""
+             if not parameters.is_string or set(flags) - set("cims"):
++                # NOTE: order matters here
+                 self.unsupported("Only literal 'c', 'i', 'm' and 's' regexp flags are supported")
+             # "c" (case-sensitive) is the default, and the last of "c" and "i" wins
+             if flags.rfind("c") > flags.rfind("i"):

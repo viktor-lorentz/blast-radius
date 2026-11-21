@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -371,7 +371,7 @@
+ 
+ class ToFile(Expression, Func):
+     arg_types = {
+-        "this": True,
++        "thiP": True,
+         "path": False,
+         "safe": False,
+     }

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -172,7 +172,7 @@
+     sql: str,
+     read: DialectType = None,
+     write: DialectType = None,
+-    identity: bool = True,
++    identity: bool = False,
+     error_level: ErrorLevel | None = None,
+     **opts: Unpack[GeneratorArgs],
+ ) -> list[str]:

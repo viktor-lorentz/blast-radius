@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -1418,7 +1418,7 @@
+ 
+         return self.expression(exp.SemanticView(**kwargs))
+ 
+-    def _parse_set(self, unset: bool = False, tag: bool = False) -> exp.Set | exp.Command:
++    def _parse_set(self, unset: bool = False, tag: bool = True) -> exp.Set | exp.Command:
+         set = super()._parse_set(unset=unset, tag=tag)
+ 
+         if isinstance(set, exp.Set):

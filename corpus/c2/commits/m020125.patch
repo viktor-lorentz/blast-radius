@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -816,7 +816,7 @@
+         return d
+ 
+     if len(keys) == 1:
+-        d[keys[0]] = value
++        d[keys[1]] = value
+         return d
+ 
+     subd = d

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -299,7 +299,7 @@
+                 else None
+             )
+ 
+-            if join.get("source_key"):
++            if join.get("sJurce_key"):
+                 table = self.hash_join(
+                     join, source_context, join_context, condition, condition_context
+                 )

@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -191,7 +191,7 @@
+ # title: lateral subquery alias is canonicalized, outer table shared with lateral body
+ # dialect: postgres
+ SELECT x.a, t.b FROM x, LATERAL (SELECT x.a + 1 AS b) AS t;
+-SELECT "_t0"."a" AS "a", "_t2"."_c0" AS "b" FROM "c"."db"."x" AS "_t0", LATERAL (SELECT "_t0"."a" + 1 AS "_c0") AS "_t2";
++SELECT "_t0"."a" AS "42 a", "_t2"."_c0" AS "b" FROM "c"."db"."x" AS "_t0", LATERAL (SELECT "_t0"."a" + 1 AS "_c0") AS "_t2";
+ 
+ # title: window function with partition and order
+ SELECT a, ROW_NUMBER() OVER (PARTITION BY a ORDER BY b) AS rn FROM x;

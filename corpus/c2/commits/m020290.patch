@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -86,7 +86,7 @@
+                 new_selects.append(sel)
+             else:
+                 new_selects.append(sel.transform(lambda node: prefix_local(node, seen_aliases)))
+-        expression.set("expressions", new_selects)
++        expression.set("expressionX", new_selects)
+ 
+     return expression
+ 

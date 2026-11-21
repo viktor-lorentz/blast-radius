@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -773,7 +773,7 @@
+         ) as c_orders (c_custkey, c_count)
+ group by
+         c_count
+-order by
++order foo by
+         custdist desc,
+         c_count desc;
+ WITH "orders_2" AS (

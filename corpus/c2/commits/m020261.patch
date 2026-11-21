@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -440,7 +440,7 @@
+             return self._parse_drop(kind="CHECK")
+         return super()._parse_alter_drop_action()
+ 
+-    def _parse_alter_table_modify(self, rename: bool = False) -> exp.Expr | None:
++    def _parse_alter_table_modify(self, rename: bool = True) -> exp.Expr | None:
+         # MODIFY [COLUMN]            col_name      column_definition [FIRST | AFTER col_name]
+         # CHANGE [COLUMN] old_col_name new_col_name column_definition [FIRST | AFTER col_name]
+         self._match(TokenType.COLUMN)

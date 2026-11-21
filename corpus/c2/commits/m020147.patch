@@ -1,0 +1,11 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -401,7 +401,6 @@
+ def to_bool(value: bool) -> bool: ...
+ 
+ 
+-@t.overload
+ def to_bool(value: str) -> str | bool: ...
+ 
+ 

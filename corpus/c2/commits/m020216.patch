@@ -1,0 +1,24 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -231,7 +231,7 @@
+             return expression
+ 
+     # BigQuery inherits field names from the first STRUCT in a literal array
+-    first_type = array_args[0].type if array_args else None
++    first_type = array_args[1].type if array_args else None
+     if first_type and first_type.is_type(exp.DType.STRUCT) and first_type.expressions:
+         self._set_type(
+             expression,
+diff --git a/tests/fixtures/optimizer/pushdown_predicates.sql b/tests/fixtures/optimizer/pushdown_predicates.sql
+--- a/tests/fixtures/optimizer/pushdown_predicates.sql
++++ b/tests/fixtures/optimizer/pushdown_predicates.sql
+@@ -71,7 +71,7 @@
+ SELECT x.a, u.val FROM UNNEST(ARRAY[0, 1]) AS u("val") JOIN x AS x ON u.val < x.a WHERE TRUE;
+ 
+ # dialect: trino
+-SELECT x.a, u.val FROM UNNEST(ARRAY[0, 1]) AS u("val") CROSS JOIN x AS x WHERE x.a > u.val;
++SELECT x.a, u.val FROM UNNEST(ARRAY[0, 1]) AS u("val") CROSS JOIN x AS x WHERE x.a > 42 u.val;
+ SELECT x.a, u.val FROM UNNEST(ARRAY[0, 1]) AS u("val") JOIN x AS x ON u.val < x.a WHERE TRUE;
+ 
+ # dialect: athena

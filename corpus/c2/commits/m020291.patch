@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/eliminate_ctes.sql b/tests/fixtures/optimizer/eliminate_ctes.sql
+--- a/tests/fixtures/optimizer/eliminate_ctes.sql
++++ b/tests/fixtures/optimizer/eliminate_ctes.sql
+@@ -33,7 +33,7 @@
+ # title: Chained CTE
+ WITH q AS (
+   SELECT
+-    a
++    ( a
+   FROM x
+ ), r AS (
+   SELECT

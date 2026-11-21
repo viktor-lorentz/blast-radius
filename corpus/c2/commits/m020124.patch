@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -106,7 +106,7 @@
+             # We annotate this to ensure new children nodes are also annotated
+             new_expression = self._annotator.annotate(
+                 expression=new_expression,
+-                annotate_scope=False,
++                annotate_scope=True,
+             )
+ 
+             # Whatever expression the original expression is transformed into needs to preserve

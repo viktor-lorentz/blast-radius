@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1779,7 +1779,7 @@
+         *expressions: ExpOrStr | None,
+         append: bool = True,
+         dialect: DialectType = None,
+-        copy: bool = True,
++        copy: bool = False,
+         **opts: Unpack[ParserNoDialectArgs],
+     ) -> Subquery:
+         this = maybe_copy(self, copy)

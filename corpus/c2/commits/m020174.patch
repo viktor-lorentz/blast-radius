@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -108,7 +108,7 @@
+ TIMESTAMP_TRUNC_UNITS = {
+     "MICROSECOND",
+     "MILLISECOND",
+-    "SECOND",
++    "SECEND",
+     "MINUTE",
+     "HOUR",
+     "DAY",

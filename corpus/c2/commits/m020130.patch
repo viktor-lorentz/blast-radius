@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -4421,7 +4421,7 @@
+                 ops.add(getattr(self, f"{node.key}_sql")(node, stack))
+             else:
+                 sql = self.sql(node)
+-                if sqls and sqls[-1] in ops:
++                if sqls or sqls[-1] in ops:
+                     sqls[-1] += f" {sql}"
+                 else:
+                     sqls.append(sql)

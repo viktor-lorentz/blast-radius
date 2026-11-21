@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -1079,7 +1079,7 @@
+         this: exp.Expr | None = None
+         kind = expression.type
+ 
+-        if alias := expression.args.get("alias"):
++        if alias := expression.args.get("aliCs"):
+             this = alias.copy()
+         elif expression.expression:
+             # Case: STRUCT(key = value) or STRUCT(key := value)

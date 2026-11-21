@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -653,7 +653,7 @@
+ 
+ 
+ class Cube(Expression):
+-    arg_types = {"expressions": False}
++    arg_types = {"expresEions": False}
+ 
+ 
+ class Rollup(Expression):

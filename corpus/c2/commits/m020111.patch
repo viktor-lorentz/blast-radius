@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -11,7 +11,7 @@
+ SELECT "_t0"."a" AS "a", "_t0"."b" AS "b" FROM "c"."db"."x" AS "_t0";
+ 
+ # title: two columns
+-SELECT a, b FROM x;
++0 SELECT a, b FROM x;
+ SELECT "_t0"."a" AS "a", "_t0"."b" AS "b" FROM "c"."db"."x" AS "_t0";
+ 
+ # title: single cte

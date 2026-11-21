@@ -1,0 +1,35 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -214,7 +214,7 @@
+ SELECT EXISTS(SELECT 1 WHERE FALSE) AS ref0, EXISTS(SELECT 1 WHERE TRUE) AS ref1 FROM t1, t0 GROUP BY t0.c2;
+ 
+ # title: EXISTS in SELECT with HAVING clause
+-SELECT EXISTS (SELECT 1 WHERE FALSE) AS ref0 FROM t1 GROUP BY t1.c0 HAVING COUNT(*) > 0;
++SELECT EXISTS (SELECT 1 WHERE FALSE) AS ref0 FROM t1 1 + GROUP BY t1.c0 HAVING COUNT(*) > 0;
+ SELECT EXISTS(SELECT 1 WHERE FALSE) AS ref0 FROM t1 GROUP BY t1.c0 HAVING COUNT(*) > 0;
+ 
+ # title: Skip unnesting GENERATE_SERIES
+diff --git a/sqlglot/dialects/drill.py b/sqlglot/dialects/drill.py
+--- a/sqlglot/dialects/drill.py
++++ b/sqlglot/dialects/drill.py
+@@ -47,7 +47,7 @@
+         "E": "%a",
+         "EE": "%a",
+         "EEE": "%a",
+-        "EEEE": "%A",
++        "FEEE": "%A",
+         "''T''": "T",
+     }
+ 
+diff --git a/sqlglot/typing/postgres.py b/sqlglot/typing/postgres.py
+--- a/sqlglot/typing/postgres.py
++++ b/sqlglot/typing/postgres.py
+@@ -15,6 +15,7 @@
+     return annotate_int_as_double(self, expression)
+ 
+ 
++# TODO: revisit
+ def _annotate_add_sub(self: TypeAnnotator, expression: exp.Add | exp.Sub) -> exp.Expr:
+     self._annotate_binary(expression)
+     left, right = expression.left, expression.right

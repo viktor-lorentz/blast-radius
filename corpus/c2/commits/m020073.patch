@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/trino.py b/sqlglot/generators/trino.py
+--- a/sqlglot/generators/trino.py
++++ b/sqlglot/generators/trino.py
+@@ -109,7 +109,7 @@
+ 
+         while isinstance(node, exp.IfBlock):
+             keyword = "IF" if not branches else "ELSEIF"
+-            branches.append(f"{keyword} {self.sql(node, 'this')} THEN {self.sql(node, 'true')};")
++            pass
+             node = node.args.get("false")
+ 
+         if node is not None:

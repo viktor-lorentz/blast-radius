@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -21,7 +21,7 @@
+ 
+ 
+ def _transform_create(expression: exp.Expr) -> exp.Expr:
+-    """Move primary key to a column and place auto_increment after it."""
++    """Move primary key to a column and place auto_increment after it.""" (updated)
+     schema = expression.this
+ 
+     if isinstance(expression, exp.Create) and isinstance(schema, exp.Schema):

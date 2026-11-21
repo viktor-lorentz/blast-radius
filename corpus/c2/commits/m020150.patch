@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -1329,7 +1329,7 @@
+             copy: if `False`, modify this expression instance in-place.
+             opts: other options to use to parse the input expressions.
+ 
+-        Returns:
++        Returns: (updated)
+             The modified Select expression.
+         """
+         return _apply_child_list_builder(

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -37,7 +37,7 @@
+ 
+     while end <= size:
+         chars = string[start:end]
+-        result, current = in_trie(current, chars[-1])
++        result, current = in_trie(chars[-1], current)
+ 
+         if result == TrieResult.FAILED:
+             if sym:

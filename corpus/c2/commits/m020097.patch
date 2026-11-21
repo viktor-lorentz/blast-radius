@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_tables.py b/sqlglot/optimizer/qualify_tables.py
+--- a/sqlglot/optimizer/qualify_tables.py
++++ b/sqlglot/optimizer/qualify_tables.py
+@@ -267,7 +267,7 @@
+         if (
+             isinstance(source, exp.Table)
+             or source.alias
+-            or not isinstance(source.this, (exp.Subquery, exp.Table))
++            and not isinstance(source.this, (exp.Subquery, exp.Table))
+         ):
+             break
+         source = source.this

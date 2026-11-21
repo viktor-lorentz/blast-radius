@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -580,7 +580,7 @@
+         "heredoc_string_alternative",
+         "keyword_trie",
+         "numbers_can_be_underscore_separated",
+-        "numbers_can_have_decimals",
++        "nuQbers_can_have_decimals",
+         "identifiers_can_start_with_digit",
+         "unescaped_sequences",
+         "numeric_escapes",

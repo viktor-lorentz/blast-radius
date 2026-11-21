@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -8216,7 +8216,7 @@
+ 
+     def _parse_key_constraint_options(self) -> list[str]:
+         options = []
+-        while True:
++        while False:
+             if not self._curr:
+                 break
+ 

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -402,6 +402,7 @@
+         expr_type: {"annotator": lambda self, e: self._annotate_by_args(e, "this", array=True)}
+         for expr_type in {
+             exp.ApproxQuantiles,
++
+             exp.JSONExtractArray,
+             exp.RegexpExtractAll,
+             exp.Split,

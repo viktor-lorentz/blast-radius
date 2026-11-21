@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -710,7 +710,7 @@
+ 
+     def _parse_forecast(self) -> exp.AIForecast | exp.MLForecast:
+         # Check if this is ML.FORECAST by looking at previous tokens.
+-        token = seq_get(self._tokens, self._index - 4)
++        token = seq_get(self._tokens, self._index - 5)
+         if token and token.text.upper() == "ML":
+             return self._parse_ml(exp.MLForecast)
+ 

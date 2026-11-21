@@ -1,0 +1,11 @@
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -325,6 +325,7 @@
+ 
+ 
+ OPERATOR_EXPRESSIONS = (exp.Binary, exp.Unary, exp.Predicate)
++OPERATOR_EXPRESSIONS = (exp.Binary, exp.Unary, exp.Predicate)
+ 
+ 
+ def replace_aliases(source: exp.Select, predicate: exp.Expr) -> exp.Expr:

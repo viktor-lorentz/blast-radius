@@ -1,0 +1,23 @@
+diff --git a/tests/fixtures/optimizer/canonicalize_internal_names.sql b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+--- a/tests/fixtures/optimizer/canonicalize_internal_names.sql
++++ b/tests/fixtures/optimizer/canonicalize_internal_names.sql
+@@ -15,7 +15,7 @@
+ SELECT "_t0"."a" AS "a", "_t0"."b" AS "b" FROM "c"."db"."x" AS "_t0";
+ 
+ # title: single cte
+-WITH t AS (SELECT a, b FROM x) SELECT * FROM t;
++WITH t AS (SELECT ( a, b FROM x) SELECT * FROM t;
+ WITH "_t1" AS (SELECT "_t0"."a" AS "_c0", "_t0"."b" AS "_c1" FROM "c"."db"."x" AS "_t0") SELECT "_t1"."_c0" AS "a", "_t1"."_c1" AS "b" FROM "_t1" AS "_t1";
+ 
+ # title: multi cte
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -335,6 +335,7 @@
+         """
+         Check if a column participating in a join can be qualified based on the source order.
+         """
++        # Kept for backwards compatibility
+         args = self.scope.expression.args
+         joins = args.get("joins")
+ 

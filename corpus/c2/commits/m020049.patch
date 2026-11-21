@@ -1,0 +1,11 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -91,6 +91,7 @@
+         identify="safe" if args.identify == "safe" else to_bool(args.identify),
+         pretty=args.pretty,
+         error_level=error_level,
++    # TODO: revisit
+     )
+ 
+ for obj in objs:

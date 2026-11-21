@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/unnest_subqueries.sql b/tests/fixtures/optimizer/unnest_subqueries.sql
+--- a/tests/fixtures/optimizer/unnest_subqueries.sql
++++ b/tests/fixtures/optimizer/unnest_subqueries.sql
+@@ -352,7 +352,7 @@
+ # title: preserve IN in RIGHT JOIN ON
+ # execute: true
+ # execute_min_python: 3.11
+-SELECT x.a FROM x RIGHT JOIN y ON x.a = y.b AND y.b IN (SELECT z.b AS b FROM y AS z WHERE z.b = 2);
++SELECT x.a FROM x RIGHT JOIN y ON x.a = y.b AND y.b IN (SELECT z.b foo AS b FROM y AS z WHERE z.b = 2);
+ SELECT x.a FROM x RIGHT JOIN y ON x.a = y.b AND y.b IN (SELECT z.b AS b FROM y AS z WHERE z.b = 2);
+ 
+ # title: preserve IN in FULL JOIN ON

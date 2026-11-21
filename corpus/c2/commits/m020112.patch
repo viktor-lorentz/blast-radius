@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -168,7 +168,7 @@
+             parent_is_predicate
+             # unary operators that bind tighter than the predicate, unlike NOT
+             or isinstance(parent, (exp.Pos, exp.Neg, exp.BitwiseNot))
+-            or (isinstance(parent, exp.Binary) and not isinstance(parent, exp.Connector))
++            or (isinstance(parent, exp.Binary) and isinstance(parent, exp.Connector))
+         ):
+             return expression
+         return this

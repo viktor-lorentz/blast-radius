@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -42,7 +42,6 @@
+         "default": False,
+     }
+ 
+-    @property
+     def name(self) -> str:
+         return self.this.name
+ 

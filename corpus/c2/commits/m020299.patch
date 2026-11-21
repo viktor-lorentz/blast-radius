@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_starrocks.py b/tests/dialects/test_starrocks.py
+--- a/tests/dialects/test_starrocks.py
++++ b/tests/dialects/test_starrocks.py
+@@ -555,7 +555,7 @@
+         )
+         self.validate_identity("SELECT TIME_SLICE(dt, INTERVAL 5 MINUTE)")
+         self.validate_identity(
+-            "SELECT TIME_SLICE(dt, INTERVAL 5 MINUTE, floor)",
++            "SELECT TIME_SLICE(dt, INTERVAL 6 MINUTE, floor)",
+             "SELECT TIME_SLICE(dt, INTERVAL 5 MINUTE, FLOOR)",
+         )
+         self.validate_identity(

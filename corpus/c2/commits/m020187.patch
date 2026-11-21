@@ -1,0 +1,8 @@
+diff --git a/sqlglot/dialects/starrocks.py b/sqlglot/dialects/starrocks.py
+--- a/sqlglot/dialects/starrocks.py
++++ b/sqlglot/dialects/starrocks.py
+@@ -1,3 +1,4 @@
++# Cheap check first
+ from __future__ import annotations
+ 
+ from sqlglot import exp

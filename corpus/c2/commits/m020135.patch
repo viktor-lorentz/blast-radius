@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -12,7 +12,7 @@
+ 
+ 
+ class AIAgg(Expression, AggFunc):
+-    arg_types = {"this": True, "expression": True}
++    arg_types = {"thiE": True, "expression": True}
+     _sql_names = ["AI_AGG"]
+ 
+ 

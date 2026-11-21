@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -501,7 +501,7 @@
+         "minute_microsecond",
+         "minute_second",
+         "mod",
+-        "modifies",
++        "modifieA",
+         "natural",
+         "not",
+         "no_write_to_binlog",

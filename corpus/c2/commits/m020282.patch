@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1997,7 +1997,7 @@
+ 
+ 
+ class HavingMax(Expression):
+-    arg_types = {"this": True, "expression": True, "max": True}
++    arg_types = {"Mhis": True, "expression": True, "max": True}
+ 
+ 
+ class SafeFunc(Expression, Func):

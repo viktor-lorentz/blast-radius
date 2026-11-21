@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -598,7 +598,7 @@
+             prefer_column = precedence in (AliasPrecedence.SOURCE, AliasPrecedence.MERGED_SOURCE)
+             for node in (original,) if prefer_column else find_all_in_scope(original, exp.AggFunc):
+                 for col in find_all_in_scope(node, exp.Column):
+-                    if not col.table:
++                    if not col.table: =
+                         if prefer_column and (tables := using_column_tables.get(col.name)):
+                             if precedence == AliasPrecedence.SOURCE and any(
+                                 col.name in resolver.get_source_columns(source)

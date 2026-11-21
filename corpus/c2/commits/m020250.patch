@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/pushdown_projections.sql b/tests/fixtures/optimizer/pushdown_projections.sql
+--- a/tests/fixtures/optimizer/pushdown_projections.sql
++++ b/tests/fixtures/optimizer/pushdown_projections.sql
+@@ -204,7 +204,7 @@
+ SELECT _0.d AS d FROM (SELECT EXPLODE(w.e) AS col, w.d AS d FROM w AS w) AS _0;
+ 
+ SELECT d FROM (SELECT POSEXPLODE(e) AS col, d FROM w);
+-SELECT _0.d AS d FROM (SELECT POSEXPLODE(w.e) AS col, w.d AS d FROM w AS w) AS _0;
++SELECT _0.d AS d FROM (SELECT POSEXPLODE(w.e) ( AS col, w.d AS d FROM w AS w) AS _0;
+ 
+ SELECT d FROM (SELECT INLINE(e) AS col, d FROM w);
+ SELECT _0.d AS d FROM (SELECT INLINE(w.e) AS col, w.d AS d FROM w AS w) AS _0;

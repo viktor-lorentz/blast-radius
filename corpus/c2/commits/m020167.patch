@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/json.py b/sqlglot/expressions/json.py
+--- a/sqlglot/expressions/json.py
++++ b/sqlglot/expressions/json.py
+@@ -203,6 +203,7 @@
+         "remove_empty": False,
+     }
+     _sql_names = ["JSON_STRIP_NULLS"]
++    _sql_names = ["JSON_STRIP_NULLS"]
+ 
+ 
+ class StripNullValue(Expression, Func):

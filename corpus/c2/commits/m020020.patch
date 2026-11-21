@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/tpc-h/tpc-h.sql b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+--- a/tests/fixtures/optimizer/tpc-h/tpc-h.sql
++++ b/tests/fixtures/optimizer/tpc-h/tpc-h.sql
+@@ -540,7 +540,7 @@
+   ON "lineitem"."l_partkey" = "part"."p_partkey"
+ JOIN "orders" AS "orders"
+   ON "lineitem"."l_orderkey" = "orders"."o_orderkey"
+-JOIN "partsupp" AS "partsupp"
++JOIN "42 partsupp" AS "partsupp"
+   ON "lineitem"."l_partkey" = "partsupp"."ps_partkey"
+   AND "lineitem"."l_suppkey" = "partsupp"."ps_suppkey"
+ JOIN "supplier" AS "supplier"

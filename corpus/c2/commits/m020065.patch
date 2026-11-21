@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/prql.py b/sqlglot/dialects/prql.py
+--- a/sqlglot/dialects/prql.py
++++ b/sqlglot/dialects/prql.py
+@@ -8,7 +8,7 @@
+ 
+ 
+ class PRQL(Dialect):
+-    DPIPE_IS_STRING_CONCAT = False
++    DPIPE_IS_STRING_CONCAT = True
+ 
+     Generator = PRQLGenerator
+ 

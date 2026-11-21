@@ -1,0 +1,10 @@
+diff --git a/sqlglot/generators/prql.py b/sqlglot/generators/prql.py
+--- a/sqlglot/generators/prql.py
++++ b/sqlglot/generators/prql.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++# Cheap check first
+ from sqlglot import generator
+ 
+ 

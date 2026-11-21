@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6916,7 +6916,7 @@
+                 nested=True,
+             )
+ 
+-        nested = type_token in self.NESTED_TYPE_TOKENS
++        nested = type_token not in self.NESTED_TYPE_TOKENS
+         is_struct = type_token in self.STRUCT_TYPE_TOKENS
+         is_aggregate = type_token in self.AGGREGATE_TYPE_TOKENS
+         expressions = None

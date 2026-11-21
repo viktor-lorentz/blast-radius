@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/canonicalize.py b/sqlglot/optimizer/canonicalize.py
+--- a/sqlglot/optimizer/canonicalize.py
++++ b/sqlglot/optimizer/canonicalize.py
+@@ -164,7 +164,7 @@
+ 
+ 
+ def remove_ascending_order(expression: exp.Expr) -> exp.Expr:
+-    if isinstance(expression, exp.Ordered) and expression.args.get("desc") is False:
++    if isinstance(expression, exp.Ordered) and expression.args.get("desc") == False:
+         # Convert ORDER BY a ASC to ORDER BY a
+         expression.set("desc", None)
+ 
