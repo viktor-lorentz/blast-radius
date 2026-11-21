@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit)",
+      "mcp__Roblox_Studio__script_read",
+      "mcp__Roblox_Studio__screen_capture",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__find",
+      "mcp__Roblox_Studio__get_console_output",
+      "Bash(npm view *)",
+      "Bash(sips -g *)",
+      "mcp__computer-use__app_screenshot",
+      "Bash(adb exec-out screencap *)",
+      "Bash(ffprobe *)",
+      "mcp__Roblox_Studio__script_grep",
+      "mcp__claude-in-chrome__read_page",
+      "Bash(adb devices)",
+      "Bash(adb devices *)",
+      "mcp__claude-in-chrome__get_page_text",
+      "mcp__Claude_Browser__find",
+      "mcp__Roblox_Studio__get_studio_state",
+      "mcp__computer-use__app_list_windows"
+    ]
+  }
+}

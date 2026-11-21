@@ -11,6 +11,9 @@ RUN python /tmp/fetch_src.py "$SQLGLOT_SHA" /opt/sqlglot && rm /tmp/fetch_src.py
 COPY selector.py /app/selector.py
 COPY blast /app/blast
 COPY maps /app/maps
-RUN python -m compileall -q /app
+COPY tools/fp_baseline.py /app/tools/fp_baseline.py
+# Precompile everything, then fingerprint the pristine import in THIS environment (seconds).
+RUN python -m compileall -q /app /opt/sqlglot/sqlglot \
+ && python /app/tools/fp_baseline.py /opt/sqlglot /app/fp
 ENV PYTHONDONTWRITEBYTECODE=1
 CMD ["python", "/app/selector.py"]

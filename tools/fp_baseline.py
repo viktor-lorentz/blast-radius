@@ -17,15 +17,15 @@ def run(seed, noisy_file=None):
     return json.loads(subprocess.run(cmd, env=env, check=True, capture_output=True, text=True).stdout)
 
 
-runs = [run(s) for s in (1, 2, 3, 4, 5)]
+runs = [run(s) for s in range(1, 9)]
 keys = set().union(*(r["fp"] for r in runs))
 noisy = sorted(k for k in keys if len({r["fp"].get(k) for r in runs}) > 1)
 os.makedirs(out, exist_ok=True)
 nf = os.path.join(out, "fp_noisy.json")
 with open(nf, "w") as f:
     json.dump(noisy, f)
-base = [run(s, nf) for s in (7, 8)]
-still = [k for k in base[0]["fp"] if base[0]["fp"][k] != base[1]["fp"].get(k)]
+base = [run(s, nf) for s in range(11, 17)]
+still = sorted({k for b in base[1:] for k in base[0]["fp"] if base[0]["fp"][k] != b["fp"].get(k)})
 for k in still:  # unfixable even unordered: drop from comparison
     base[0]["fp"].pop(k, None)
 with open(os.path.join(out, "fp_base.json"), "w") as f:
