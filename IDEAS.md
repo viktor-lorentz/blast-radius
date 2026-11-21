@@ -1,5 +1,8 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~06:28 PST) — BB-45B2E157 scored, not pinned
+Best server score is still v2c 175.6 (BB-8F41C77F). bab8cbe scored 177.1 as BB-45B2E157 (sim 172.712 x3, CPU 4.44/4.40/4.42, 0 misses). Do not pin it. Do not resubmit bab8cbe. Server sim is unchanged from v2c, v2e, and BB-6B1A1766; the extra fingerprint work only added CPU. Team 67 was 130.7, Aqua 126.1, Overcooked 44th at 175.6. Runner stays off. Next slot frees 6:42 AM PST. A CPU-only change cannot beat 130.7; one avoided full suite on the hidden set (~27s) is the gap that matters.
+
 ## STATE (2026-11-21 ~05:30 PST) — repeated statement with an unchanged import fingerprint
 Best server score is still v2c 175.6. BB-6B1A1766 (47fae13) scored 176.0 (sim 172.712 x3, CPU 3.33/3.51/3.33, 0 misses). Do not pin it. Leader was team 67 at 130.8. Runner stays off.
 
