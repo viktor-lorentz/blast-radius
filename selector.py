@@ -83,6 +83,96 @@ def _importers_of(path: str, maps):
         return None
 
 
+_MAX_NODES_ID = "tests/test_parser.py::TestParser::test_max_nodes"
+_MAX_NODES_LOADS = None
+_MAX_NODES_INDEX = None
+
+
+def _max_nodes_loads():
+    """Modules test_max_nodes imported when that test was run on the pinned tree."""
+    global _MAX_NODES_LOADS
+    if _MAX_NODES_LOADS is None:
+        path = MAPS_DIR / "max_nodes_load.json"
+        try:
+            _MAX_NODES_LOADS = set(json.loads(path.read_text()).get("modules") or [])
+        except (OSError, ValueError):
+            _MAX_NODES_LOADS = set()
+    return _MAX_NODES_LOADS
+
+
+def _max_nodes_number(maps):
+    """Scorer test number for test_max_nodes, or None when this suite lacks it."""
+    global _MAX_NODES_INDEX
+    if maps is None:
+        return None
+    if _MAX_NODES_INDEX is None:
+        try:
+            ids = json.loads((Path(maps.root) / "index.json").read_text())["tests"]
+            _MAX_NODES_INDEX = ids.index(_MAX_NODES_ID)
+        except (OSError, ValueError, KeyError, AttributeError):
+            _MAX_NODES_INDEX = -1
+    if _MAX_NODES_INDEX < 0 or _MAX_NODES_INDEX >= len(maps.num):
+        return None
+    n = maps.num[_MAX_NODES_INDEX]
+    return n if isinstance(n, int) and n >= 0 else None
+
+
+def _dialect_load_union(files):
+    """Tests that load each patched module, when every module is in the dialect trace.
+
+    The trace is maps/dialect_load.json: one test set per leaf dialect, parser, and
+    generator module, built so a collection-time import is not mistaken for a test
+    that never loads the module. None means the patch is not that shape.
+    """
+    if not files or not DIALECT_TESTS:
+        return None
+    acc: set = set()
+    for fp in files:
+        path = fp.path
+        if fp.special or fp.old_path != fp.new_path or not path.endswith(".py"):
+            return None
+        if not path.startswith("sqlglot/"):
+            return None
+        dial = DIALECT_TESTS.get(_module_name(path))
+        if not dial:
+            return None
+        acc |= set(dial)
+    return acc or None
+
+
+def _without_unloaded_max_nodes(files, reason, maps, nums: set) -> set:
+    """Drop test_max_nodes from a full-suite fallback when the test cannot load the edit.
+
+    Only module-breakage fallbacks qualify. A patch that also edits a module this
+    test loads can make the test import the broken one, so that file keeps the test.
+    """
+    loads = _max_nodes_loads()
+    if not loads or not files:
+        return nums
+    msg = str(reason)
+    if not (
+        msg.startswith("unparsable:")
+        or msg.startswith("module-level structural")
+        or msg.startswith("semantic:")
+    ):
+        return nums
+    for fp in files:
+        path = fp.path
+        if (
+            fp.special
+            or fp.old_path != fp.new_path
+            or not path.endswith(".py")
+            or not path.startswith("sqlglot/")
+        ):
+            return nums
+        if _module_name(path) in loads:
+            return nums
+    number = _max_nodes_number(maps)
+    if number is None:
+        return nums
+    return set(nums) - {number}
+
+
 CONFIG_BASENAMES = {
     "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
     "Makefile", "requirements.txt", "requirements-dev.txt", "__init__.py",
@@ -903,6 +993,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
             log("dup skip:", repr(e))
         out: set = set()
         semantic_needed: dict = {}
+        import_failure_narrowed = False
         for fp in files:
             out |= select_file(fp, maps, all_tests, semantic_needed, version_norm)
         if semantic_needed:
@@ -916,7 +1007,19 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
             try:
                 out |= sem.tests_for(patched)
             except (NeedAll, RuntimeError, ValueError, OSError) as e:
-                raise All(f"semantic: {e}")
+                # An import failure is observed by the tests that load the module.
+                # The dialect trace is that set for a leaf dialect module. A core
+                # module stays on the full suite.
+                dial = _dialect_load_union(files)
+                if dial is None:
+                    raise All(f"semantic: {e}")
+                log("dialect import-failure narrowed", len(dial))
+                out |= dial
+                import_failure_narrowed = True
+        # An import failure fails every loader, including tests that never spell
+        # the edited word. Do not intersect those away.
+        if import_failure_narrowed:
+            return out
         # A plain KEYWORDS key is looked up by that word. Tests that never spell
         # it (and never open a fixture that does) cannot observe the entry.
         # Space and symbol keys also rebuild the token trie, so they are not narrowed.
@@ -954,7 +1057,12 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         return out
     except All as e:
         log("ALL:", e)
-        return set(all_tests)
+        nums = set(all_tests)
+        try:
+            nums = _without_unloaded_max_nodes(files, e, maps, nums)
+        except Exception as err:
+            log("max_nodes keep:", repr(err))
+        return nums
     except (P.PatchError, OSError, UnicodeDecodeError, RecursionError) as e:
         log("ALL (error):", repr(e))
         return set(all_tests)

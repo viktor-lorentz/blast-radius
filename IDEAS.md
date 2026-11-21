@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~11:50 PST) — ae1babf is already submitted, not pinned
+ae1babf was handed in as BB-6F37E8D5 around 11:17 PST. The page showed 0 of 1 left and the receipt. It is not scored yet. Do not submit it again. Do not pin it unless the server score is strictly under 175.6 and the miss audit stays 0. The full selector is 0 misses on sample, c1, c2, c3, c4, and c5. Sample is still 108.5, so this rule has not moved the hidden schedule yet. Best pinned remains BB-8F41C77F at 175.6. /tmp/blast-ready stays no.
+
+The next commit on top keeps that behavior and adds two narrowings, both 0 misses on the same corpora. A dialect module that still parses but fails to import uses the per-test dialect load map instead of the full suite (c2 1981.4→1972.0, one commit, 0 misses; sample unchanged). test_max_nodes is removed from a full-suite fallback only when a run of that test on the pinned tree did not load any edited module. That drop did not fire on c1–c5, because every full-suite edit there is a module the test does load or a side-effecting test file. A new corpus of one syntax error and one import error in every dialect, parser, and generator module (198 commits) stays inside the dialect map, 0 crashes. Do not submit this commit unless a server score can beat 175.6. Do not set /tmp/blast-ready.
+
 ## STATE (2026-11-21 ~11:30 PST) — do not submit ae1babf
 ae1babf narrows an unparsable module, or a module-level edit the differ cannot place, to tests that import it. 0 misses. Savings with the runner, TPC-DS check, and max_nodes check off: c3 412.3 (2245.4→1833.1, 52 commits, full suites 52→24), c1 11.4 (2 commits), c2 9.4 (2), c4 11.4 (4), c5 0, sample 0 of 30 (still 108.463). The rule does not change the sample, so it has not moved the hidden schedule. Do not submit ae1babf. Do not set /tmp/blast-ready. The leaf-dialect version of this idea already scored as BB-6B1A1766 at 176.0 with sim 172.712. Best pinned remains BB-8F41C77F at 175.6. Slot is open this hour; leave it. A same-sim resubmission ranks behind the earlier pin.
 
