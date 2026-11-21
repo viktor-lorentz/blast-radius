@@ -10,6 +10,7 @@ RUN python /tmp/fetch_src.py "$SQLGLOT_SHA" /opt/sqlglot && rm /tmp/fetch_src.py
 
 COPY selector.py /app/selector.py
 COPY blast /app/blast
+COPY maps /app/maps
 RUN python -m compileall -q /app
 ENV PYTHONDONTWRITEBYTECODE=1
 CMD ["python", "/app/selector.py"]
