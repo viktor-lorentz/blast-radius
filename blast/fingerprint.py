@@ -94,12 +94,19 @@ class _Fp:
         if isinstance(v, re.Pattern):
             return self.h(f"re:{v.pattern!r}:{v.flags}")
         d = getattr(v, "__dict__", None)
-        if isinstance(d, dict):
-            return self.h(f"obj:{t.__module__}.{t.__qualname__}:{self.fp(d)}")
-        slots = getattr(t, "__slots__", None)
-        if slots:
+        dd = d if isinstance(d, dict) else {}
+        names = []
+        for k in t.__mro__:
+            sl = k.__dict__.get("__slots__", ())
+            names += [sl] if isinstance(sl, str) else list(sl)
+        names = [n for n in dict.fromkeys(names) if n not in ("parent", "_hash", "__weakref__", "__dict__")]
+        if dd and not names:
+            return self.h(f"obj:{t.__module__}.{t.__qualname__}:{self.fp(dd)}")
+        if names:
             vals = []
-            for s in ([slots] if isinstance(slots, str) else slots):
+            if dd:
+                vals.append("__dict__=" + self.fp(dd))
+            for s in names:
                 vals.append(s + "=" + (self.fp(getattr(v, s)) if hasattr(v, s) else "unset"))
             return self.h(f"slots:{t.__module__}.{t.__qualname__}:{','.join(vals)}")
         try:

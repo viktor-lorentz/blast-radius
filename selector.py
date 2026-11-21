@@ -46,6 +46,9 @@ class All(Exception):
     """Raised when the conservative answer (run everything) is required."""
 
 
+import re as _re  # noqa: E402
+
+_SIDE_EFFECTS = _re.compile(r"write_bytes|write_text|\.unlink\(|rmtree|os\.environ|\.mkdir\(|subprocess|chdir|os\.remove|tempfile")
 _TEST_IMPORTERS = {}
 
 
@@ -125,6 +128,10 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
         if r.start == 0:
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
+        if is_tests and _SIDE_EFFECTS.search(old):
+            # a test module that mutates the filesystem / environment / processes can break unrelated tests
+            # through shared state: any change to it may fail tests outside its own file
+            raise All(f"side-effecting test module changed: {path}")
         if r.kind == "rt":
             out |= tests
             if imp and not r.lam:  # function body that also runs at import time
