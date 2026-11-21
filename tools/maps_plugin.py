@@ -42,6 +42,28 @@ def _hook(event, args):
 sys.addaudithook(_hook)
 
 
+import pytest  # noqa: E402
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_collection(session):
+    """Import every sqlglot module up-front (outside any test) so that import-time lines are
+    attributed to import time (empty context), not to whichever test triggers a lazy import."""
+    import importlib
+    import pkgutil
+
+    try:
+        import sqlglot
+
+        for m in pkgutil.walk_packages(sqlglot.__path__, "sqlglot."):
+            try:
+                importlib.import_module(m.name)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+
 def pytest_collectstart(collector):
     _cur.append(("collect", getattr(collector, "nodeid", "") or ""))
 
