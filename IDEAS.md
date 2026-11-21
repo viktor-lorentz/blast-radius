@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~15:35 PST) — slot left open
+No new submission. /tmp/blast-ready is no and /tmp/blast-next-sha is empty. The page still shows 1 of 2 left (next frees 3:40 PM PST) and BB-D4A7EF6F at 172.4 entered in the final. Do not click Pick. Do not resubmit 37977a1. Signed in; not an email-code page.
+
+Rechecked the current selector with the plan checks off (Python 3.13, host fingerprints): sample 108.5, c1 2709.5, c2 1972.0, c3 1833.1, c4 2066.7, c5 12.7, all 0 misses. Same schedule as the scored commit. Corpus waste is still mostly a passing test_execute_tpcds (c1 ~1018s, c2 ~649s, c4 ~593s) or test_max_nodes, and the shipped plan and count checks already try to drop those. They did not move hidden sim (stuck at 167.914). Full-suite fallbacks left on c1/c2/c4 are core-module import failures and edits inside leaking tests/helpers.py or tests/test_sqlglotc.py. Narrowing those from this corpus is not safe, and neither shape is in the sample. Practice board now: 1212 114.6, RoboM 116.7, Steve WK 120.2, team 67 124.8, Aqua 126.1, Overcooked 172.4 (87th). The gap is schedule, not CPU. Do not spend the slot on another same-sim commit.
+
 ## STATE (2026-11-21 ~14:45 PST) — BB-D4A7EF6F scored 172.4 and is the final entry
 37977a1 scored as BB-D4A7EF6F. Runs: 167.914 sim / 4.48 CPU / 0 miss, 167.914 / 4.47 / 0, 167.914 / 4.09 / 0. Middle total 172.4. Simulated seconds are identical to 43a580e. CPU fell by about 0.5s because a patch that cannot be a KEYWORDS edit, a quoted spelling, or an inserted duplicate is not parsed for those proofs. Selections were identical on sample and c1–c5, all 0 misses. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 37977a1. One slot remains this hour (1 of 2, next frees 3:40 PM PST). Use it only for a commit that is 0 misses on sample and c1–c5 and should score under 172.4.
 
