@@ -64,6 +64,25 @@ def _module_name(path: str) -> str:
     return p.replace("/", ".")
 
 
+def _importers_of(path: str, maps):
+    """Tests that load this module, or None when that set is not known.
+
+    Leaf dialect modules keep the load map, which is tighter than the static
+    import closure. Everything else uses the closure. Empty means unknown.
+    """
+    if not path.startswith("sqlglot/"):
+        return None
+    dial = DIALECT_TESTS.get(_module_name(path))
+    if dial:
+        return set(dial)
+    try:
+        from blast.importers import tests_importing
+        return tests_importing(path, SRC, maps, DIALECT_TESTS)
+    except Exception as e:
+        log("importers skip:", repr(e))
+        return None
+
+
 CONFIG_BASENAMES = {
     "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
     "Makefile", "requirements.txt", "requirements-dev.txt", "__init__.py",
@@ -245,11 +264,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     regions = astdiff.diff(old, new, version_norm=version_norm)
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
-        # Only leaf dialect/parser/generator modules have a load map; anything else
-        # (or a map that resolved to no tests) still runs the full suite.
-        loaded = DIALECT_TESTS.get(_module_name(path))
+        loaded = _importers_of(path, maps)
         if loaded:
-            return set(loaded)
+            return loaded
         raise All(f"unparsable: {path}")
     out: set = set()
     for r in regions:
@@ -259,6 +276,11 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
                 out |= {n for f in ("tests/test_docs.py",) for n in maps.file_tests(f)}
             continue
         if r.start == 0:
+            # The differ could not place a module-level edit. Tests that never
+            # import the module cannot run it. An unknown module still runs all.
+            loaded = _importers_of(path, maps)
+            if loaded:
+                return loaded
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
         if is_tests and _SIDE_EFFECTS.search(old) and _region_leaks(path, old, new, r.start, r.end):
