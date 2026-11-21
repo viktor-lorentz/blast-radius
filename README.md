@@ -15,9 +15,9 @@ that module (the load map is imports, fixture headers, and covered loader lines)
 - `blast/split.py`: picks the worker count k (1..8) that minimises busiest-load + 2k.
 - `selector.py`: AST-level classification of each patch.
 
-Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, redundant assignment elimination, repeated statements whose import fingerprint does not change, version compares that a 3-tuple cannot distinguish, and numeric-escape values narrowed to tests that write the escape. test_execute_tpcds is dropped when the patch leaves its DuckDB SQL and optimized tree unchanged and does not touch the executor. The short runner is off unless BR_RUN=1.
+Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, redundant assignment elimination, repeated statements whose import fingerprint does not change, version compares that a 3-tuple cannot distinguish, and numeric-escape values narrowed to tests that write the escape. test_execute_tpcds is dropped when its DuckDB SQL and optimized tree match, and also when only a few executed queries differ and those frames still match DuckDB. The patch must stay out of the executor. test_max_nodes is dropped when a depth-100 prefix of its statement has the same node count as the pristine parser and the limit error still names the limit. The short runner is off unless BR_RUN=1.
 
-Libraries: Python standard library only at run time.
+Libraries: the standard library, plus DuckDB, pandas, and numpy so the TPC-DS frames can be checked.
 `make sample` builds the image and scores the 30 sample commits.
 
 License: MIT.

@@ -20,6 +20,7 @@ sys.path.insert(0, str(HERE))
 
 from blast import astdiff  # noqa: E402
 from blast import patch as P  # noqa: E402
+from blast import maxnodes  # noqa: E402
 from blast import plans  # noqa: E402
 from blast import runner  # noqa: E402
 from blast.maps import Maps  # noqa: E402
@@ -842,6 +843,17 @@ def main() -> None:
                 log(f"tpcds dropped {len(updates)}")
         except Exception as e:
             log("tpcds skip:", repr(e))
+    # test_max_nodes builds about a million nodes. The same statement at width
+    # 1, 2, and 8 fixes that count, so the two huge parses are not run. Only
+    # selections where dropping the test moves the makespan are checked.
+    if os.environ.get("BR_MAXNODES", "1") != "0":
+        try:
+            updates = maxnodes.narrow_max_nodes(SRC, rows, id_to_number, ms)
+            if updates:
+                rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+                log(f"max_nodes dropped {len(updates)}")
+        except Exception as e:
+            log("maxnodes skip:", repr(e))
     if run_tests:
         # Highest worker-fee gap first, and stop once the runs have spent 8s of CPU.
         # A later commit that would have saved time is kept static rather than risking the batch.
