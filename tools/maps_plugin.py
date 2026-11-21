@@ -85,6 +85,66 @@ _cf.ProcessPoolExecutor = _SyncExecutor
 import pytest  # noqa: E402
 
 
+_ATTRS = os.environ.get("BR_ATTRS") == "1"
+_reads = {}  # (phase, owner) -> set of keys
+_cur_reads = [set()]
+
+
+class _Rec:
+    """Non-data descriptor standing in for a class attribute; records which test reads it."""
+
+    __slots__ = ("v", "k")
+
+    def __init__(self, v, k):
+        self.v = v
+        self.k = k
+
+    def __get__(self, inst, owner=None):
+        _cur_reads[0].add(self.k)
+        return self.v
+
+
+def _set_reads(kind, owner):
+    _cur_reads[0] = _reads.setdefault((kind, owner), set())
+
+
+def _install_descriptors():
+    import enum
+    import types
+
+    import sqlglot
+
+    seen = set()
+    n = 0
+    for name, mod in list(sys.modules.items()):
+        if not (name == "sqlglot" or name.startswith("sqlglot.")) or mod is None:
+            continue
+        stack = [v for v in vars(mod).values() if isinstance(v, type) and v.__module__ == name]
+        while stack:
+            c = stack.pop()
+            if id(c) in seen:
+                continue
+            seen.add(id(c))
+            if issubclass(c, enum.Enum):
+                continue
+            ck = f"{c.__module__}.{c.__qualname__}"
+            for k, v in list(vars(c).items()):
+                if k.startswith("__") and k.endswith("__"):
+                    continue
+                if isinstance(v, type):
+                    if v.__module__ == name and v.__qualname__.startswith(c.__qualname__ + "."):
+                        stack.append(v)
+                    continue
+                if isinstance(v, (types.FunctionType, staticmethod, classmethod, property)) or hasattr(type(v), "__get__"):
+                    continue
+                try:
+                    setattr(c, k, _Rec(v, f"C|{ck}|{k}"))
+                    n += 1
+                except Exception:
+                    pass
+    print(f"[maps_plugin] installed {n} attribute recorders", file=sys.stderr)
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_collection(session):
     """Import every sqlglot module up-front (outside any test) so that import-time lines are
@@ -96,45 +156,59 @@ def pytest_collection(session):
         import sqlglot
 
         for m in pkgutil.walk_packages(sqlglot.__path__, "sqlglot."):
+            if m.name.endswith("__main__"):
+                continue
             try:
                 importlib.import_module(m.name)
             except Exception:
                 pass
     except Exception:
         pass
+    if _ATTRS:
+        _install_descriptors()
 
 
 def pytest_collectstart(collector):
     _cur.append(("collect", getattr(collector, "nodeid", "") or ""))
+    _set_reads(*_cur[-1])
 
 
 def pytest_collectreport(report):
     if len(_cur) > 1 and _cur[-1][0] == "collect":
         _cur.pop()
+    _set_reads(*_cur[-1])
 
 
 def pytest_runtest_logstart(nodeid, location):
     _cur.append(("setup", nodeid))
+    _set_reads(*_cur[-1])
 
 
 def pytest_runtest_setup(item):
     _cur[-1] = ("setup", item.nodeid)
+    _set_reads(*_cur[-1])
 
 
 def pytest_runtest_call(item):
     _cur[-1] = ("call", item.nodeid)
+    _set_reads(*_cur[-1])
 
 
 def pytest_runtest_teardown(item):
     _cur[-1] = ("teardown", item.nodeid)
+    _set_reads(*_cur[-1])
 
 
 def pytest_runtest_logfinish(nodeid, location):
     if len(_cur) > 1:
         _cur.pop()
+    _set_reads(*_cur[-1])
 
 
 def pytest_sessionfinish(session):
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, f"opens-{os.getpid()}.json"), "w") as f:
         json.dump(sorted(_seen), f)
+    if _ATTRS:
+        with open(os.path.join(OUT, f"attrs-{os.getpid()}.json"), "w") as f:
+            json.dump([[k, o, sorted(v)] for (k, o), v in _reads.items() if v], f)

@@ -37,9 +37,57 @@ def run_suite():
                PYTHONPATH=f"{REPO}/tools:{SRC}", PYTHONDONTWRITEBYTECODE="1")
     env.pop("COVERAGE_CORE", None)
     cmd = ("python -m pytest -p maps_plugin -n 4 -q --no-header -p no:cacheprovider "
+           f"--junitxml {WORK}/pass1.xml "
            "--cov=sqlglot --cov=tests --cov-context=test --cov-report= tests")
     print("+", cmd, flush=True)
     subprocess.run(cmd, shell=True, cwd=SRC, env=env)  # failures tolerated; maps still valid
+    # pass 2: class-attribute read recording (no coverage)
+    env2 = dict(env, BR_ATTRS="1")
+    cmd2 = ("python -m pytest -p maps_plugin -n 4 -q --no-header -p no:cacheprovider "
+            f"--junitxml {WORK}/pass2.xml tests")
+    print("+", cmd2, flush=True)
+    subprocess.run(cmd2, shell=True, cwd=SRC, env=env2)
+
+
+def junit_failed(path):
+    import xml.etree.ElementTree as ET
+
+    bad = set()
+    if not Path(path).exists():
+        return None
+    for tc in ET.parse(path).getroot().iter("testcase"):
+        cls, name = tc.get("classname", ""), tc.get("name", "").split(" ")[0].split("[")[0]
+        parts = cls.split(".")
+        mod = [p for p in parts if p[:1].islower()]
+        klass = [p for p in parts if p[:1].isupper()]
+        nodeid = "/".join(mod) + ".py" + ("::" + "::".join(klass) if klass else "") + "::" + name
+        if any(ch.tag in ("failure", "error") for ch in tc):
+            bad.add(nodeid)
+    return bad
+
+
+def name_index():
+    """name -> {file: [lines]} for every Name/Attribute reference inside function or lambda bodies."""
+    import ast
+
+    out: dict = defaultdict(lambda: defaultdict(set))
+    for root in ("sqlglot", "tests"):
+        for p in (SRC / root).rglob("*.py"):
+            rel = str(p.relative_to(SRC))
+            try:
+                tree = ast.parse(p.read_text())
+            except SyntaxError:
+                continue
+            for fn in ast.walk(tree):
+                if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                    body = fn.body if isinstance(fn.body, list) else [fn.body]
+                    for b in body:
+                        for n in ast.walk(b):
+                            if isinstance(n, ast.Name):
+                                out[n.id][rel].add(n.lineno)
+                            elif isinstance(n, ast.Attribute):
+                                out[n.attr][rel].add(n.lineno)
+    return {k: {f: sorted(v) for f, v in d.items()} for k, d in out.items()}
 
 
 def main():
@@ -109,6 +157,33 @@ def main():
                 opens[rel] |= by_file.get(fl, set()) if fl else set(range(len(test_ids)))
             else:
                 opens[rel] |= set(range(len(test_ids)))
+    # class-attribute reads (pass 2)
+    attrs: dict[str, set] = defaultdict(set)
+    for fn in glob.glob(str(OPENS / "attrs-*.json")):
+        for phase, owner, keys in json.load(open(fn)):
+            if phase == "call":
+                ts = {tid(owner)}
+            elif phase in ("setup", "teardown", "collect"):
+                fl = owner.split("::")[0]
+                ts = by_file.get(fl, set()) if fl else set(range(len(test_ids)))
+            else:
+                ts = set(range(len(test_ids)))
+            for k in keys:
+                attrs[k] |= ts
+    f1, f2 = junit_failed(WORK / "pass1.xml"), junit_failed(WORK / "pass2.xml")
+    unreliable = sorted(tid(t) for t in (f2 - f1) if t in test_ids) if f1 is not None and f2 is not None else None
+    sets2: dict[tuple, int] = {}
+    amap = {}
+    for k, v in attrs.items():
+        key = tuple(sorted(v))
+        if key not in sets2:
+            sets2[key] = len(sets2)
+        amap[k] = sets2[key]
+    (OUT / "attrs.json").write_text(json.dumps(
+        {"s": [list(k) for k in sets2], "a": amap, "unreliable": unreliable,
+         "pass1_failed": sorted(f1 or []), "pass2_failed": sorted(f2 or [])}, separators=(",", ":")))
+    (OUT / "names.json").write_text(json.dumps(name_index(), separators=(",", ":")))
+    print(f"attrs: {len(amap)} keys read; unreliable tests: {unreliable if unreliable is None else len(unreliable)}")
     pyfiles = sorted(str(p.relative_to(SRC)) for p in (SRC / "sqlglot").rglob("*.py"))
     idx = {
         "sha": SHA,
