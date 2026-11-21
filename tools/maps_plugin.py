@@ -48,7 +48,9 @@ import concurrent.futures as _cf  # noqa: E402
 
 class _SyncExecutor:
     def __init__(self, *a, **k):
-        pass
+        init = k.get("initializer")
+        if init is not None:  # a real pool runs this in every worker before any task
+            init(*k.get("initargs", ()))
 
     def submit(self, fn, *a, **k):
         # Same semantics as a real process pool: arguments and the result cross a pickle boundary
