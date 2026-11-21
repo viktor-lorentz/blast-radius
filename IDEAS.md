@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~13:20 PST) — BB-F7BB5F00 scored 172.9 and is the final entry
+43a580e scored as BB-F7BB5F00. Runs: 167.914 sim / 5.11 CPU / 0 miss, 167.914 / 5.00 / 0, 167.914 / 4.96 / 0. Middle total 172.9. Simulated seconds are identical to ae1babf. CPU fell from 15.5 to 5.0 because a SQL-spelling check no longer parses every test file. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 43a580e. One slot remains this hour (1 of 2, next frees 2:18 PM PST). Use it only for a commit that is 0 misses on sample and c1–c5 and should score under 172.9.
+
+Practice board when this was submitted: RoboM 121.8, team 67 125.6, Aqua 126.1, Overcooked 172.9. The gap is about 51s of schedule. A wider importer closure on semantic import failures was 0 misses and saved 0s of makespan on c1–c5, so it is not shipped. Keep the importer narrowing. Do not build the per-test slice index for a vocabulary hit.
+
 ## STATE (2026-11-21 ~12:30 PST) — BB-348AC34E scored 183.4, not pinned
 1f2e319 scored as BB-348AC34E. Runs: 167.914 sim / 15.39 CPU / 0 miss, 167.914 / 15.49 / 0, 167.914 / 15.46 / 0. Middle total 183.4. Simulated seconds are identical to ae1babf (BB-6F37E8D5). The early return did not stop the test-source index: `_full_mention_index` is 5.65s locally and still runs for any vocab-shaped commit that is not an import failure. Do not pin. Do not resubmit 1f2e319 or ae1babf. Best remains BB-8F41C77F at 175.6. Slot is closed until 1:17 PM PST. Aqua was still 126.1.
 
