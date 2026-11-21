@@ -8,12 +8,14 @@ tests to run and how to split them across up to 8 workers.
 Maps derived from the pinned sqlglot commit (coverage, imports, fixtures) pick a
 candidate set. There is no table from a patch, or from a kind of edit, to the tests
 it breaks. A docstring edit does not select tests: the scored suite does not run doctests.
+An unparsable leaf dialect, parser, or generator module selects the tests that load
+that module (the load map is imports, fixture headers, and covered loader lines).
 
 - `blast/patch.py`: strict unified-diff parser and applier (anything odd -> run everything).
 - `blast/split.py`: picks the worker count k (1..8) that minimises busiest-load + 2k.
 - `selector.py`: AST-level classification of each patch.
 
-Status: v0 (AST no-op detection + optimal split). Coverage maps are in progress.
+Status: coverage, semantic diff, and a dialect-module load map. The in-container runner is off.
 
 Libraries: Python standard library only at run time.
 `make sample` builds the image and scores the 30 sample commits.

@@ -1,12 +1,19 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
-## STATE (2026-11-21 ~03:45 PST) — runner submitted, waiting on the server
-BB-AD82E23D (e6080ac) scored 185.3. sim 166.345 (was 172.712), CPU 19.0 (was 2.9), 0 misses.
-The runner is -EV on the server: 6.4s of simulated time for 16s of CPU. It is OFF by default
-(BR_RUN=0). Do not submit another build with the runner on unless a run costs less CPU than
-the simulated time it deletes. Best remains v2c 175.6. Do not pin 185.3.
-Slot frees 4:41 AM PST (2026-11-21 12:41 UTC). Next submit should be the docstring fix with
-the runner off. Leader was team 67 at 130.8.
+## STATE (2026-11-21 ~04:25 PST) — dialect load map, runner stays off
+Best server score is still v2c 175.6. Do not pin 185.3 (runner, BB-AD82E23D). Leader was team 67 at 130.8.
+The runner is -EV (sim -6.4, CPU +16). Leave BR_RUN unset.
+
+Unparsable leaf dialect/parser/generator modules no longer select all 1620 tests. maps/dialect_load.json
+is the set of tests that load each module, built from the pinned tree: module-level and function-level
+imports (including `from sqlglot.dialects import BigQuery`), fixture `# dialect:` headers, string literals
+that name a dialect, and coverage of library lines that load one. It is not a patch-to-tests table.
+Core, typing, and optimizer syntax errors still run everything. Offline and selector c3: 2245.4, 0 misses
+(was 2945 if every syntax commit ran the full suite). c1 selector re-run is in flight; the same substitution
+was 2801.6 vs 2963.1, 0 misses, save 161.5. c2 save 27.5, 0 misses. c4 unchanged, 0 misses. Sample stays 115.0
+static, 0 misses (the map does not fire on the sample). Submit this, runner off, once c1/c2/c4 selector
+runs confirm 0 misses. One avoided full suite on the hidden set is ~27s. Two is a lead under 130.8. Zero
+leaves 175.6 in place. Do not turn the runner back on.
 
 Next commit on top, not yet submitted: a docstring the scored suite never runs no longer
 falls back to every test. tests/test_docs.py is absent from tests.json. Local, with the runner:

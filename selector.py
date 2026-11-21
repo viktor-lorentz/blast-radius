@@ -33,6 +33,34 @@ try:
 except (OSError, ValueError):
     pass
 
+# module name -> test numbers that load it. Built from the pinned tree (imports,
+# fixture dialect headers, coverage of loader lines). Absent means "not a leaf
+# dialect module": an unparsable file still runs every test.
+DIALECT_TESTS: dict[str, set[int]] = {}
+
+
+def load_dialect_tests(id_to_number: dict) -> None:
+    path = MAPS_DIR / "dialect_load.json"
+    if not path.exists():
+        return
+    try:
+        raw = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return
+    nums = [id_to_number.get(i, -1) for i in raw.get("ids", ())]
+    for mod, idxs in raw.get("mods", {}).items():
+        got = {nums[i] for i in idxs if 0 <= i < len(nums) and nums[i] >= 0}
+        if got:
+            DIALECT_TESTS[mod] = got
+
+
+def _module_name(path: str) -> str:
+    p = path[:-3] if path.endswith(".py") else path
+    if p.endswith("/__init__"):
+        p = p[: -len("/__init__")]
+    return p.replace("/", ".")
+
+
 CONFIG_BASENAMES = {
     "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
     "Makefile", "requirements.txt", "requirements-dev.txt", "__init__.py",
@@ -120,7 +148,13 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
     new = P.apply(old, fp)
     regions = astdiff.diff(old, new)
     if regions is None:
-        raise All(f"unparsable: {path}")  # syntax error etc.: import failures hit everything importing it
+        # A syntax error fails the tests that import the module, not every test.
+        # Only leaf dialect/parser/generator modules have a load map; anything else
+        # (or a map that resolved to no tests) still runs the full suite.
+        loaded = DIALECT_TESTS.get(_module_name(path))
+        if loaded:
+            return set(loaded)
+        raise All(f"unparsable: {path}")
     out: set = set()
     for r in regions:
         if r.kind == "doc":
@@ -214,6 +248,7 @@ def main() -> None:
     all_tests = set(ms)
     id_to_number = {t["id"]: t["number"] for t in tests}
     number_to_id = {t["number"]: t["id"] for t in tests}
+    load_dialect_tests(id_to_number)
     # Off by default. On the practice batch the runs cut 6.4s of simulated time and
     # added 16s of CPU (BB-AD82E23D, 185.3). Set BR_RUN=1 to enable them.
     run_tests = os.environ.get("BR_RUN", "0") != "0"
