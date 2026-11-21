@@ -33,3 +33,7 @@ Gate for any submission: sample 0 misses + c1 0 misses + c2 0 misses + bench wor
   local-sample gains (is/== : 165.2->115.0) do NOT transfer; server set has other waste. best-submitted stays v2c. Next slot ~03:16 PST.
   Leaders: 142.9, 146.3, 151.8, 153.7. Our waste on server set is ~unknown; sim 172.7 vs oracle likely ~100-130.
   Ideas: cut CPU (2.9 s is ~2% now); investigate which heavy tests dominate waste (tpcds 21 s inclusion at 10% fail rate is break-even-ish).
+- ANALYSIS (c1+c2+c4, 142 commits selecting test_execute_tpcds): fails in 31 (22%); whenever it fails other tests fail too.
+  By selected-set size: <20 tests: 0/13 fail (too few samples: 95% upper bound ~23% >> 7% break-even); 20-60: 7/17; 60-200: 8/43; >200: 16/69.
+  CONCLUSION: dropping tpcds is NOT provably safe -> keep (0-miss rule). Remaining gain needs a real per-line predictor; not done.
+  Final entry = v2c (BB-8F41C77F, 175.6 s). Only submit a new commit if it beats 175.6 locally on the SERVER-like metric AND 0 miss on c1/c2/c4/c5.
