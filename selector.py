@@ -144,21 +144,15 @@ def _dialect_load_union(files):
     return acc or None
 
 
-def _without_unloaded_max_nodes(files, reason, maps, nums: set) -> set:
-    """Drop test_max_nodes from a full-suite fallback when the test cannot load the edit.
+def _without_unloaded_max_nodes(files, maps, nums: set) -> set:
+    """Drop test_max_nodes when none of the edited modules are in its runtime load set.
 
-    Only module-breakage fallbacks qualify. A patch that also edits a module this
-    test loads can make the test import the broken one, so that file keeps the test.
+    The load set is from one run of that test on the pinned tree. A patch cannot
+    make the test import a module it never reached unless the patch also edits a
+    module the test does load. Any such file, or any non-sqlglot file, keeps the test.
     """
     loads = _max_nodes_loads()
     if not loads or not files:
-        return nums
-    msg = str(reason)
-    if not (
-        msg.startswith("unparsable:")
-        or msg.startswith("module-level structural")
-        or msg.startswith("semantic:")
-    ):
         return nums
     for fp in files:
         path = fp.path
@@ -1040,6 +1034,10 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         # the edited word. Do not intersect those away, and do not pay the
         # mention-index build.
         if import_failure_narrowed or _IMPORTER_HIT:
+            try:
+                out = _without_unloaded_max_nodes(files, maps, out)
+            except Exception as err:
+                log("max_nodes keep:", repr(err))
             return out
         # A plain KEYWORDS key is looked up by that word. Tests that never spell
         # it (and never open a fixture that does) cannot observe the entry.
@@ -1075,12 +1073,16 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 out &= _tests_mentioning_full(vocab, maps)
         except Exception as e:
             log("vocab skip:", repr(e))
+        try:
+            out = _without_unloaded_max_nodes(files, maps, out)
+        except Exception as err:
+            log("max_nodes keep:", repr(err))
         return out
     except All as e:
         log("ALL:", e)
         nums = set(all_tests)
         try:
-            nums = _without_unloaded_max_nodes(files, e, maps, nums)
+            nums = _without_unloaded_max_nodes(files, maps, nums)
         except Exception as err:
             log("max_nodes keep:", repr(err))
         return nums
