@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~12:30 PST) — BB-348AC34E scored 183.4, not pinned
+1f2e319 scored as BB-348AC34E. Runs: 167.914 sim / 15.39 CPU / 0 miss, 167.914 / 15.49 / 0, 167.914 / 15.46 / 0. Middle total 183.4. Simulated seconds are identical to ae1babf (BB-6F37E8D5). The early return did not stop the test-source index: `_full_mention_index` is 5.65s locally and still runs for any vocab-shaped commit that is not an import failure. Do not pin. Do not resubmit 1f2e319 or ae1babf. Best remains BB-8F41C77F at 175.6. Slot is closed until 1:17 PM PST. Aqua was still 126.1.
+
+Keep the importer narrowing (it is what moved hidden sim by 4.8s). Do not build `_full_mention_index` at all. Cutting that index should put CPU back near the 44d263e ~6s, and 167.9 + 6 beats 175.6. A vocab commit that is not an import failure is enough to pay the index today.
+
 ## STATE (2026-11-21 ~12:05 PST) — BB-6F37E8D5 scored 183.3, not pinned
 ae1babf scored as BB-6F37E8D5. Runs: 167.914 sim / 15.18 CPU / 0 miss, 167.914 / 15.37 / 0, 167.914 / 15.54 / 0. Middle total is 183.3. Simulated seconds fell by 4.8 from 172.712, so the hidden batch did contain an import-breakage the old selector ran in full. CPU rose by about 12s because that selection then built the test-source mention index (5.5s locally, slower in the sandbox). Do not pin. Best remains BB-8F41C77F at 175.6.
 
