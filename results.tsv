@@ -3,3 +3,4 @@ fc57dda	994.1 (0 miss)	?		v0 AST no-op + optimal split
 7a83571	296.7 (0 miss)	? (asked user)		v1 coverage maps + fixture opens
 WIP	-	no		semantic diff wired, untested with new maps
 7a87a09+	165.2 (0 miss)	no		v2 semantic diff (fingerprint + attr-read map); native CPU 2.06s/30
+next	165.2 (0 miss); c1 360: 0 miss	pending		v2b: cache-isolated maps, class-valued attrs, docstring fix
