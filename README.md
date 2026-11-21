@@ -15,7 +15,7 @@ that module (the load map is imports, fixture headers, and covered loader lines)
 - `blast/split.py`: picks the worker count k (1..8) that minimises busiest-load + 2k.
 - `selector.py`: AST-level classification of each patch.
 
-Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, and redundant assignment elimination. The in-container runner is off.
+Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, redundant assignment elimination, and repeated statements whose import fingerprint does not change. The in-container runner is off.
 
 Libraries: Python standard library only at run time.
 `make sample` builds the image and scores the 30 sample commits.

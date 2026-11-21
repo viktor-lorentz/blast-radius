@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~05:30 PST) — repeated statement with an unchanged import fingerprint
+Best server score is still v2c 175.6. BB-6B1A1766 (47fae13) scored 176.0 (sim 172.712 x3, CPU 3.33/3.51/3.33, 0 misses). Do not pin it. Leader was team 67 at 130.8. Runner stays off.
+
+A patch that only inserts a copy of an existing statement selects nothing when importing the patched module changes no fingerprinted value. `auto()` twice, a second `yield from`, and `klass = prefix + klass` twice all change the fingerprint or fail the import and stay on the normal selector. 0 misses on c1, c2, c3, c4, c5, sample. New save: c2 m020289 36.8→0. Sample stays 115.0. Fingerprint runs only after the AST confirms the duplicate, so a batch with no such commit pays nothing.
+
 ## STATE (2026-11-21 ~05:00 PST) — keyword keys + clean side-effect tests, runner stays off
 Best server score is still v2c 175.6 until BB-6B1A1766 (47fae13, dialect load map) finishes scoring. Do not pin unless the new score beats 175.6. Leader was team 67 at 130.8. Runner stays off.
 

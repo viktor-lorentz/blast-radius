@@ -512,6 +512,60 @@ def _only_redundant_assignments(files) -> bool:
     return saw
 
 
+def _inserted_duplicate(fp) -> bool:
+    """Every added line repeats a context line, and nothing is deleted."""
+    if fp.special or fp.old_path != fp.new_path or not str(fp.path).endswith(".py"):
+        return False
+    saw = False
+    for h in fp.hunks:
+        added, ctx = [], []
+        for line in h.lines:
+            if line.startswith("+"):
+                added.append(line[1:])
+            elif line.startswith("-"):
+                return False
+            elif line.startswith(" "):
+                ctx.append(line[1:])
+        if not added or any(a not in ctx for a in added):
+            return False
+        saw = True
+    return saw
+
+
+def _duplicate_sources(files) -> dict | None:
+    """Patched sources when the only edit is a repeated statement, else None.
+
+    `foo()` twice can be a different program (`auto()`, `yield from`, a second
+    parse). The caller keeps the empty selection only if importing the result
+    changes no fingerprinted value.
+    """
+    if not files or not all(_inserted_duplicate(fp) for fp in files):
+        return None
+    patched = {}
+    for fp in files:
+        old = (SRC / fp.path).read_text()
+        new = P.apply(old, fp)
+        try:
+            old_tree, new_tree = ast.parse(old), ast.parse(new)
+        except (SyntaxError, ValueError, RecursionError):
+            return None
+        for node in ast.walk(new_tree):
+            for field in ("body", "orelse", "finalbody"):
+                stmts = getattr(node, field, None)
+                if not isinstance(stmts, list) or not stmts or not isinstance(stmts[0], ast.stmt):
+                    continue
+                kept = []
+                for stmt in stmts:
+                    if kept and ast.dump(stmt) == ast.dump(kept[-1]):
+                        continue
+                    kept.append(stmt)
+                setattr(node, field, kept)
+        if ast.dump(old_tree) != ast.dump(new_tree):
+            return None
+        patched[fp.path] = new
+    return patched or None
+
+
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
     try:
         files = P.parse(patch_text)
@@ -522,6 +576,16 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 return set()
         except Exception as e:
             log("redundant skip:", repr(e))
+        # A repeated statement that still builds the same module state selects
+        # nothing. A repeat that changes a value, or fails to import, does not.
+        try:
+            dup = _duplicate_sources(files)
+            if dup is not None and sem is not None:
+                info = sem.run_patched(dup)
+                if info.get("ok") and not info.get("newly_failed") and not info.get("changed"):
+                    return set()
+        except Exception as e:
+            log("dup skip:", repr(e))
         out: set = set()
         semantic_needed: dict = {}
         for fp in files:
