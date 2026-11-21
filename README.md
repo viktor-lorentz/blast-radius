@@ -15,7 +15,7 @@ that module (the load map is imports, fixture headers, and covered loader lines)
 - `blast/split.py`: picks the worker count k (1..8) that minimises busiest-load + 2k.
 - `selector.py`: AST-level classification of each patch.
 
-Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, redundant assignment elimination, repeated statements whose import fingerprint does not change, version compares that a 3-tuple cannot distinguish, and numeric-escape values narrowed to tests that write the escape. A short runner drops passing tests only for selections of at most 10 tests and under 0.8s recorded.
+Status: coverage, semantic diff, a dialect-module load map, plain KEYWORDS narrowing, clean side-effect test narrowing, redundant assignment elimination, repeated statements whose import fingerprint does not change, version compares that a 3-tuple cannot distinguish, and numeric-escape values narrowed to tests that write the escape. test_execute_tpcds is dropped when the patch leaves its DuckDB SQL and optimized tree unchanged and does not touch the executor. The short runner is off unless BR_RUN=1.
 
 Libraries: Python standard library only at run time.
 `make sample` builds the image and scores the 30 sample commits.

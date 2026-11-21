@@ -20,6 +20,7 @@ sys.path.insert(0, str(HERE))
 
 from blast import astdiff  # noqa: E402
 from blast import patch as P  # noqa: E402
+from blast import plans  # noqa: E402
 from blast import runner  # noqa: E402
 from blast.maps import Maps  # noqa: E402
 from blast.semantic import NeedAll, Semantic  # noqa: E402
@@ -795,10 +796,10 @@ def main() -> None:
     id_to_number = {t["id"]: t["number"] for t in tests}
     number_to_id = {t["number"]: t["id"] for t in tests}
     load_dialect_tests(id_to_number)
-    # On for the small selections only. The wide runner (any set cheaper on paper
-    # than its schedule) cut 6.4s and added 16s of CPU. worth_running now refuses
-    # that. Set BR_RUN=0 to skip the runs.
-    run_tests = os.environ.get("BR_RUN", "1") != "0"
+    # Off. The wide runner cut 6.4s of schedule and added 16s of CPU, and the
+    # tight one added about 4s of CPU without moving the hidden batch. Set
+    # BR_RUN=1 to run the small selections anyway.
+    run_tests = os.environ.get("BR_RUN", "0") != "0"
     deadline = time.monotonic() + runner._BATCH_CAP_S
     maps = None
     sem = None
@@ -830,6 +831,17 @@ def main() -> None:
         rows.append((pf.stem, text, nums))
         if debug:
             log(f"cpu {pf.stem} {_cpu() - c0:.3f}")
+    # TPC-DS plans that match the pristine tree are not going to fail. The check
+    # runs only for selections where that test is the expensive part, and stops
+    # after a few seconds of CPU. A failure of the check keeps the static set.
+    if os.environ.get("BR_TPCDS", "1") != "0":
+        try:
+            updates = plans.narrow_tpcds(SRC, rows, id_to_number, ms)
+            if updates:
+                rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+                log(f"tpcds dropped {len(updates)}")
+        except Exception as e:
+            log("tpcds skip:", repr(e))
     if run_tests:
         # Highest worker-fee gap first, and stop once the runs have spent 8s of CPU.
         # A later commit that would have saved time is kept static rather than risking the batch.
