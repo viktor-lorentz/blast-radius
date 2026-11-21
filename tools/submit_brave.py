@@ -63,8 +63,12 @@ def main() -> None:
             sys.exit(f"Could not find the submit form. Page saved to /tmp/blast-submit-page.txt url={page.url}")
         repo_box.fill(REPO)
         commit_box.fill(sha)
-        # The track page has other submit buttons ("Pick as our final entry"). Click the hand-in one.
-        page.locator("form").filter(has=page.locator("input[name='repo']")).locator("button[type='submit']").click()
+        # The hand-in control is a <button> with no type attribute (it defaults to submit).
+        # "Pick as our final entry" is a different button, outside this form.
+        button = page.locator("form button", has_text="Submit")
+        if button.count() != 1:
+            sys.exit(f"Expected one hand-in button, found {button.count()}")
+        button.click()
         page.wait_for_timeout(4000)
         after = page.inner_text("body")
         Path("/tmp/blast-submit-page.txt").write_text(after)

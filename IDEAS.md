@@ -1,6 +1,11 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
-## STATE (2026-11-21 ~03:40 PST) — runner, not yet the server score
+## STATE (2026-11-21 ~03:45 PST) — runner submitted, waiting on the server
+Submitted e6080ac as BB-AD82E23D. Slot is used until 4:41 AM PST (2026-11-21 12:41 UTC).
+Do not submit again before then. Do not pin it as the final entry unless its score beats 175.6.
+Best remains v2c BB-8F41C77F at 175.6 (sim 172.712). Leader on the board was team 67 at 130.8.
+
+## STATE (2026-11-21 ~03:40 PST) — runner, local numbers
 Safe runner is local, 0 misses. It runs a selected set only when that is cheaper than its
 scheduled cost, and only when every edited file is Python under sqlglot/ or a test file the
 selection already imports. Fixture edits and any other non-Python file keep the static set.
