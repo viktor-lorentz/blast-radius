@@ -12,6 +12,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build (linux/amd64, like the scorer)
         run: docker buildx build --platform linux/amd64 --load -t entry . 2>&1 | tail -5
+      - name: Per-commit CPU profile (sample)
+        run: |
+          docker run --rm --platform linux/amd64 --network none --cpus 2 --memory 4096m --read-only --tmpfs /tmp:rw,size=64m,mode=1777 --user 65534:65534 --env HOME=/tmp --env BR_DEBUG=1 \
+            -v "$PWD/sample/commits:/data/commits:ro" -v "$PWD/sample/tests.json:/data/tests.json:ro" entry 2>&1 >/dev/null | grep cpu | sort -k3 -rn | head -12
       - name: Run 3x under the scorer's flags, measure container CPU
         run: |
           RUNF="--rm --platform linux/amd64 --network none --cpus 2 --memory 4096m --memory-swap 4096m --pids-limit 256 --read-only --tmpfs /tmp:rw,size=64m,mode=1777 --cap-drop ALL --security-opt no-new-privileges --user 65534:65534 --env HOME=/tmp"

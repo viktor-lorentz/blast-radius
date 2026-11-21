@@ -17,3 +17,7 @@ Gate for any submission: sample 0 misses + c1 0 misses + c2 0 misses + bench wor
 4. Startup CPU: index.json and the per-file cov JSONs -> marshal/pickle; tests.json parse is unavoidable.
 5. Broad attribute reads (4d63 NUMERIC_ESCAPES -> 9 s): a finer read granularity (dict key level?) is probably
    not worth the risk.
+6. ALL fallbacks = module import failures (syntax errors / import-time exceptions): 13/360 on c1, ~20 s waste each.
+   A safe narrowing needs a per-test "modules loaded" map built WITHOUT the pre-import (lazy dialect loading),
+   plus collection-time imports in test files and function-level imports. Risky; only if time allows.
+7. Heavy tests: test_execute_tpcds is included 57x and fails 6x on c1 (10.5% > 7% break-even): keep.
