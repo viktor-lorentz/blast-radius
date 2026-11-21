@@ -1,5 +1,14 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~05:00 PST) — keyword keys + clean side-effect tests, runner stays off
+Best server score is still v2c 175.6 until BB-6B1A1766 (47fae13, dialect load map) finishes scoring. Do not pin unless the new score beats 175.6. Leader was team 67 at 130.8. Runner stays off.
+
+Plain KEYWORDS entries (a single identifier key, not a space or symbol key) keep only the selected tests whose source or opened fixtures contain that word. 0 misses. Local save: c1 34.4 (m010171 36.8→2.4), c2 11.3, c4 12.0. c3 syntax commits are not narrowed. Sample unchanged at 115.0.
+
+A change inside a side-effecting test module narrows to coverage when the edited function does not write, spawn, or call a function that does. Module-level edits and leaking functions (test_sqlglotc, helpers) still run everything. 0 misses. Local save: c1 34.8, c2 34.8, c4 136.5.
+
+Do not ship a lazy import-closure for optimizer/typing syntax errors. It missed on c3 (typing.bigquery, qualify_columns, annotate_types, and others).
+
 ## STATE (2026-11-21 ~04:25 PST) — dialect load map, runner stays off
 Best server score is still v2c 175.6. Do not pin 185.3 (runner, BB-AD82E23D). Leader was team 67 at 130.8.
 The runner is -EV (sim -6.4, CPU +16). Leave BR_RUN unset.

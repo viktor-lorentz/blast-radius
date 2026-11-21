@@ -8,6 +8,7 @@ Stdout: exactly one JSON line per commit. Everything else goes to stderr.
 """
 from __future__ import annotations
 
+import ast
 import json
 import os
 import sys
@@ -79,7 +80,100 @@ class All(Exception):
 import re as _re  # noqa: E402
 
 _SIDE_EFFECTS = _re.compile(r"write_bytes|write_text|\.unlink\(|rmtree|os\.environ|\.mkdir\(|subprocess|chdir|os\.remove|tempfile")
+# Calls that mutate the tree or another process even when the regex misses the callee body.
+_LEAK_CALLS = frozenset({"run_path", "copy_extensions_to_source", "Popen", "rmtree"})
 _TEST_IMPORTERS = {}
+_LEAK_SPANS: dict[str, list | None] = {}
+
+
+def _leak_spans(text: str):
+    """Functions in a test module that can leak state into other tests.
+
+    Each entry is (lineno, end_lineno, leaks, qualname). None means the file
+    did not parse: treat every region as a leak.
+    """
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError, RecursionError):
+        return None
+    funcs = []
+
+    class Visitor(ast.NodeVisitor):
+        def __init__(self):
+            self.cls = None
+
+        def visit_ClassDef(self, node):
+            prev = self.cls
+            self.cls = node.name
+            self.generic_visit(node)
+            self.cls = prev
+
+        def visit_FunctionDef(self, node):
+            self._fn(node)
+
+        def visit_AsyncFunctionDef(self, node):
+            self._fn(node)
+
+        def _fn(self, node):
+            calls = set()
+            for sub in ast.walk(node):
+                if not isinstance(sub, ast.Call):
+                    continue
+                f = sub.func
+                if isinstance(f, ast.Name):
+                    calls.add(f.id)
+                elif isinstance(f, ast.Attribute):
+                    calls.add(f.attr)
+            seg = ast.get_source_segment(text, node) or ""
+            direct = bool(_SIDE_EFFECTS.search(seg) or (calls & _LEAK_CALLS))
+            funcs.append([self.cls, node.name, node.lineno, node.end_lineno or node.lineno, calls, direct])
+            for stmt in node.body:
+                if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    self.visit(stmt)
+
+    Visitor().visit(tree)
+    leak_names = {n for c, n, a, b, calls, direct in funcs if direct}
+    changed = True
+    while changed:
+        changed = False
+        for c, n, a, b, calls, direct in funcs:
+            if n in leak_names:
+                continue
+            if calls & leak_names:
+                leak_names.add(n)
+                changed = True
+    return [(a, b, n in leak_names, (c, n)) for c, n, a, b, calls, direct in funcs]
+
+
+def _region_leaks(path: str, old: str, new: str, start: int, end: int) -> bool:
+    """True when a change in a side-effecting test module can break other files.
+
+    A region that sits entirely inside a function with no leak of its own (and
+    that does not call one) only affects tests that execute that function.
+    Module-level edits, unparsable files, and functions that write, spawn, or
+    call such a function still run the whole suite.
+    """
+    try:
+        if path not in _LEAK_SPANS:
+            _LEAK_SPANS[path] = _leak_spans(old)
+        spans = _LEAK_SPANS[path]
+        if spans is None or start <= 0:
+            return True
+        hits = [s for s in spans if s[0] <= start and s[1] >= end]
+        if not hits:
+            return True
+        lineno, end_lineno, leaks, qual = min(hits, key=lambda s: s[1] - s[0])
+        if leaks:
+            return True
+        new_spans = _leak_spans(new)
+        if new_spans is None:
+            return True
+        same = [s for s in new_spans if s[3] == qual]
+        if not same or any(s[2] for s in same):
+            return True
+        return False
+    except Exception:
+        return True
 
 
 def tests_module_tests(maps, path: str) -> set:
@@ -165,9 +259,10 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
         if r.start == 0:
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
-        if is_tests and _SIDE_EFFECTS.search(old):
-            # a test module that mutates the filesystem / environment / processes can break unrelated tests
-            # through shared state: any change to it may fail tests outside its own file
+        if is_tests and _SIDE_EFFECTS.search(old) and _region_leaks(path, old, new, r.start, r.end):
+            # a function that writes, spawns, or calls one can break unrelated tests.
+            # a change that stays inside a function with no such leak only affects
+            # the tests that execute it (the coverage set below).
             raise All(f"side-effecting test module changed: {path}")
         if r.kind == "rt":
             out |= tests
@@ -184,6 +279,168 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
             else:
                 semantic_needed[path] = new
     return out
+
+
+_PLAIN_KEY = _re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_MENTION_INDEX = None
+
+
+def _keyword_dicts(tree):
+    found = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ClassDef):
+            continue
+        for stmt in node.body:
+            target = value = None
+            if isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name):
+                target, value = stmt.target.id, stmt.value
+            elif isinstance(stmt, ast.Assign) and len(stmt.targets) == 1 and isinstance(stmt.targets[0], ast.Name):
+                target, value = stmt.targets[0].id, stmt.value
+            if target == "KEYWORDS" and isinstance(value, ast.Dict):
+                found.append(value)
+    return found
+
+
+def _hunk_lines(fp):
+    old_lines, new_lines = [], []
+    for h in fp.hunks:
+        o, n = h.old_start, h.new_start
+        for line in h.lines:
+            if line.startswith("-"):
+                old_lines.append(o)
+                o += 1
+            elif line.startswith("+"):
+                new_lines.append(n)
+                n += 1
+            else:
+                o += 1
+                n += 1
+    return old_lines, new_lines
+
+
+def _key_at(dicts, line: int):
+    """Plain KEYWORDS key whose entry covers this line, else None."""
+    for d in dicts:
+        if not (d.lineno <= line <= (d.end_lineno or d.lineno)):
+            continue
+        for k, v in zip(d.keys, d.values):
+            if k is None:
+                if v and v.lineno <= line <= (v.end_lineno or v.lineno):
+                    return None
+                continue
+            vend = v.end_lineno or v.lineno if v else k.lineno
+            end = max(k.end_lineno or k.lineno, vend)
+            if k.lineno <= line <= end:
+                if isinstance(k, ast.Constant) and isinstance(k.value, str) and _PLAIN_KEY.match(k.value):
+                    return k.value
+                return None
+        return None
+    return None
+
+
+def _plain_keyword_words(files) -> set[str] | None:
+    """Words whose KEYWORDS entry is the only thing this patch edits.
+
+    None means leave the selection alone: a space or symbol key changes the
+    tokenizer trie, a line outside KEYWORDS can fail tests that never spell
+    the word, and an unparsable file belongs to the syntax path.
+    """
+    words: set[str] = set()
+    saw = False
+    for fp in files:
+        if fp.special or fp.old_path != fp.new_path or not fp.path.endswith(".py"):
+            return None
+        if not fp.path.startswith("sqlglot/"):
+            return None
+        old = (SRC / fp.path).read_text()
+        new = P.apply(old, fp)
+        try:
+            old_ds = _keyword_dicts(ast.parse(old))
+            new_ds = _keyword_dicts(ast.parse(new))
+        except (SyntaxError, ValueError, RecursionError):
+            return None
+        old_lines, new_lines = _hunk_lines(fp)
+        if not old_lines and not new_lines:
+            return None
+        for ln in old_lines:
+            key = _key_at(old_ds, ln)
+            if key is None:
+                return None
+            words.add(key)
+            saw = True
+        for ln in new_lines:
+            key = _key_at(new_ds, ln)
+            if key is None:
+                return None
+            words.add(key)
+            saw = True
+    return words if saw else None
+
+
+def _mention_index(maps):
+    """Per-test source slice and fixture text. Built once, from the pinned tree."""
+    global _MENTION_INDEX
+    if _MENTION_INDEX is not None:
+        return _MENTION_INDEX
+    tests = json.loads((DATA / "tests.json").read_text())["tests"]
+    by_file: dict[str, list] = {}
+    for t in tests:
+        by_file.setdefault(t["id"].split("::")[0], []).append(t)
+    segs: dict[str, list] = {}
+    for rel, items in by_file.items():
+        path = SRC / rel
+        try:
+            text = path.read_text(errors="replace")
+            tree = ast.parse(text)
+        except (OSError, SyntaxError, ValueError, RecursionError):
+            segs[rel] = [(t["number"], "") for t in items]
+            continue
+        classes = {n.name: n for n in tree.body if isinstance(n, ast.ClassDef)}
+        rows = []
+        for t in items:
+            parts = t["id"].split("::")
+            seg = ""
+            if len(parts) == 3 and parts[1] in classes:
+                node = classes[parts[1]]
+                cls_src = ast.get_source_segment(text, node) or ""
+                fn_src = ""
+                for stmt in node.body:
+                    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)) and stmt.name == parts[2]:
+                        fn_src = ast.get_source_segment(text, stmt) or ""
+                        break
+                # Same slice the offline check used: the test, plus the class head.
+                seg = fn_src + "\n" + cls_src[:2000]
+            rows.append((t["number"], seg))
+        segs[rel] = rows
+    fixtures = []
+    fixroot = SRC / "tests" / "fixtures"
+    if fixroot.is_dir():
+        for p in fixroot.rglob("*"):
+            if not p.is_file() or p.stat().st_size >= 2_000_000:
+                continue
+            try:
+                fixtures.append((str(p.relative_to(SRC)), p.read_text(errors="replace")))
+            except OSError:
+                pass
+    _MENTION_INDEX = (segs, fixtures)
+    return _MENTION_INDEX
+
+
+def _tests_mentioning(words: set[str], maps) -> set[int]:
+    segs, fixtures = _mention_index(maps)
+    pats = [_re.compile(rf"\b{_re.escape(w)}\b", _re.I) for w in words]
+    hit: set[int] = set()
+    for rows in segs.values():
+        for num, seg in rows:
+            if seg and any(p.search(seg) for p in pats):
+                hit.add(num)
+    for rel, text in fixtures:
+        if not any(p.search(text) for p in pats):
+            continue
+        opened = maps.opened_by(rel)
+        if opened:
+            hit |= set(opened)
+    return hit
 
 
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
@@ -207,6 +464,18 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 out |= sem.tests_for(patched)
             except (NeedAll, RuntimeError, ValueError, OSError) as e:
                 raise All(f"semantic: {e}")
+        # A plain KEYWORDS key is looked up by that word. Tests that never spell
+        # it (and never open a fixture that does) cannot observe the entry.
+        # Space and symbol keys also rebuild the token trie, so they are not narrowed.
+        try:
+            words = _plain_keyword_words(files)
+            if words and maps is not None:
+                mentioned = _tests_mentioning(words, maps)
+                shrunk = out & mentioned
+                if shrunk:
+                    out = shrunk
+        except Exception as e:
+            log("keyword skip:", repr(e))
         return out
     except All as e:
         log("ALL:", e)
