@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~10:50 PST) — do not submit 7b1cc94
+HEAD 7b1cc94 (on origin) is 9739683 plus a named-function builder fix. Vocab narrowing is 0 misses on sample, c1, c2, c3, c4, and c5, and it saves 112.9 / 40.4 / 40.3 on c1 / c2 / c4. It matches 0 of 30 sample commits, so the sample stays 108.5 (oracle 94.4) with the runner, TPC-DS check, and max_nodes check off. A rule that does not change the sample has not moved the hidden schedule. Do not submit 7b1cc94 or 9739683. Do not set /tmp/blast-ready. Best pinned remains BB-8F41C77F at 175.6. Slot was 0 of 1 at 10:11 PST (BB-83E9C695). Next slot ~11:09 PST. Submitting this sha would add an AST walk on every commit and a full-file mention scan on hits, for no hidden sim change.
+
+Sample waste left, all oracle 0: 4d63 5.1 (43 tests, snowflake NUMERIC_ESCAPES u base 16→17), 5y72 2.5, fryt 2.2, gbav 2.0, ktz3 2.1. Together 14.1s. The same commits were already cleared locally by the runner or the escape rule, and the server sim stayed 172.712. Another sample-only trim will not open a 10s lead under Aqua (126.1). Bool-only flips are not safe: sample 1/4 fail, c1 15/32, c2 13/24, c4 11/20.
+
 ## STATE (2026-11-21 ~10:15 PST) — BB-83E9C695 scored 179.4, not pinned
 44d263e scored 179.4 as BB-83E9C695. Runs: 172.712 sim / 6.64 CPU / 0 miss, 172.712 / 5.38 / 0, 172.712 / 6.75 / 0. Simulated seconds are identical to v2c. The TPC-DS frame check and the max_nodes count check did not remove a charged test on the hidden batch. CPU is about 2.5s above v2c. Do not pin. Do not resubmit 44d263e, 25d3142, b474bd2, bab8cbe, or 47fae13. Best remains BB-8F41C77F at 175.6. Next slot ~11:09 AM PST. A commit that does not change the hidden schedule cannot beat 175.6. Local, 0 misses: sample 108.5; c1 2579.5 (was 2701.9); c2 1741.3; c3 1995.1; c4 1884.9; c5 12.7. That local save did not transfer.
 
