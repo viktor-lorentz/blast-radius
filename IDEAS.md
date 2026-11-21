@@ -37,3 +37,8 @@ Gate for any submission: sample 0 misses + c1 0 misses + c2 0 misses + bench wor
   By selected-set size: <20 tests: 0/13 fail (too few samples: 95% upper bound ~23% >> 7% break-even); 20-60: 7/17; 60-200: 8/43; >200: 16/69.
   CONCLUSION: dropping tpcds is NOT provably safe -> keep (0-miss rule). Remaining gain needs a real per-line predictor; not done.
   Final entry = v2c (BB-8F41C77F, 175.6 s). Only submit a new commit if it beats 175.6 locally on the SERVER-like metric AND 0 miss on c1/c2/c4/c5.
+- ALL-fallback study (c3: 80 syntax/import-error mutants; maps pass 3 traces lazily imported dialect/generator/parser modules per test):
+  53/80 are eager/core modules (true failing set ~ everything: ALL is right). Of 27 lazy modules, trace is exact for 19, misses for 8
+  (big dialects hive/snowflake/presto: 600+ tests short); file-level widening still misses 6 (and widens to ~ALL). Unsafe -> NOT deployed.
+  ALL costs ~36.8 s sim (k=4, test_max_nodes 28.8 s alone). Server gap to ~136 s is plausibly ONE ALL-fallback commit; no safe cheaper rule found.
+  maps/ in repo unchanged (pass 3 code is tooling only; new builds also emit imports.json).
