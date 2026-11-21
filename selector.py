@@ -42,6 +42,43 @@ class All(Exception):
     """Raised when the conservative answer (run everything) is required."""
 
 
+_TEST_IMPORTERS = {}
+
+
+def tests_module_tests(maps, path: str) -> set:
+    """Tests affected by an import-time change in a tests/ module: its own tests, plus (for helper modules)
+    every test in any tests/ file that imports it, transitively."""
+    own = maps.file_tests(path)
+    if own and path.rsplit("/", 1)[-1].startswith("test_"):
+        return own
+    import re
+    mod = path[:-3].replace("/", ".")
+    if mod.endswith(".__init__"):
+        mod = mod[:-9]
+    pkg, _, leaf = mod.rpartition(".")
+    if not _TEST_IMPORTERS:
+        for f in (SRC / "tests").rglob("*.py"):
+            _TEST_IMPORTERS[str(f.relative_to(SRC))] = f.read_text(errors="replace")
+    out, todo, seen = set(own), [(mod, pkg, leaf)], set()
+    while todo:
+        m, pk, lf = todo.pop()
+        if m in seen:
+            continue
+        seen.add(m)
+        pat = re.compile(rf"(^|\n)\s*(from\s+{re.escape(m)}\s+import|import\s+{re.escape(m)}\b|"
+                         rf"from\s+{re.escape(pk)}\s+import\s+[^\n]*\b{re.escape(lf)}\b|"
+                         rf"from\s+\.+{re.escape(lf)}\s+import)")
+        for rel, txt in _TEST_IMPORTERS.items():
+            if rel != path and pat.search(txt):
+                out |= maps.file_tests(rel)
+                rm = rel[:-3].replace("/", ".")
+                if rm.endswith(".__init__"):
+                    rm = rm[:-9]
+                p2, _, l2 = rm.rpartition(".")
+                todo.append((rm, p2, l2))
+    return out
+
+
 def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
     path = fp.path
     if fp.special or fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
@@ -88,14 +125,14 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
             out |= tests
             if imp and not r.lam:  # function body that also runs at import time
                 if is_tests:
-                    out |= maps.file_tests(path)
+                    out |= tests_module_tests(maps, path)
                 else:
                     semantic_needed[path] = new
         else:  # import-time code
             if not hit:
                 continue  # never executed: cannot affect any test
             if is_tests:
-                out |= maps.file_tests(path)
+                out |= tests_module_tests(maps, path)
             else:
                 semantic_needed[path] = new
     return out

@@ -65,12 +65,32 @@ class Semantic:
         i = filename.find("sqlglot" + os.sep)
         return filename[i:] if i >= 0 else None
 
-    def _fn_tests(self, info) -> Set[int]:
+    def _fn_tests(self, info, patched=None) -> Set[int]:
         rel = self._rel(info[0])
         if rel is None:
             raise NeedAll(f"function outside source tree: {info[0]}")
-        tests, _imp, _hit = self.maps.region_tests(rel, info[1], info[2])
+        a, b = info[1], info[2]
+        if patched and rel in patched:  # line numbers refer to the patched text: map back to the original
+            a, b = self._to_old(rel, patched[rel], a, b)
+        tests, _imp, _hit = self.maps.region_tests(rel, a, b)
         return tests
+
+    def _to_old(self, rel, new_text, a, b):
+        import difflib
+        old = (self.src / rel).read_text().split("\n")
+        new = new_text.split("\n")
+        olds = []
+        for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, old, new, autojunk=False).get_opcodes():
+            lo, hi = max(j1, a - 1), min(j2, b)
+            if lo >= hi:
+                continue
+            if tag == "equal":
+                olds += [i1 + (lo - j1) + 1, i1 + (hi - j1)]
+            elif i2 > i1:
+                olds += [i1 + 1, i2]
+        if not olds:
+            raise NeedAll(f"cannot map patched lines {rel}:{a}-{b}")
+        return min(olds), max(olds)
 
     def tests_for(self, patched: Dict[str, str]) -> Set[int]:
         new = self.run_patched(patched)
@@ -94,8 +114,16 @@ class Semantic:
                 if k in bfn:
                     out |= self._fn_tests(bfn[k])
                 if k in nfn and k not in bfn:
-                    if in_base:  # non-function value became a function
-                        out |= m.attr_tests(k) if kind == "C" else m.name_tests(k.rsplit("|", 1)[1])
+                    if in_base:  # non-function value (e.g. property / staticmethod) became a function
+                        # the same code object ran as the old wrapper's getter: everyone who executed it
+                        out |= self._fn_tests(nfn[k], patched)
+                        attr = k.rsplit("|", 1)[1]
+                        if kind == "C" and m.attr_installed(k):
+                            out |= m.attr_tests(k)
+                        elif kind == "C":
+                            out |= m.attr_name_tests(attr)
+                        else:
+                            out |= m.name_tests(attr)
                     else:
                         raise NeedAll(f"new function object: {k}")
                 if kind == "C" and in_base and k not in bfn:
