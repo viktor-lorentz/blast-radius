@@ -98,6 +98,16 @@ class _Differ:
             if o.value.value != n.value.value:
                 self.rec_doc(o, n)
             return
+        if isinstance(o, ast.Expr) and isinstance(o.value, ast.Constant) and not (
+                isinstance(n.value, ast.Constant) and _same_const(o.value.value, n.value.value)):
+            # a constant expression (e.g. a docstring) emits no line events, so its own lines have no
+            # coverage; whatever replaces it runs whenever the enclosing block runs.
+            if st.mode == "rt" and isinstance(st.func, _FUNCS):
+                a, b = _full_span(st.func)
+                self.regions.append(Region("rt", a, b))
+            else:
+                self.rec(_St(st.mode, o, st.func))
+            return
         for field in o._fields:
             ov, nv = getattr(o, field, None), getattr(n, field, None)
             fst = st

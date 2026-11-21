@@ -102,7 +102,11 @@ class Semantic:
                     out |= m.attr_tests(k)
                 continue
             if kind == "C":
-                if in_base:
+                attr = k.rsplit("|", 1)[1]
+                if in_base and not m.attr_installed(k):
+                    # value we could not instrument (descriptor etc.): anyone touching that name
+                    out |= m.attr_name_tests(attr) | m.name_tests(attr)
+                elif in_base:
                     out |= m.attr_tests(k)
                 else:  # new attribute shadows an inherited one somewhere: anyone reading that name
                     out |= m.attr_name_tests(k.rsplit("|", 1)[1])

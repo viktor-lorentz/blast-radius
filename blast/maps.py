@@ -89,6 +89,14 @@ def _attach_semantic_maps():
                 acc.update(a["s"][si])
         return self._nums(acc)
 
+    def attr_installed(self, key: str) -> bool:
+        a = _attrs(self)
+        if a is None or "installed" not in a:
+            return False
+        if not hasattr(self, "_installed_set"):
+            self._installed_set = set(a["installed"])
+        return key in self._installed_set
+
     def attr_unreliable(self) -> Set[int]:
         a = _attrs(self)
         if a is None or a.get("unreliable") is None:
@@ -113,6 +121,7 @@ def _attach_semantic_maps():
     Maps.attr_tests = attr_tests
     Maps.attr_name_tests = attr_name_tests
     Maps.attr_unreliable = attr_unreliable
+    Maps.attr_installed = attr_installed
     Maps.name_tests = name_tests
 
 

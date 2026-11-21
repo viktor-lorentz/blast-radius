@@ -87,6 +87,7 @@ import pytest  # noqa: E402
 
 _ATTRS = os.environ.get("BR_ATTRS") == "1"
 _reads = {}  # (phase, owner) -> set of keys
+_installed = set()
 _cur_reads = [set()]
 
 
@@ -134,11 +135,11 @@ def _install_descriptors():
                 if isinstance(v, type):
                     if v.__module__ == name and v.__qualname__.startswith(c.__qualname__ + "."):
                         stack.append(v)
-                    continue
-                if isinstance(v, (types.FunctionType, staticmethod, classmethod, property)) or hasattr(type(v), "__get__"):
+                elif isinstance(v, (types.FunctionType, staticmethod, classmethod, property)) or hasattr(type(v), "__get__"):
                     continue
                 try:
                     setattr(c, k, _Rec(v, f"C|{ck}|{k}"))
+                    _installed.add(f"C|{ck}|{k}")
                     n += 1
                 except Exception:
                     pass
@@ -166,6 +167,89 @@ def pytest_collection(session):
         pass
     if _ATTRS:
         _install_descriptors()
+
+
+# --- isolate tests from runtime caches: every test recomputes cached state, so coverage and attribute reads
+# are attributed to every test that depends on them (not just the first one to fill a cache).
+_snap = []        # (container, snapshot)
+_lru = []         # functools lru/cache wrappers
+_cls_keys = []    # (class, frozenset(own keys))
+
+
+def _unwrap(v):
+    return v.v if isinstance(v, _Rec) else v
+
+
+def _take_snapshot():
+    import functools
+
+    seen = set()
+    for name, mod in list(sys.modules.items()):
+        if not (name == "sqlglot" or name.startswith("sqlglot.")) or mod is None:
+            continue
+        vals = list(vars(mod).values())
+        classes = [v for v in vals if isinstance(v, type) and getattr(v, "__module__", "") == name]
+        while classes:
+            c = classes.pop()
+            if id(c) in seen:
+                continue
+            seen.add(id(c))
+            _cls_keys.append((c, frozenset(vars(c))))
+            for v in list(vars(c).values()):
+                v = _unwrap(v)
+                if isinstance(v, type) and getattr(v, "__module__", "") == name:
+                    classes.append(v)
+                else:
+                    vals.append(v)
+        for v in vals:
+            v = _unwrap(v)
+            if isinstance(v, (staticmethod, classmethod)):
+                v = v.__func__
+            if id(v) in seen:
+                continue
+            seen.add(id(v))
+            if isinstance(v, dict):
+                _snap.append((v, dict(v)))
+            elif isinstance(v, list):
+                _snap.append((v, list(v)))
+            elif isinstance(v, set):
+                _snap.append((v, set(v)))
+            elif hasattr(v, "cache_clear") and callable(v):
+                _lru.append(v)
+    print(f"[maps_plugin] cache isolation: {len(_snap)} containers, {len(_lru)} lru caches, "
+          f"{len(_cls_keys)} classes", file=sys.stderr)
+
+
+def _restore():
+    for c, s in _snap:
+        try:
+            if len(c) != len(s):
+                if isinstance(c, dict):
+                    c.clear()
+                    c.update(s)
+                elif isinstance(c, list):
+                    c[:] = s
+                else:
+                    c.clear()
+                    c.update(s)
+        except Exception:
+            pass
+    for f in _lru:
+        try:
+            f.cache_clear()
+        except Exception:
+            pass
+    for c, keys in _cls_keys:
+        try:
+            extra = [k for k in list(vars(c)) if k not in keys]
+            for k in extra:
+                delattr(c, k)
+        except Exception:
+            pass
+
+
+def pytest_collection_finish(session):
+    _take_snapshot()
 
 
 def pytest_collectstart(collector):
@@ -200,6 +284,7 @@ def pytest_runtest_teardown(item):
 
 
 def pytest_runtest_logfinish(nodeid, location):
+    _restore()
     if len(_cur) > 1:
         _cur.pop()
     _set_reads(*_cur[-1])
@@ -212,3 +297,5 @@ def pytest_sessionfinish(session):
     if _ATTRS:
         with open(os.path.join(OUT, f"attrs-{os.getpid()}.json"), "w") as f:
             json.dump([[k, o, sorted(v)] for (k, o), v in _reads.items() if v], f)
+        with open(os.path.join(OUT, f"installed-{os.getpid()}.json"), "w") as f:
+            json.dump(sorted(_installed), f)

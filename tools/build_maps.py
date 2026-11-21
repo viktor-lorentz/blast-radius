@@ -170,6 +170,9 @@ def main():
                 ts = set(range(len(test_ids)))
             for k in keys:
                 attrs[k] |= ts
+    installed = set()
+    for fn in glob.glob(str(OPENS / "installed-*.json")):
+        installed |= set(json.load(open(fn)))
     f1, f2 = junit_failed(WORK / "pass1.xml"), junit_failed(WORK / "pass2.xml")
     unreliable = sorted(tid(t) for t in (f2 - f1) if t in test_ids) if f1 is not None and f2 is not None else None
     sets2: dict[tuple, int] = {}
@@ -180,7 +183,7 @@ def main():
             sets2[key] = len(sets2)
         amap[k] = sets2[key]
     (OUT / "attrs.json").write_text(json.dumps(
-        {"s": [list(k) for k in sets2], "a": amap, "unreliable": unreliable,
+        {"s": [list(k) for k in sets2], "a": amap, "unreliable": unreliable, "installed": sorted(installed),
          "pass1_failed": sorted(f1 or []), "pass2_failed": sorted(f2 or [])}, separators=(",", ":")))
     (OUT / "names.json").write_text(json.dumps(name_index(), separators=(",", ":")))
     print(f"attrs: {len(amap)} keys read; unreliable tests: {unreliable if unreliable is None else len(unreliable)}")
