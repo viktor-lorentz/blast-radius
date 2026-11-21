@@ -404,6 +404,7 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
 
 _PLAIN_KEY = _re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _MENTION_INDEX = None
+_FIXTURE_TEXTS = None
 
 
 def _keyword_dicts(tree):
@@ -498,6 +499,25 @@ def _plain_keyword_words(files) -> set[str] | None:
     return words if saw else None
 
 
+def _fixture_texts():
+    """Fixture text from the pinned tree. Shared so a whole-file scan does not parse tests."""
+    global _FIXTURE_TEXTS
+    if _FIXTURE_TEXTS is not None:
+        return _FIXTURE_TEXTS
+    fixtures = []
+    fixroot = SRC / "tests" / "fixtures"
+    if fixroot.is_dir():
+        for p in fixroot.rglob("*"):
+            if not p.is_file() or p.stat().st_size >= 2_000_000:
+                continue
+            try:
+                fixtures.append((str(p.relative_to(SRC)), p.read_text(errors="replace")))
+            except OSError:
+                pass
+    _FIXTURE_TEXTS = fixtures
+    return _FIXTURE_TEXTS
+
+
 def _mention_index(maps):
     """Per-test source slice and fixture text. Built once, from the pinned tree."""
     global _MENTION_INDEX
@@ -533,17 +553,7 @@ def _mention_index(maps):
                 seg = fn_src + "\n" + cls_src[:2000]
             rows.append((t["number"], seg))
         segs[rel] = rows
-    fixtures = []
-    fixroot = SRC / "tests" / "fixtures"
-    if fixroot.is_dir():
-        for p in fixroot.rglob("*"):
-            if not p.is_file() or p.stat().st_size >= 2_000_000:
-                continue
-            try:
-                fixtures.append((str(p.relative_to(SRC)), p.read_text(errors="replace")))
-            except OSError:
-                pass
-    _MENTION_INDEX = (segs, fixtures)
+    _MENTION_INDEX = (segs, _fixture_texts())
     return _MENTION_INDEX
 
 
@@ -585,8 +595,9 @@ def _full_mention_index(maps):
             texts[rel] = (SRC / rel).read_text(errors="replace")
         except OSError:
             texts[rel] = ""
-    _segs, fixtures = _mention_index(maps)
-    _FULL_MENTIONS = (by_file, texts, fixtures)
+    # Whole-file text is enough. Parsing every test to build slices is several
+    # seconds, and this caller never reads the slices.
+    _FULL_MENTIONS = (by_file, texts, _fixture_texts())
     return _FULL_MENTIONS
 
 
