@@ -1,5 +1,10 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~12:05 PST) — BB-6F37E8D5 scored 183.3, not pinned
+ae1babf scored as BB-6F37E8D5. Runs: 167.914 sim / 15.18 CPU / 0 miss, 167.914 / 15.37 / 0, 167.914 / 15.54 / 0. Middle total is 183.3. Simulated seconds fell by 4.8 from 172.712, so the hidden batch did contain an import-breakage the old selector ran in full. CPU rose by about 12s because that selection then built the test-source mention index (5.5s locally, slower in the sandbox). Do not pin. Best remains BB-8F41C77F at 175.6.
+
+The follow-up keeps the narrower selection and does not build that index for an import failure. Same selections, 0 misses: sample 108.5 cpu 1.07; c5 12.7; c3 1833.1 cpu 1.30; c2 1972.0; c4 2066.7; c1 2709.5. Submit that commit when the slot opens. Pin only if the server score is strictly under 175.6.
+
 ## STATE (2026-11-21 ~11:50 PST) — ae1babf is already submitted, not pinned
 ae1babf was handed in as BB-6F37E8D5 around 11:17 PST. The page showed 0 of 1 left and the receipt. It is not scored yet. Do not submit it again. Do not pin it unless the server score is strictly under 175.6 and the miss audit stays 0. The full selector is 0 misses on sample, c1, c2, c3, c4, and c5. Sample is still 108.5, so this rule has not moved the hidden schedule yet. Best pinned remains BB-8F41C77F at 175.6. /tmp/blast-ready stays no.
 

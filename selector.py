@@ -86,6 +86,10 @@ def _importers_of(path: str, maps):
 _MAX_NODES_ID = "tests/test_parser.py::TestParser::test_max_nodes"
 _MAX_NODES_LOADS = None
 _MAX_NODES_INDEX = None
+# Set for the commit currently being selected. An import-breakage answer must
+# not build the test-source mention index: that index is several seconds of
+# CPU, and intersecting it can drop a test that fails at import time.
+_IMPORTER_HIT = False
 
 
 def _max_nodes_loads():
@@ -356,6 +360,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
         if loaded:
+            global _IMPORTER_HIT
+            _IMPORTER_HIT = True
             return loaded
         raise All(f"unparsable: {path}")
     out: set = set()
@@ -370,6 +376,7 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             # import the module cannot run it. An unknown module still runs all.
             loaded = _importers_of(path, maps)
             if loaded:
+                _IMPORTER_HIT = True
                 return loaded
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
@@ -971,6 +978,8 @@ def _tests_with_escapes(keys: set[str], maps) -> set[int]:
 
 
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
+    global _IMPORTER_HIT
+    _IMPORTER_HIT = False
     try:
         files = P.parse(patch_text)
         if not files:
@@ -1017,8 +1026,9 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 out |= dial
                 import_failure_narrowed = True
         # An import failure fails every loader, including tests that never spell
-        # the edited word. Do not intersect those away.
-        if import_failure_narrowed:
+        # the edited word. Do not intersect those away, and do not pay the
+        # mention-index build.
+        if import_failure_narrowed or _IMPORTER_HIT:
             return out
         # A plain KEYWORDS key is looked up by that word. Tests that never spell
         # it (and never open a fixture that does) cannot observe the entry.
