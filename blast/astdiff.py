@@ -205,13 +205,69 @@ def collect_enums(root) -> set:
     return enums
 
 
-def diff(old_src: str, new_src: str) -> Optional[List[Region]]:
+def _is_dialect_version(node) -> bool:
+    # Dialect.__init__ stores version as a 3-tuple. Nothing else assigns it.
+    return (
+        isinstance(node, ast.Attribute)
+        and node.attr == "version"
+        and isinstance(node.value, ast.Attribute)
+        and node.value.attr == "dialect"
+        and isinstance(node.value.value, ast.Name)
+        and node.value.value.id == "self"
+    )
+
+
+def _const_tuple_len(node):
+    if isinstance(node, ast.Tuple) and node.elts and all(
+        isinstance(e, ast.Constant) and type(e.value) is int for e in node.elts
+    ):
+        return len(node.elts)
+    return None
+
+
+class _VersionNorm(ast.NodeTransformer):
+    """`<` and `<=` agree when a 3-tuple is compared to any other length.
+
+    Python orders a longer tuple above a matching shorter one, so the equal
+    case is unreachable and the two operators are the same program.
+    """
+
+    def visit_Compare(self, node):
+        self.generic_visit(node)
+        if len(node.ops) != 1:
+            return node
+        op = node.ops[0]
+        if not isinstance(op, (ast.Lt, ast.LtE, ast.Gt, ast.GtE)):
+            return node
+        other = None
+        if _is_dialect_version(node.left):
+            other = node.comparators[0]
+        elif _is_dialect_version(node.comparators[0]):
+            other = node.left
+        length = _const_tuple_len(other) if other is not None else None
+        if length is None or length == 3:
+            return node
+        if isinstance(op, ast.LtE):
+            node.ops = [ast.Lt()]
+        elif isinstance(op, ast.GtE):
+            node.ops = [ast.Gt()]
+        return node
+
+
+def diff(old_src: str, new_src: str, version_norm: bool = True) -> Optional[List[Region]]:
     """Regions of the old file that changed, [] if ASTs are identical, None if either side is unparsable."""
     try:
         o = ast.parse(old_src)
         n = ast.parse(new_src)
     except (SyntaxError, ValueError, RecursionError):
         return None
+    if (
+        version_norm
+        and ".version" in old_src
+        and ("<=" in old_src or "<=" in new_src or ">=" in old_src or ">=" in new_src)
+    ):
+        o = _VersionNorm().visit(o)
+        n = _VersionNorm().visit(n)
     if ENUM_CLASSES:
         o = _EqNorm().visit(o)
         n = _EqNorm().visit(n)

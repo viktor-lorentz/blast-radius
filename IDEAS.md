@@ -1,5 +1,8 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~08:10 PST) — version compare, escape values, tight runner
+Best server score is still v2c 175.6 until this commit is scored. Do not pin unless the new score beats 175.6. Do not resubmit bab8cbe. Aqua 126.1, team 67 130.3, benchmaster 145.3, Overcooked 175.6. Local, 0 misses: sample 102.0 (was 115.0) oracle 94.4; c5 7.3 (was 12.7); c1 2811.5 (was 2833.8); c2 2015.4 (was 2031.2); c4 2103.8 (was 2118.4); c3 unchanged 2245.4. Sample runner CPU 0.83s. The 8s CPU cap binds on c1/c2/c4 and does not on the sample. `self.dialect.version < (a, b)` and `<=` are the same program because version is always a 3-tuple (2qn5 → 0). A letter-key NUMERIC_ESCAPES value keeps tests whose source or fixture contains the backslash escape (4d63 9.1 → 5.1, 273 → 43). The runner runs only selections of ≤10 tests and <0.8s recorded, highest fee-gap first, and stops after 8s CPU. It cleared fryt, gbav, and ktz3. 5y72 stays: those tests import duckdb, which is not in the image.
+
 ## STATE (2026-11-21 ~06:28 PST) — BB-45B2E157 scored, not pinned
 Best server score is still v2c 175.6 (BB-8F41C77F). bab8cbe scored 177.1 as BB-45B2E157 (sim 172.712 x3, CPU 4.44/4.40/4.42, 0 misses). Do not pin it. Do not resubmit bab8cbe. Server sim is unchanged from v2c, v2e, and BB-6B1A1766; the extra fingerprint work only added CPU. Team 67 was 130.7, Aqua 126.1, Overcooked 44th at 175.6. Runner stays off. Next slot frees 6:42 AM PST. A CPU-only change cannot beat 130.7; one avoided full suite on the hidden set (~27s) is the gap that matters.
 

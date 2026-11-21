@@ -1,8 +1,9 @@
-"""Run the statically selected tests under the patched tree and drop the ones that pass.
+"""Run a small static selection under the patched tree and drop the tests that pass.
 
-A commit whose tests all pass scores 0. Keeping a passing test still pays the 2s worker fee.
-Only commits where the recorded time of the selection is well under the scheduled cost are
-executed, so the CPU we spend is smaller than the simulated time we delete. A crash, a timeout,
+A commit whose tests all pass scores 0. One kept test still pays the 2s worker fee, so the
+win is a selection of at most 10 tests whose recorded time is under 0.8s and whose scheduled
+cost is at least a second higher. Larger sets, including anything that records the TPC-DS or
+parser stress tests, are not run: they cost more CPU than they can remove. A crash, a timeout,
 or a failure keeps the test. This never adds a test the static selector did not already choose.
 """
 from __future__ import annotations
@@ -19,10 +20,9 @@ from typing import Dict, Iterable, List, Set
 from blast.fingerprint import _PatchedFinder
 from blast.split import split
 
-# Process start plus import, charged against the commit before any test body runs.
-_OVERHEAD_S = 0.45
 # Hard cap for one commit and for the whole batch. The scorer allows 180s (270s in the final).
-_COMMIT_CAP_S = 20.0
+# One of these commits records under 0.8s, so a few seconds is enough and a hang cannot linger.
+_COMMIT_CAP_S = 5.0
 _BATCH_CAP_S = 90.0
 
 
@@ -34,12 +34,19 @@ def scheduled_cost_s(numbers: Iterable[int], ms: Dict[int, int]) -> float:
 
 
 def worth_running(numbers: Iterable[int], ms: Dict[int, int]) -> bool:
+    """True when dropping the passing tests can remove the worker fee, cheaply.
+
+    The previous gate ran every selection whose recorded time was under its
+    scheduled cost. On the practice batch that spent 16s of CPU to remove 6s.
+    These bounds are the selections where the fee dominates and the bodies are short.
+    """
     nums = list(numbers)
-    if not nums:
+    if not nums or len(nums) > 10:
         return False
     recorded = sum(ms[n] for n in nums) / 1000
-    cost = scheduled_cost_s(nums, ms)
-    return recorded + _OVERHEAD_S < cost
+    if recorded >= 0.8:
+        return False
+    return scheduled_cost_s(nums, ms) >= recorded + 1.0
 
 
 def shrink(

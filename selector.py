@@ -210,7 +210,7 @@ def tests_module_tests(maps, path: str) -> set:
     return out
 
 
-def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
+def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: bool = True) -> set:
     path = fp.path
     if fp.special or fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
         raise All(f"special/new/deleted/renamed: {path}")
@@ -240,7 +240,7 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict) -> set:
 
     old = (SRC / path).read_text()
     new = P.apply(old, fp)
-    regions = astdiff.diff(old, new)
+    regions = astdiff.diff(old, new, version_norm=version_norm)
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         # Only leaf dialect/parser/generator modules have a load map; anything else
@@ -566,11 +566,139 @@ def _duplicate_sources(files) -> dict | None:
     return patched or None
 
 
+def _edits_version_ctor(patch_text: str) -> bool:
+    """True when the patch rewrites Dialect.version. The 3-tuple proof does not apply."""
+    for line in patch_text.splitlines():
+        if line[:1] in "+-" and not line.startswith(("+++", "---")) and "self.version" in line[1:]:
+            return True
+    return False
+
+
+def _assigned_dicts(tree, name: str):
+    found = []
+    for node in ast.walk(tree):
+        value = None
+        target = None
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            target, value = node.targets[0].id, node.value
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            target, value = node.target.id, node.value
+        if target == name and isinstance(value, ast.Dict):
+            found.append(value)
+    return found
+
+
+def _const_str(node):
+    if isinstance(node, ast.Constant) and type(node.value) is str:
+        return node.value
+    return None
+
+
+def _neuter_dict_values(dicts, keys: set[str]) -> None:
+    for d in dicts:
+        for i, key in enumerate(d.keys):
+            if _const_str(key) in keys:
+                d.values[i] = ast.Constant(value=None)
+
+
+def _numeric_escape_keys(files) -> set[str] | None:
+    """Letter keys whose NUMERIC_ESCAPES value is the only change in the patch.
+
+    The scanner reads one key at a time. A value change does not affect tests that
+    never write that escape. Digit key ``0`` is octal mode, not the characters ``\\0``,
+    so a digit key is left alone.
+    """
+    keys: set[str] = set()
+    saw = False
+    for fp in files:
+        if fp.special or fp.old_path != fp.new_path or not str(fp.path).endswith(".py"):
+            return None
+        old = (SRC / fp.path).read_text()
+        new = P.apply(old, fp)
+        try:
+            old_tree, new_tree = ast.parse(old), ast.parse(new)
+        except (SyntaxError, ValueError, RecursionError):
+            return None
+        old_ds = _assigned_dicts(old_tree, "NUMERIC_ESCAPES")
+        new_ds = _assigned_dicts(new_tree, "NUMERIC_ESCAPES")
+        if len(old_ds) != len(new_ds):
+            return None
+        changed: set[str] = set()
+        for d1, d2 in zip(old_ds, new_ds):
+            k1 = [_const_str(k) for k in d1.keys]
+            k2 = [_const_str(k) for k in d2.keys]
+            if k1 != k2 or any(k is None for k in k1) or len(d1.values) != len(d2.values):
+                return None
+            for key, v1, v2 in zip(k1, d1.values, d2.values):
+                if ast.dump(v1) != ast.dump(v2):
+                    changed.add(key)
+        if not changed:
+            if ast.dump(old_tree) != ast.dump(new_tree):
+                return None
+            continue
+        if any(len(k) != 1 or not k.isalpha() for k in changed):
+            return None
+        _neuter_dict_values(old_ds, changed)
+        _neuter_dict_values(new_ds, changed)
+        if ast.dump(old_tree) != ast.dump(new_tree):
+            return None
+        keys |= changed
+        saw = True
+    return keys if saw else None
+
+
+_ESCAPE_HITS: dict[str, set[int]] = {}
+
+
+def _tests_with_escapes(keys: set[str], maps) -> set[int]:
+    """Tests whose source or opened fixture contains the backslash escape."""
+    missing = [k for k in keys if k not in _ESCAPE_HITS]
+    if missing:
+        tests = json.loads((DATA / "tests.json").read_text())["tests"]
+        by_file: dict[str, list[int]] = {}
+        for t in tests:
+            by_file.setdefault(t["id"].split("::")[0], []).append(t["number"])
+        file_text = {}
+        for rel in by_file:
+            try:
+                file_text[rel] = (SRC / rel).read_text(errors="replace")
+            except OSError:
+                file_text[rel] = ""
+        fixtures = []
+        fixroot = SRC / "tests" / "fixtures"
+        if fixroot.is_dir():
+            for p in fixroot.rglob("*"):
+                if not p.is_file() or p.stat().st_size >= 2_000_000:
+                    continue
+                try:
+                    fixtures.append((str(p.relative_to(SRC)), p.read_text(errors="replace")))
+                except OSError:
+                    pass
+        for key in missing:
+            needle = "\\" + key
+            hit: set[int] = set()
+            for rel, text in file_text.items():
+                if needle in text:
+                    hit.update(by_file[rel])
+            for rel, text in fixtures:
+                if needle not in text:
+                    continue
+                opened = maps.opened_by(rel) if maps else None
+                if opened:
+                    hit |= set(opened)
+            _ESCAPE_HITS[key] = hit
+    out: set[int] = set()
+    for key in keys:
+        out |= _ESCAPE_HITS[key]
+    return out
+
+
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
     try:
         files = P.parse(patch_text)
         if not files:
             raise All("empty patch")
+        version_norm = not _edits_version_ctor(patch_text)
         try:
             if _only_redundant_assignments(files):
                 return set()
@@ -589,7 +717,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         out: set = set()
         semantic_needed: dict = {}
         for fp in files:
-            out |= select_file(fp, maps, all_tests, semantic_needed)
+            out |= select_file(fp, maps, all_tests, semantic_needed, version_norm)
         if semantic_needed:
             if sem is None:
                 raise All("import-time change and no semantic diff available")
@@ -614,6 +742,17 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                     out = shrunk
         except Exception as e:
             log("keyword skip:", repr(e))
+        # A NUMERIC_ESCAPES value is read only when that letter follows a backslash.
+        # Tests that never write the escape cannot observe the tuple.
+        if "NUMERIC_ESCAPES" in patch_text and maps is not None:
+            try:
+                keys = _numeric_escape_keys(files)
+                if keys:
+                    shrunk = out & _tests_with_escapes(keys, maps)
+                    if shrunk:
+                        out = shrunk
+            except Exception as e:
+                log("escape skip:", repr(e))
         return out
     except All as e:
         log("ALL:", e)
@@ -656,9 +795,10 @@ def main() -> None:
     id_to_number = {t["id"]: t["number"] for t in tests}
     number_to_id = {t["number"]: t["id"] for t in tests}
     load_dialect_tests(id_to_number)
-    # Off by default. On the practice batch the runs cut 6.4s of simulated time and
-    # added 16s of CPU (BB-AD82E23D, 185.3). Set BR_RUN=1 to enable them.
-    run_tests = os.environ.get("BR_RUN", "0") != "0"
+    # On for the small selections only. The wide runner (any set cheaper on paper
+    # than its schedule) cut 6.4s and added 16s of CPU. worth_running now refuses
+    # that. Set BR_RUN=0 to skip the runs.
+    run_tests = os.environ.get("BR_RUN", "1") != "0"
     deadline = time.monotonic() + runner._BATCH_CAP_S
     maps = None
     sem = None
@@ -677,6 +817,7 @@ def main() -> None:
             b = resource.getrusage(resource.RUSAGE_CHILDREN)
             return a.ru_utime + a.ru_stime + b.ru_utime + b.ru_stime
         log(f"startup cpu {_cpu():.3f}")
+    rows = []
     for pf in sorted((DATA / "commits").glob("*.patch")):
         if debug:
             c0 = _cpu()
@@ -686,16 +827,47 @@ def main() -> None:
         except Exception as e:  # never crash: fall back to everything
             log("select crashed:", pf.stem, repr(e))
             nums = set(all_tests)
-        if run_tests:
-            try:
-                patched = patched_sources(text, nums, number_to_id)
-                if patched is not None:
-                    nums = runner.shrink(SRC, patched, nums, number_to_id, ms, deadline)
-            except Exception as e:  # a bad run keeps the static selection
-                log("run skipped:", pf.stem, repr(e))
-        print(json.dumps({"commit": pf.stem, "workers": split(nums, ms)}))
+        rows.append((pf.stem, text, nums))
         if debug:
             log(f"cpu {pf.stem} {_cpu() - c0:.3f}")
+    if run_tests:
+        # Highest worker-fee gap first, and stop once the runs have spent 8s of CPU.
+        # A later commit that would have saved time is kept static rather than risking the batch.
+        import resource
+
+        def _cpu_now():
+            a = resource.getrusage(resource.RUSAGE_SELF)
+            b = resource.getrusage(resource.RUSAGE_CHILDREN)
+            return a.ru_utime + a.ru_stime + b.ru_utime + b.ru_stime
+
+        ranked = []
+        for stem, text, nums in rows:
+            if not runner.worth_running(nums, ms):
+                continue
+            recorded = sum(ms[n] for n in nums) / 1000
+            gain = runner.scheduled_cost_s(nums, ms) - recorded
+            ranked.append((gain, stem, text, nums))
+        ranked.sort(reverse=True)
+        updates = {}
+        spent = 0.0
+        cpu0 = _cpu_now()
+        for _gain, stem, text, nums in ranked:
+            if spent >= 8.0 or time.monotonic() > deadline:
+                break
+            try:
+                patched = patched_sources(text, nums, number_to_id)
+                if patched is None:
+                    continue
+                kept = runner.shrink(SRC, patched, set(nums), number_to_id, ms, deadline)
+                updates[stem] = kept
+            except Exception as e:  # a bad run keeps the static selection
+                log("run skipped:", stem, repr(e))
+            spent = _cpu_now() - cpu0
+        if updates:
+            rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+            log(f"runner commits {len(updates)} cpu {spent:.2f}")
+    for stem, _text, nums in rows:
+        print(json.dumps({"commit": stem, "workers": split(nums, ms)}))
 
 
 if __name__ == "__main__":
