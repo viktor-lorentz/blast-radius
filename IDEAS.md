@@ -1,5 +1,8 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~14:45 PST) — BB-D4A7EF6F scored 172.4 and is the final entry
+37977a1 scored as BB-D4A7EF6F. Runs: 167.914 sim / 4.48 CPU / 0 miss, 167.914 / 4.47 / 0, 167.914 / 4.09 / 0. Middle total 172.4. Simulated seconds are identical to 43a580e. CPU fell by about 0.5s because a patch that cannot be a KEYWORDS edit, a quoted spelling, or an inserted duplicate is not parsed for those proofs. Selections were identical on sample and c1–c5, all 0 misses. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 37977a1. One slot remains this hour (1 of 2, next frees 3:40 PM PST). Use it only for a commit that is 0 misses on sample and c1–c5 and should score under 172.4.
+
 ## STATE (2026-11-21 ~13:40 PST) — BB-EDBA0FC0 scored 175.7, not pinned
 6b53d21 scored as BB-EDBA0FC0. Runs: 167.914 sim / 7.75 CPU / 0 miss, 167.914 / 7.98 / 0, 167.914 / 6.68 / 0. Middle total 175.7. Simulated seconds are identical to 43a580e, so dropping test_max_nodes outside its runtime load set did not change the hidden schedule. CPU rose by about 2.7s. Do not pin. Do not resubmit 6b53d21. The final entry stays BB-F7BB5F00 at 172.9. The selector on main is back to that commit's code. Local, the drop was 0 misses and saved 76s on c3, 7.4s on one c2 commit, and 7.4s on one c4 commit. It did not change the sample. Next slot 2:18 PM PST.
 
