@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -54,7 +54,7 @@
+         return self.func("fromUnixTimestamp64Milli", exp.cast(timestamp, exp.DType.BIGINT))
+     if scale == exp.UnixToTime.MICROS:
+         return self.func("fromUnixTimestamp64Micro", exp.cast(timestamp, exp.DType.BIGINT))
+-    if scale == exp.UnixToTime.NANOS:
++    if scale is exp.UnixToTime.NANOS:
+         return self.func("fromUnixTimestamp64Nano", exp.cast(timestamp, exp.DType.BIGINT))
+ 
+     return self.func(

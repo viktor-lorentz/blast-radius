@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -70,7 +70,7 @@
+             if all(
+                 token.token_type in self.ID_VAR_TOKENS
+                 and (
+-                    token.token_type == TokenType.IDENTIFIER
++                    token.token_type is TokenType.IDENTIFIER
+                     or not any(char.isspace() for char in token.text)
+                 )
+                 for token in tokens[::2]

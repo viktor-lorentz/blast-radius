@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -443,7 +443,7 @@
+             nano.pop()
+             self.unsupported("Specifying nanoseconds is not supported in TIMEFROMPARTS.")
+ 
+-        if expression.args.get("fractions") is None:
++        if expression.args.get("fractions") == None:
+             expression.set("fractions", exp.Literal.number(0))
+         if expression.args.get("precision") is None:
+             expression.set("precision", exp.Literal.number(0))

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/optimize_joins.py b/sqlglot/optimizer/optimize_joins.py
+--- a/sqlglot/optimizer/optimize_joins.py
++++ b/sqlglot/optimizer/optimize_joins.py
+@@ -68,7 +68,7 @@
+     """
+     for from_ in expression.find_all(exp.From):
+         parent = from_.parent
+-        if parent is None:
++        if parent == None:
+             raise OptimizeError("FROM clause without parent expression")
+         joins: list[exp.Join] = parent.args.get("joins", [])
+ 

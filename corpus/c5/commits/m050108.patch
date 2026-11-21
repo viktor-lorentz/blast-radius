@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -377,7 +377,7 @@
+     }
+ 
+     RANGE_PARSERS: t.ClassVar = {
+-        k: v for k, v in parser.Parser.RANGE_PARSERS.items() if k != TokenType.OVERLAPS
++        k: v for k, v in parser.Parser.RANGE_PARSERS.items() if k is not TokenType.OVERLAPS
+     }
+ 
+     DASHED_TABLE_PART_FOLLOW_TOKENS: t.ClassVar = {

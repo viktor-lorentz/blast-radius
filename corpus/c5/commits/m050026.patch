@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/oracle.py b/sqlglot/parsers/oracle.py
+--- a/sqlglot/parsers/oracle.py
++++ b/sqlglot/parsers/oracle.py
+@@ -173,7 +173,7 @@
+     def _parse_physical_property(self) -> exp.PhysicalProperty:
+         name = self._prev.text.upper()
+         value = self._parse_number()
+-        if value is None:
++        if value == None:
+             self.raise_error(f"Expected value for {name}")
+         return self.expression(exp.PhysicalProperty(this=name, value=value))
+ 

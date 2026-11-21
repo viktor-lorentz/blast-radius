@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -490,7 +490,7 @@
+         if isinstance(limit, exp.Fetch) and not expression.args.get("order"):
+             count = limit.args.get("count")
+             expression.set(
+-                "limit", exp.Limit(expression=count if count is not None else exp.Literal.number(1))
++                "limit", exp.Limit(expression=count if count != None else exp.Literal.number(1))
+             )
+         return super().select_sql(expression)
+ 

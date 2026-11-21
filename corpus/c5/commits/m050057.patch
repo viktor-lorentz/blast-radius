@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -1435,7 +1435,7 @@
+ 
+     def jsonbextractscalar_sql(self, expression: exp.JSONBExtractScalar) -> str:
+         json_type = expression.args.get("json_type")
+-        func_name = "BSON_EXTRACT_BSON" if json_type is None else f"BSON_EXTRACT_{json_type}"
++        func_name = "BSON_EXTRACT_BSON" if json_type == None else f"BSON_EXTRACT_{json_type}"
+         return json_extract_segments(func_name)(self, expression)
+ 
+     def jsonextractarray_sql(self, expression: exp.JSONExtractArray) -> str:

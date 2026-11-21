@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -244,7 +244,7 @@
+         # A scale argument changes Snowflake's implicit string coercion from FLOAT to NUMBER.
+         return self._set_type(
+             expression,
+-            exp.DType.DOUBLE if expression.args.get("decimals") is None else exp.DType.UNKNOWN,
++            exp.DType.DOUBLE if expression.args.get("decimals") == None else exp.DType.UNKNOWN,
+         )
+     if expression.this.is_type(exp.DType.VARIANT):
+         return self._set_type(expression, exp.DType.DOUBLE)

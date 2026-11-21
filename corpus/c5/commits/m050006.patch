@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -437,7 +437,7 @@
+ 
+ 
+ def _parent_similarity_score(source: exp.Expr | None, target: exp.Expr | None) -> int:
+-    if source is None or target is None or type(source) is not type(target):
++    if source is None or target == None or type(source) is not type(target):
+         return 0
+ 
+     return 1 + _parent_similarity_score(source.parent, target.parent)

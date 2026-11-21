@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/bigquery.py b/sqlglot/typing/bigquery.py
+--- a/sqlglot/typing/bigquery.py
++++ b/sqlglot/typing/bigquery.py
+@@ -215,7 +215,7 @@
+                 isinstance(projection_type, exp.DataType)
+                 and projection_type.is_type(exp.DType.UNKNOWN)
+             )
+-            or projection_type == exp.DType.UNKNOWN
++            or projection_type is exp.DType.UNKNOWN
+         ):
+             element_type = (
+                 projection_type.copy()

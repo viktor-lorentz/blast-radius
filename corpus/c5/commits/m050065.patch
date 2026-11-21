@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -251,7 +251,7 @@
+                 break
+ 
+     width = len(span) - start - end
+-    pad = "0" if token_type == TokenType.NUMBER else "a"
++    pad = "0" if token_type is TokenType.NUMBER else "a"
+ 
+     return span[:start] + alias[:width].rjust(width, pad) + span[len(span) - end :]
+ 

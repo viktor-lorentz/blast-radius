@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -276,7 +276,7 @@
+         # The order in which the left side outputs its columns
+         left_columns = using_columns + [c for c in columns if c not in using_columns]
+ 
+-        if using is None and join.method == "NATURAL":
++        if using == None and join.method == "NATURAL":
+             # A NATURAL JOIN is a USING join over the columns common to both sides, in the
+             # order the left side outputs them; when those can't be determined (unknown schema,
+             # no common columns), NATURAL stays

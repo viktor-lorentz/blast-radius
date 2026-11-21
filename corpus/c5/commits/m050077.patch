@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/mysql.py b/sqlglot/typing/mysql.py
+--- a/sqlglot/typing/mysql.py
++++ b/sqlglot/typing/mysql.py
+@@ -57,7 +57,7 @@
+ 
+     has_binary = False
+     for arg in args:
+-        if arg is not None:
++        if arg != None:
+             if arg.is_type(exp.DType.UNKNOWN):
+                 return self._set_type(expression, exp.DType.UNKNOWN)
+             has_binary = has_binary or arg.is_type(*exp.DataType.BINARY_TYPES)

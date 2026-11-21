@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -507,7 +507,7 @@
+         # Only keep the Ordered wrapper for an explicit ASC/DESC, otherwise the implicit
+         # nulls_first leaks into other dialects as NULLS FIRST
+         ordered = self._parse_ordered(self._parse_index_constraint_part)
+-        return ordered.this if ordered and ordered.args.get("desc") is None else ordered
++        return ordered.this if ordered and ordered.args.get("desc") == None else ordered
+ 
+     def _parse_index_constraint(self, kind: str | None = None) -> exp.IndexColumnConstraint:
+         if kind:

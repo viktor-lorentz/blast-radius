@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -159,7 +159,7 @@
+             if isinstance(node, exp.Join):
+                 predicate_tables = exp.column_table_names(predicate, name)
+ 
+-                if source_positions is not None:
++                if source_positions != None:
+                     # Only push if every other referenced source precedes this join.
+                     this_index = source_positions[name]
+                     if all(

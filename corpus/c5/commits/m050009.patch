@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -194,7 +194,7 @@
+     Returns:
+         The list of transpiled SQL statements.
+     """
+-    write = (read if write is None else write) if identity else write
++    write = (read if write == None else write) if identity else write
+     write = Dialect.get_or_raise(write)
+     return [
+         write.generate(expression, copy=False, **opts) if expression else ""

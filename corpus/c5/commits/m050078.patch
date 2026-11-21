@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/spark2.py b/sqlglot/parsers/spark2.py
+--- a/sqlglot/parsers/spark2.py
++++ b/sqlglot/parsers/spark2.py
+@@ -22,7 +22,7 @@
+     this = seq_get(args, 0)
+     expression = seq_get(args, 1)
+ 
+-    if this is None or expression is None:
++    if this is None or expression == None:
+         return exp.IntDiv(this=this, expression=expression)
+ 
+     this = exp.Paren(this=this) if isinstance(this, exp.Binary) else this

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -809,7 +809,7 @@
+                     self._start = prev.start
+                     token_type, text = self.keywords[keyword], keyword
+ 
+-        if text is None:
++        if text == None:
+             text = self.sql[self._start : self._current]
+ 
+         self.tokens.append(

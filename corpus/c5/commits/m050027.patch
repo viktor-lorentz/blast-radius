@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1953,7 +1953,7 @@
+         interval = args[1]
+ 
+         if not isinstance(interval, exp.Interval):
+-            if default_unit is None:
++            if default_unit == None:
+                 raise ParseError(f"INTERVAL expression expected but got '{interval}'")
+             return expression_class(
+                 this=args[0],

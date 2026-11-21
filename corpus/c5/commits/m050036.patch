@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -81,7 +81,7 @@
+     # We need to find all columns that reference this join.
+     # But columns in the ON clause shouldn't count.
+     on: exp.Expr | None = join.args.get("on")
+-    if on is not None:
++    if on != None:
+         on_clause_columns: set[int] = {id(column) for column in on.find_all(exp.Column)}
+     else:
+         on_clause_columns = set()

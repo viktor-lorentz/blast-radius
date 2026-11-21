@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -161,7 +161,7 @@
+         if self._match(TokenType.L_PAREN) and not self._match(TokenType.R_PAREN):
+             while True:
+                 argument = self._parse_assignment()
+-                if argument is None:
++                if argument == None:
+                     # Do not discard omitted arguments or replace them with NULL.
+                     return self._parse_as_command(start)
+                 expressions.append(argument)

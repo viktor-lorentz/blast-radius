@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_ctes.py b/sqlglot/optimizer/eliminate_ctes.py
+--- a/sqlglot/optimizer/eliminate_ctes.py
++++ b/sqlglot/optimizer/eliminate_ctes.py
+@@ -40,7 +40,7 @@
+                     if not cte_node:
+                         continue
+                     with_node = cte_node.parent
+-                    if journal is not None and with_node:
++                    if journal != None and with_node:
+                         record(journal, with_node, "expressions")
+                     cte_node.pop()
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena.py
+--- a/sqlglot/dialects/athena.py
++++ b/sqlglot/dialects/athena.py
+@@ -103,7 +103,7 @@
+             if _tokenize_as_hive(tokens):
+                 return [Token(TokenType.HIVE_TOKEN_STREAM, "")] + self._hive_tokenizer.tokenize(sql)
+ 
+-            return trino_tokens if trino_tokens is not None else self._trino_tokenizer.tokenize(sql)
++            return trino_tokens if trino_tokens != None else self._trino_tokenizer.tokenize(sql)
+ 
+     Parser = AthenaParser
+ 

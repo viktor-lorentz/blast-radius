@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -404,7 +404,7 @@
+         scale = expression.args.get("scale")
+         this = self.sql(expression.this)
+ 
+-        if scale is not None and scale != exp.UnixToTime.SECONDS and scale.is_int:
++        if scale != None and scale != exp.UnixToTime.SECONDS and scale.is_int:
+             this = f"({this} / POWER(10, {scale.to_py()}))"
+ 
+         return f"(TIMESTAMP 'epoch' + {this} * INTERVAL '1 SECOND')"

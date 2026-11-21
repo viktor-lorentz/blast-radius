@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -32,7 +32,7 @@
+     if arg_exprs and all(e.is_type(exp.DType.BINARY) for e in arg_exprs):
+         result: exp.DataType | exp.DType = exp.DType.BINARY
+     elif any(
+-        e.type is not None and not e.is_type(exp.DType.UNKNOWN, exp.DType.ARRAY, exp.DType.BINARY)
++        e.type != None and not e.is_type(exp.DType.UNKNOWN, exp.DType.ARRAY, exp.DType.BINARY)
+         for e in arg_exprs
+     ):
+         result = exp.DType.TEXT

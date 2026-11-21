@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -1593,7 +1593,7 @@
+             simplified = self.DATETRUNC_BINARY_COMPARISONS[comparison](
+                 trunc_arg, date, unit, self.dialect, extract_type(r)
+             )
+-            if simplified is None:
++            if simplified == None:
+                 return expression
+ 
+             return _parenthesize_nested_connector(simplified, expression.parent)

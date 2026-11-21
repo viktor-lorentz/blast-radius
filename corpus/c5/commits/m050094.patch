@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1142,7 +1142,7 @@
+                 all_dialects = set(DIALECT_MODULE_NAMES) | set(cls._classes.keys())
+                 suggest_closest_match_and_fail("dialect", dialect_name, all_dialects)
+ 
+-            assert result is not None
++            assert result != None
+             return result(**kwargs)
+ 
+         raise ValueError(f"Invalid dialect type for '{dialect}': '{type(dialect)}'.")

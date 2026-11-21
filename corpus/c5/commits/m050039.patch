@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -214,7 +214,7 @@
+ 
+     unit = (
+         (interval.text("unit") or "DAY").upper()
+-        if interval is not None
++        if interval != None
+         else (expression.text("unit") or "DAY").upper()
+     )
+ 

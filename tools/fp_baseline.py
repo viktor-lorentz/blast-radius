@@ -42,4 +42,8 @@ from blast.importgraph import build  # noqa: E402
 
 with open(os.path.join(out, "graph.json"), "w") as f:
     json.dump(build(root), f, separators=(",", ":"))
+from blast.astdiff import collect_enums  # noqa: E402
+
+with open(os.path.join(out, "enums.json"), "w") as f:
+    json.dump(sorted(collect_enums(root)), f)
 print(f"baseline: {len(base[0]['fp'])} keys, noisy {len(noisy)}, dropped {len(still)}", file=sys.stderr)

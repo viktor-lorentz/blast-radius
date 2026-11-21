@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -189,7 +189,7 @@
+     nulls_first = expression.args.get("nulls_first")
+     if asc is None and nulls_first == exp.false():
+         nulls_first = None
+-    elif asc is None and nulls_first is not None:
++    elif asc == None and nulls_first is not None:
+         asc = exp.true()
+     elif asc == exp.false() and nulls_first == exp.true():
+         nulls_first = None

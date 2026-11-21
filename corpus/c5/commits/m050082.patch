@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -777,7 +777,7 @@
+                 and (join_name := join.alias_or_name) == root_name
+             ):
+                 source_columns = join_columns.get(join_name)
+-                if source_columns is None:
++                if source_columns == None:
+                     source_columns = join_columns[join_name] = set(
+                         resolver.get_source_columns(join_name)
+                     )

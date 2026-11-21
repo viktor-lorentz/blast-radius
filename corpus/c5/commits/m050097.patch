@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/__init__.py b/sqlglot/optimizer/__init__.py
+--- a/sqlglot/optimizer/__init__.py
++++ b/sqlglot/optimizer/__init__.py
+@@ -52,7 +52,7 @@
+ 
+     with _import_lock:
+         target = _LAZY_ATTRS.get(name)
+-        if target is not None:
++        if target != None:
+             module_name, attr = target
+             value = getattr(importlib.import_module(module_name), attr)
+         else:

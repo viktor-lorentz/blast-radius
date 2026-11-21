@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -436,7 +436,7 @@
+ 
+ 
+ def _is_date_literal(expression: exp.Expr) -> bool:
+-    return extract_date(expression) is not None
++    return extract_date(expression) != None
+ 
+ 
+ def extract_interval(expression: exp.Expr) -> relativedelta | None:

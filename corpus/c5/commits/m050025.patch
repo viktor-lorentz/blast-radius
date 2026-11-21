@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/canonicalize.py b/sqlglot/optimizer/canonicalize.py
+--- a/sqlglot/optimizer/canonicalize.py
++++ b/sqlglot/optimizer/canonicalize.py
+@@ -138,7 +138,7 @@
+     if (
+         isinstance(expression, (exp.Date, exp.TsOrDsToDate))
+         and expression.this.type
+-        and expression.this.type.this == exp.DType.DATE
++        and expression.this.type.this is exp.DType.DATE
+         and not expression.this.type.expressions
+     ):
+         return exp.paren(expression.this, copy=False)

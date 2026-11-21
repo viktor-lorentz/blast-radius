@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -52,7 +52,7 @@
+         column_name = column.name
+ 
+         join_context = self._get_column_join_context(column) if source_columns is None else None
+-        is_semi_or_anti_join = join_context is not None and join_context.is_semi_or_anti_join
++        is_semi_or_anti_join = join_context != None and join_context.is_semi_or_anti_join
+ 
+         # A SEMI/ANTI join's own table is excluded from the global lookup below, so skip it here
+         table_name = (

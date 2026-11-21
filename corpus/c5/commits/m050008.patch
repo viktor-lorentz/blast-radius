@@ -1,0 +1,12 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -77,7 +77,7 @@
+         if (
+             token.token_type == TokenType.VAR
+             and i + 1 < len(tokens)
+-            and tokens[i + 1].token_type == TokenType.L_PAREN
++            and tokens[i + 1].token_type is TokenType.L_PAREN
+         ):
+             # A function name can live in either registry, e.g. JSON_OBJECT is only in
+             # FUNCTION_PARSERS. They're consulted separately to avoid building their union

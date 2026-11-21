@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -453,7 +453,7 @@
+         if rename:
+             rename_from = column
+             column = self._parse_field(any_token=True)
+-            if column is None:
++            if column == None:
+                 return None
+ 
+         column_def = self._parse_column_def(column)

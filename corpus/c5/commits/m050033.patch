@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -924,7 +924,7 @@
+             expressions_sql = f"OFFSET({expressions_sql})"
+         elif offset == 1:
+             expressions_sql = f"ORDINAL({expressions_sql})"
+-        elif offset is not None:
++        elif offset != None:
+             self.unsupported(f"Unsupported array offset: {offset}")
+ 
+         if expression.args.get("safe"):

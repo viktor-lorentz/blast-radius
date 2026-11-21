@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/canonicalize_internal_names.py b/sqlglot/optimizer/canonicalize_internal_names.py
+--- a/sqlglot/optimizer/canonicalize_internal_names.py
++++ b/sqlglot/optimizer/canonicalize_internal_names.py
+@@ -172,7 +172,7 @@
+                 preserve_col = is_base_source or old_name in struct_field_names
+                 canon_col = name_map.get(old_name)
+ 
+-                if canon_col is None:
++                if canon_col == None:
+                     if preserve_col:
+                         canon_col = old_name
+                     else:

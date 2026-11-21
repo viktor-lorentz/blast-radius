@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/teradata.py b/sqlglot/parsers/teradata.py
+--- a/sqlglot/parsers/teradata.py
++++ b/sqlglot/parsers/teradata.py
+@@ -88,7 +88,7 @@
+     def _is_hex_character_string(self) -> bool:
+         return (
+             self._curr.token_type == TokenType.STRING
+-            and self._next.token_type == TokenType.VAR
++            and self._next.token_type is TokenType.VAR
+             and self._next.text.upper() in {"XC", "XCV"}
+             and self._curr.end + 1 == self._next.start
+         )

@@ -152,6 +152,59 @@ class _Differ:
             self.rec(_St(st.mode, o if isinstance(o, ast.stmt) else st.stmt, st.func))
 
 
+# Names of Enum classes defined in the analysed source tree (set by the caller). `x is E.M` and `x == E.M`
+# agree for enum members (members are singletons and are what these attributes always hold), and
+# `x is None` / `x == None` agree unless type(x).__eq__ treats None as equal (none of sqlglot's do).
+ENUM_CLASSES: set = set()
+
+
+def _eq_safe(node) -> bool:
+    if isinstance(node, ast.Constant) and node.value is None:
+        return True
+    if isinstance(node, ast.Attribute) and node.attr.isupper():
+        v = node.value
+        name = v.id if isinstance(v, ast.Name) else v.attr if isinstance(v, ast.Attribute) else None
+        return name in ENUM_CLASSES
+    return False
+
+
+class _EqNorm(ast.NodeTransformer):
+    def visit_Compare(self, node):
+        self.generic_visit(node)
+        operands = [node.left] + list(node.comparators)
+        ops = []
+        for i, op in enumerate(node.ops):
+            if isinstance(op, (ast.Eq, ast.NotEq)) and (_eq_safe(operands[i]) or _eq_safe(operands[i + 1])):
+                op = ast.Is() if isinstance(op, ast.Eq) else ast.IsNot()
+            ops.append(op)
+        node.ops = ops
+        return node
+
+
+def collect_enums(root) -> set:
+    """Enum class names under root/sqlglot (transitively through local Enum subclasses)."""
+    from pathlib import Path
+    bases = {}
+    for f in Path(root, "sqlglot").rglob("*.py"):
+        try:
+            t = ast.parse(f.read_text())
+        except (SyntaxError, ValueError):
+            continue
+        for c in ast.walk(t):
+            if isinstance(c, ast.ClassDef):
+                bases.setdefault(c.name, set()).update(
+                    b.id if isinstance(b, ast.Name) else b.attr if isinstance(b, ast.Attribute) else "" for b in c.bases)
+    enums = {"Enum", "IntEnum", "StrEnum", "Flag", "IntFlag"}
+    changed = True
+    while changed:
+        changed = False
+        for n, bs in bases.items():
+            if n not in enums and bs & enums:
+                enums.add(n)
+                changed = True
+    return enums
+
+
 def diff(old_src: str, new_src: str) -> Optional[List[Region]]:
     """Regions of the old file that changed, [] if ASTs are identical, None if either side is unparsable."""
     try:
@@ -159,6 +212,9 @@ def diff(old_src: str, new_src: str) -> Optional[List[Region]]:
         n = ast.parse(new_src)
     except (SyntaxError, ValueError, RecursionError):
         return None
+    if ENUM_CLASSES:
+        o = _EqNorm().visit(o)
+        n = _EqNorm().visit(n)
     d = _Differ()
     d.visit(o, n, _St("imp", None, None))
     seen = set()

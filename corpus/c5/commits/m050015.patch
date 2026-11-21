@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/clickhouse.py b/sqlglot/parsers/clickhouse.py
+--- a/sqlglot/parsers/clickhouse.py
++++ b/sqlglot/parsers/clickhouse.py
+@@ -455,7 +455,7 @@
+     NO_PAREN_FUNCTIONS = {
+         k: v
+         for k, v in parser.Parser.NO_PAREN_FUNCTIONS.items()
+-        if k != TokenType.CURRENT_TIMESTAMP
++        if k is not TokenType.CURRENT_TIMESTAMP
+     }
+ 
+     RANGE_PARSERS = {

@@ -333,6 +333,32 @@ def main():
         elif kind == "helpers":
             r = one_code(fn=mutate_code, pool=[src / "tests" / "helpers.py", src / "tests" / "dialects" / "test_dialect.py"])
             r and parts.append(r)
+        elif kind == "iseq":
+            def _iseq(rng, src):
+                tree = ast.parse(src)
+                def safe(n):
+                    return (isinstance(n, ast.Constant) and n.value is None) or (
+                        isinstance(n, ast.Attribute) and n.attr.isupper() and isinstance(n.value, (ast.Name, ast.Attribute)))
+                cands = [c for c in ast.walk(tree) if isinstance(c, ast.Compare) and len(c.ops) == 1
+                         and isinstance(c.ops[0], (ast.Is, ast.IsNot, ast.Eq, ast.NotEq))
+                         and (safe(c.left) or safe(c.comparators[0])) and c.lineno == c.end_lineno]
+                if not cands:
+                    return None
+                c = rng.choice(cands)
+                lines = src.split("\n")
+                l = lines[c.lineno - 1]
+                seg = l[c.left.end_col_offset:c.comparators[0].col_offset]
+                rep = {" is not ": " != ", " != ": " is not ", " is ": " == ", " == ": " is "}
+                for a, b in rep.items():
+                    if a in seg:
+                        seg2 = seg.replace(a, b, 1)
+                        break
+                else:
+                    return None
+                lines[c.lineno - 1] = l[:c.left.end_col_offset] + seg2 + l[c.comparators[0].col_offset:]
+                return "\n".join(lines)
+            r = one_code(fn=_iseq)
+            r and parts.append(r)
         elif kind == "importerr":
             # a module-level statement that raises at import time
             def _imperr(rng, src):

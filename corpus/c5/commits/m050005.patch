@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -162,7 +162,7 @@
+     else:
+         result = dialect.parse(sql, **opts)
+ 
+-    if not result or result[0] is None:
++    if not result or result[0] == None:
+         raise ParseError(f"No expression was parsed from '{sql}'")
+ 
+     return exp.Block(expressions=result) if len(result) > 1 else result[0]

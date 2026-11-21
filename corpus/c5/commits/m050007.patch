@@ -1,0 +1,12 @@
+diff --git a/sqlglot/jsonpath.py b/sqlglot/jsonpath.py
+--- a/sqlglot/jsonpath.py
++++ b/sqlglot/jsonpath.py
+@@ -229,7 +229,7 @@
+     exp.JSONPathSlice: lambda self, e: ":".join(
+         "" if p is False else self.json_path_part(p)
+         for p in [e.args.get("start"), e.args.get("end"), e.args.get("step")]
+-        if p is not None
++        if p != None
+     ),
+     exp.JSONPathSubscript: lambda self, e: self._jsonpathsubscript_sql(e),
+     exp.JSONPathUnion: lambda self, e: (

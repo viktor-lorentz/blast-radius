@@ -1,0 +1,12 @@
+diff --git a/sqlglot/jsonpath.py b/sqlglot/jsonpath.py
+--- a/sqlglot/jsonpath.py
++++ b/sqlglot/jsonpath.py
+@@ -125,7 +125,7 @@
+         end = _parse_literal() if _match(TokenType.COLON) else None
+         step = _parse_literal() if _match(TokenType.COLON) else None
+ 
+-        if end is None and step is None:
++        if end == None and step is None:
+             return start
+ 
+         return exp.JSONPathSlice(start=start, end=end, step=step)

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -227,7 +227,7 @@
+     if (
+         not isinstance(agg, exp.ArrayAgg)
+         or isinstance(agg.this, (exp.Order, exp.Limit))
+-        or (sort is not None and order is None)
++        or (sort != None and order is None)
+     ):
+         self.unsupported(
+             f"{expression.sql_name()} is only supported on an ARRAY_AGG without ORDER BY or LIMIT and with a literal order"

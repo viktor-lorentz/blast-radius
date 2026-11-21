@@ -1,0 +1,12 @@
+diff --git a/sqlglot/serde.py b/sqlglot/serde.py
+--- a/sqlglot/serde.py
++++ b/sqlglot/serde.py
+@@ -61,7 +61,7 @@
+                     if type(vs) is list:
+                         for v in reversed(vs):
+                             stack.append((v, i, k, True))
+-                    elif vs is not None:
++                    elif vs != None:
+                         stack.append((vs, i, k, False))
+         elif type(node) is exp.DType:
+             payload[CLASS] = DATA_TYPE

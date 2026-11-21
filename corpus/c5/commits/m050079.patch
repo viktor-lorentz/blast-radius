@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/starrocks.py b/sqlglot/parsers/starrocks.py
+--- a/sqlglot/parsers/starrocks.py
++++ b/sqlglot/parsers/starrocks.py
+@@ -99,7 +99,7 @@
+ 
+     def _parse_pivot(self) -> exp.Pivot | None:
+         pivot = super()._parse_pivot()
+-        if pivot is None or pivot.unpivot:
++        if pivot == None or pivot.unpivot:
+             return pivot
+ 
+         names = [agg.alias for agg in pivot.expressions] if len(pivot.expressions) > 1 else [""]

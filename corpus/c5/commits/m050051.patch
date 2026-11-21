@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/athena.py b/sqlglot/generators/athena.py
+--- a/sqlglot/generators/athena.py
++++ b/sqlglot/generators/athena.py
+@@ -98,7 +98,7 @@
+         "max_text_width": max_text_width,
+         "comments": comments,
+     }
+-    if unsupported_level is not None:
++    if unsupported_level != None:
+         kwargs["unsupported_level"] = unsupported_level
+     return kwargs
+ 

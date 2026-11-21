@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/hive.py b/sqlglot/typing/hive.py
+--- a/sqlglot/typing/hive.py
++++ b/sqlglot/typing/hive.py
+@@ -12,7 +12,7 @@
+ def _annotate_floor_ceil(self: TypeAnnotator, expression: exp.Expr) -> exp.Expr:
+     # Decimal results and numeric literals need precision inference that we don't model here.
+     if (
+-        expression.args.get("decimals") is not None
++        expression.args.get("decimals") != None
+         or expression.this.is_type(exp.DType.DECIMAL, exp.DType.UNKNOWN)
+         or expression.this.unnest().is_number
+     ):

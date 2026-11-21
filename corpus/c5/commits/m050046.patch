@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena.py
+--- a/sqlglot/dialects/athena.py
++++ b/sqlglot/dialects/athena.py
+@@ -81,7 +81,7 @@
+             except TokenError:
+                 trino_tokens = None
+ 
+-            if trino_tokens is not None and not _may_be_hive(trino_tokens):
++            if trino_tokens != None and not _may_be_hive(trino_tokens):
+                 return trino_tokens
+ 
+             try:

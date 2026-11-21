@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/datatypes.py b/sqlglot/expressions/datatypes.py
+--- a/sqlglot/expressions/datatypes.py
++++ b/sqlglot/expressions/datatypes.py
+@@ -438,7 +438,7 @@
+                 other_type.expressions
+                 or (check_nullable and (self_is_nullable or other_is_nullable))
+                 or self.this == DType.USERDEFINED
+-                or other_type.this == DType.USERDEFINED
++                or other_type.this is DType.USERDEFINED
+             ):
+                 matches = self == other_type
+             else:

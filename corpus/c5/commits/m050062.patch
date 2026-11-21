@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -618,7 +618,7 @@
+     def makeinterval_sql(self: MySQLGenerator, expression: exp.MakeInterval) -> str:
+         intervals: list[exp.Interval] = []
+         for arg_key, value in expression.args.items():
+-            if value is None:
++            if value == None:
+                 continue
+ 
+             if isinstance(value, exp.Kwarg):

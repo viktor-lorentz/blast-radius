@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -425,7 +425,7 @@
+             if node is outer or not node.parent:
+                 return False
+             # Include later joins and enclosing parenthesized joins that null-extend this source.
+-            start = node.index + 1 if node.arg_key == "joins" and node.index is not None else 0
++            start = node.index + 1 if node.arg_key == "joins" and node.index != None else 0
+             joins = node.parent.args.get("joins", [])[start:]
+             node = node.parent
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -237,7 +237,7 @@
+ 
+                 set_ops_and_aggs(aggregate)
+ 
+-            if distinct is not None:
++            if distinct != None:
+                 for i, ordered in enumerate(order.expressions):
+                     key = ordered.this
+                     group_name = next((n for n, e in distinct.group.items() if e == key), None)

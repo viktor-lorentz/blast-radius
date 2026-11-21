@@ -1,0 +1,12 @@
+diff --git a/sqlglot/trie.py b/sqlglot/trie.py
+--- a/sqlglot/trie.py
++++ b/sqlglot/trie.py
+@@ -29,7 +29,7 @@
+     Returns:
+         The trie corresponding to `keywords`.
+     """
+-    trie = {} if trie is None else trie
++    trie = {} if trie == None else trie
+ 
+     for key in keywords:
+         current = trie

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -603,7 +603,7 @@
+         index = self._index
+         if self._match_text_seq("IN"):
+             log = self._parse_string()
+-            if log is None:
++            if log == None:
+                 self._retreat(index)
+         else:
+             log = None

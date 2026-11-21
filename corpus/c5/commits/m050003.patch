@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -214,7 +214,7 @@
+                 edit_script.append(Insert(self._target_index[inserted_node_id]))
+         for kept_source_node_id in self._source_index:
+             kept_target_node_id = matchings.get(kept_source_node_id)
+-            if kept_target_node_id is None:
++            if kept_target_node_id == None:
+                 continue
+ 
+             source_node = self._source_index[kept_source_node_id]

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -830,7 +830,7 @@
+     properties: exp.Properties | None = expression.args.get("properties")
+     temporary = any(
+         isinstance(prop, exp.TemporaryProperty)
+-        for prop in (properties.expressions if properties is not None else [])
++        for prop in (properties.expressions if properties != None else [])
+     )
+ 
+     # CTAS with temp tables map to CREATE TEMPORARY VIEW

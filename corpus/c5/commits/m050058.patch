@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/merge_subqueries.py b/sqlglot/optimizer/merge_subqueries.py
+--- a/sqlglot/optimizer/merge_subqueries.py
++++ b/sqlglot/optimizer/merge_subqueries.py
+@@ -534,7 +534,7 @@
+ 
+         # Only scopes on a reference's path can capture it. Shared paths are visited once.
+         node = column.parent
+-        while node is not None and id(node) not in seen:
++        while node != None and id(node) not in seen:
+             seen.add(id(node))
+             if nested_scope := scope_lookup.get(id(node)):
+                 names.update(name for name, _ in nested_scope.references)

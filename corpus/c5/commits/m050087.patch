@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -381,7 +381,7 @@
+             list[exp.Column]: Column instances in this scope, plus any
+                 Columns that reference this scope from correlated subqueries.
+         """
+-        if self._columns is None:
++        if self._columns == None:
+             self._ensure_collected()
+             columns = self._raw_columns
+ 

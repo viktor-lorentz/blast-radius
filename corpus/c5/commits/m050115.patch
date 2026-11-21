@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/trino.py b/sqlglot/parsers/trino.py
+--- a/sqlglot/parsers/trino.py
++++ b/sqlglot/parsers/trino.py
+@@ -240,7 +240,7 @@
+         # Any non-reserved keyword (SET, IF, ITERATE etc) is a valid label name, so the colon lookahead
+         # has to run first, before the statement keywords are matched.
+         label = None
+-        if self._next and self._next.token_type == TokenType.COLON:
++        if self._next and self._next.token_type is TokenType.COLON:
+             label = self._parse_id_var()
+             self._match(TokenType.COLON)
+ 

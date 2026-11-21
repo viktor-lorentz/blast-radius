@@ -1,0 +1,12 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -165,7 +165,7 @@
+ 
+         where: exp.Where | None = expression.args.get("where")
+ 
+-        if where is not None:
++        if where != None:
+             step.condition = where.this
+ 
+         group: exp.Group | None = expression.args.get("group")

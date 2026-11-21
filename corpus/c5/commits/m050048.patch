@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_predicates.py b/sqlglot/optimizer/pushdown_predicates.py
+--- a/sqlglot/optimizer/pushdown_predicates.py
++++ b/sqlglot/optimizer/pushdown_predicates.py
+@@ -231,7 +231,7 @@
+         predicate = conditions[table]
+ 
+         if isinstance(table_node, exp.Join):
+-            if source_positions is not None:
++            if source_positions != None:
+                 this_index = source_positions[table]
+                 predicate_tables = exp.column_table_names(predicate, table)
+                 if not all(

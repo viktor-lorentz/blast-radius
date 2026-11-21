@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/__init__.py b/sqlglot/executor/__init__.py
+--- a/sqlglot/executor/__init__.py
++++ b/sqlglot/executor/__init__.py
+@@ -58,7 +58,7 @@
+ 
+         for keys in flattened_tables:
+             table = nested_get(tables_.mapping, *zip(keys, keys))
+-            assert table is not None
++            assert table != None
+ 
+             for column in table.columns:
+                 value = table[0][column]

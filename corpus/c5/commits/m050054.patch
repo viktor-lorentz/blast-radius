@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -239,7 +239,7 @@
+         else:
+             scope_id = id(scope)
+             meta = _scope_meta.get(scope_id)
+-            if meta is None:
++            if meta == None:
+                 select_by_name: dict[str, exp.Expr] = {}
+                 for sel in selectable.selects:
+                     select_by_name.setdefault(sel.alias_or_name, sel)

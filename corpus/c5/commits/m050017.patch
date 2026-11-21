@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -908,7 +908,7 @@
+ 
+         if len(expressions) == 1 and this and this.is_type(exp.DType.STRUCT):
+             arg = expressions[0]
+-            if arg.type is None:
++            if arg.type == None:
+                 from sqlglot.optimizer.annotate_types import annotate_types
+ 
+                 arg = annotate_types(arg, dialect=self.dialect)

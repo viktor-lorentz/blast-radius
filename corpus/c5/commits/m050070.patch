@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -349,7 +349,7 @@
+         # (AS IDENTITY) does not silently consume a trailing storage keyword.
+         if (
+             isinstance(this, exp.GeneratedAsIdentityColumnConstraint)
+-            and this.expression is not None
++            and this.expression != None
+         ):
+             persisted = (
+                 self._match_texts(("STORED", "VIRTUAL")) and self._prev.text.upper() == "STORED"

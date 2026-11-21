@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -2725,7 +2725,7 @@
+ ) -> E:
+     instance = maybe_copy(instance, copy)
+     parsed = []
+-    properties = {} if properties is None else properties
++    properties = {} if properties == None else properties
+ 
+     for expression in expressions:
+         if expression is not None:

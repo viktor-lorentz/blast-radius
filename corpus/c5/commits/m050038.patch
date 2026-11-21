@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -600,7 +600,7 @@
+                 for col in find_all_in_scope(node, exp.Column):
+                     if not col.table:
+                         if prefer_column and (tables := using_column_tables.get(col.name)):
+-                            if precedence == AliasPrecedence.SOURCE and any(
++                            if precedence is AliasPrecedence.SOURCE and any(
+                                 col.name in resolver.get_source_columns(source)
+                                 for source in scope.selected_sources
+                                 if source not in tables

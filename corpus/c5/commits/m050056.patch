@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -85,7 +85,7 @@
+             exp.RegrSxx: lambda self, e: self._regr_sql(e),
+             exp.RegrSyy: lambda self, e: self._regr_sql(e),
+         }.items()
+-        if v is not None
++        if v != None
+     }
+ 
+     TYPE_MAPPING = {

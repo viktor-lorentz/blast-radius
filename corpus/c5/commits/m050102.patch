@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -19,7 +19,7 @@
+ 
+     this = self.sql(expression, "this")
+     time_format = self.format_time(expression)
+-    if time_format == Drill.DATE_FORMAT:
++    if time_format is Drill.DATE_FORMAT:
+         return self.sql(exp.cast(this, exp.DType.DATE))
+     return self.func("TO_DATE", this, time_format)
+ 

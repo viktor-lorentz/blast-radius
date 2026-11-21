@@ -26,6 +26,10 @@ DATA = Path(os.environ.get("BR_DATA", "/data"))
 SRC = Path(os.environ.get("BR_SRC", "/opt/sqlglot"))
 MAPS_DIR = Path(os.environ.get("BR_MAPS", str(HERE / "maps")))
 FP_DIR = Path(os.environ.get("BR_FP", str(HERE / "fp")))
+try:
+    astdiff.ENUM_CLASSES = set(json.loads((FP_DIR / "enums.json").read_text()))
+except (OSError, ValueError):
+    pass
 
 CONFIG_BASENAMES = {
     "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
