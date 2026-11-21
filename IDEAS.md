@@ -1,9 +1,12 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
 ## STATE (2026-11-21 ~03:45 PST) — runner submitted, waiting on the server
-Submitted e6080ac as BB-AD82E23D. Slot is used until 4:41 AM PST (2026-11-21 12:41 UTC).
-Do not submit again before then. Do not pin it as the final entry unless its score beats 175.6.
-Best remains v2c BB-8F41C77F at 175.6 (sim 172.712). Leader on the board was team 67 at 130.8.
+BB-AD82E23D (e6080ac) scored 185.3. sim 166.345 (was 172.712), CPU 19.0 (was 2.9), 0 misses.
+The runner is -EV on the server: 6.4s of simulated time for 16s of CPU. It is OFF by default
+(BR_RUN=0). Do not submit another build with the runner on unless a run costs less CPU than
+the simulated time it deletes. Best remains v2c 175.6. Do not pin 185.3.
+Slot frees 4:41 AM PST (2026-11-21 12:41 UTC). Next submit should be the docstring fix with
+the runner off. Leader was team 67 at 130.8.
 
 Next commit on top, not yet submitted: a docstring the scored suite never runs no longer
 falls back to every test. tests/test_docs.py is absent from tests.json. Local, with the runner:

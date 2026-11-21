@@ -214,7 +214,9 @@ def main() -> None:
     all_tests = set(ms)
     id_to_number = {t["id"]: t["number"] for t in tests}
     number_to_id = {t["number"]: t["id"] for t in tests}
-    run_tests = os.environ.get("BR_RUN", "1") != "0"
+    # Off by default. On the practice batch the runs cut 6.4s of simulated time and
+    # added 16s of CPU (BB-AD82E23D, 185.3). Set BR_RUN=1 to enable them.
+    run_tests = os.environ.get("BR_RUN", "0") != "0"
     deadline = time.monotonic() + runner._BATCH_CAP_S
     maps = None
     sem = None

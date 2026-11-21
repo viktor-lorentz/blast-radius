@@ -7,8 +7,7 @@ tests to run and how to split them across up to 8 workers.
 ## Approach
 Maps derived from the pinned sqlglot commit (coverage, imports, fixtures) pick a
 candidate set. There is no table from a patch, or from a kind of edit, to the tests
-it breaks. When that set is cheap, the program runs those tests and drops the ones
-that pass. A crash, a timeout, or a fixture file edited on disk keeps the candidate set.
+it breaks. A docstring edit does not select tests: the scored suite does not run doctests.
 
 - `blast/patch.py`: strict unified-diff parser and applier (anything odd -> run everything).
 - `blast/split.py`: picks the worker count k (1..8) that minimises busiest-load + 2k.
