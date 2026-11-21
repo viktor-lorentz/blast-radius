@@ -144,13 +144,26 @@ def main() -> None:
             sem = Semantic(maps, FP_DIR, SRC)
     except Exception as e:
         log("maps unavailable:", repr(e))
+    debug = os.environ.get("BR_DEBUG") == "1"
+    if debug:
+        import resource
+
+        def _cpu():
+            a = resource.getrusage(resource.RUSAGE_SELF)
+            b = resource.getrusage(resource.RUSAGE_CHILDREN)
+            return a.ru_utime + a.ru_stime + b.ru_utime + b.ru_stime
+        log(f"startup cpu {_cpu():.3f}")
     for pf in sorted((DATA / "commits").glob("*.patch")):
+        if debug:
+            c0 = _cpu()
         try:
             nums = select(pf.read_text(), maps, all_tests, sem)
         except Exception as e:  # never crash: fall back to everything
             log("select crashed:", pf.stem, repr(e))
             nums = set(all_tests)
         print(json.dumps({"commit": pf.stem, "workers": split(nums, ms)}))
+        if debug:
+            log(f"cpu {pf.stem} {_cpu() - c0:.3f}")
 
 
 if __name__ == "__main__":

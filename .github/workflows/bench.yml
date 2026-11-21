@@ -1,0 +1,30 @@
+name: bench
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["selector.py", "blast/**", "maps/**", "Dockerfile", "tools/fp_baseline.py"]
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (linux/amd64, like the scorer)
+        run: docker buildx build --platform linux/amd64 --load -t entry . 2>&1 | tail -5
+      - name: Run 3x under the scorer's flags, measure container CPU
+        run: |
+          RUNF="--rm --platform linux/amd64 --network none --cpus 2 --memory 4096m --memory-swap 4096m --pids-limit 256 --read-only --tmpfs /tmp:rw,size=64m,mode=1777 --cap-drop ALL --security-opt no-new-privileges --user 65534:65534 --env HOME=/tmp"
+          for d in sample corpus/c1; do
+            [ -d "$d/commits" ] || continue
+            T=$PWD/sample/tests.json
+            for i in 1 2 3; do
+              docker run $RUNF -v "$PWD/$d/commits:/data/commits:ro" -v "$T:/data/tests.json:ro" --entrypoint python entry -c '
+          import subprocess,resource,time,sys
+          t=time.time(); p=subprocess.run(["python","/app/selector.py"],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+          r=resource.getrusage(resource.RUSAGE_CHILDREN)
+          sys.stderr.write("cpu %.3f s wall %.3f s lines %d\n"%(r.ru_utime+r.ru_stime,time.time()-t,p.stdout.count(b"\n")))
+          sys.stdout.buffer.write(p.stdout)' > out-$(basename $d)-$i.jsonl
+            done
+            echo "== $d"; python3 score.py sample sample/answers.json out-sample-1.jsonl 2>/dev/null | head -2 || true
+          done

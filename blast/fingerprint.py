@@ -146,7 +146,7 @@ class _TextLoader(importlib.abc.Loader):
 def import_all(root: str):
     import sqlglot  # noqa: F401
 
-    ok, failed = [], []
+    ok, failed = ["sqlglot"], []
     for m in pkgutil.walk_packages(sqlglot.__path__, "sqlglot."):
         if m.name.endswith("__main__"):
             continue
@@ -173,9 +173,10 @@ def classes_of(mod):
 
 
 def snapshot(names, noisy=frozenset()):
+    """-> (fp_by_module, fn) ; fp_by_module[module][key] = digest"""
     F = _Fp()
     U = _Fp(unordered=True)
-    fp, fn = {}, {}
+    bymod, fn = {}, {}
 
     def note_fn(key, v):
         f = v.__func__ if isinstance(v, (staticmethod, classmethod)) else v
@@ -188,6 +189,7 @@ def snapshot(names, noisy=frozenset()):
         mod = sys.modules.get(name)
         if mod is None:
             continue
+        fp = bymod.setdefault(name, {})
         for k, v in list(vars(mod).items()):
             if k.startswith("__") and k.endswith("__"):
                 continue
@@ -203,10 +205,56 @@ def snapshot(names, noisy=frozenset()):
                 key = f"C|{ck}|{k}"
                 fp[key] = (U if key in noisy else F).fp(v)
                 note_fn(key, v)
-    return fp, fn
+    return bymod, fn
+
+
+def import_some(names):
+    import sqlglot  # noqa: F401
+
+    ok, failed = [], []
+    for n in sorted(names):
+        if n.endswith("__main__"):
+            continue
+        try:
+            importlib.import_module(n)
+            ok.append(n)
+        except BaseException:  # noqa: BLE001
+            failed.append(n)
+    return ok, failed
+
+
+def compare(root, patched, noisy, base_path, closure):
+    """Child-side comparison against the build-time baseline; returns only what changed."""
+    base = json.loads(open(base_path).read())
+    sys.path.insert(0, root)
+    sys.meta_path.insert(0, _PatchedFinder(root, patched))
+    try:
+        ok, failed = import_some(closure)
+    except BaseException as e:  # noqa: BLE001
+        return {"ok": False, "error": repr(e)}
+    newly_failed = sorted(set(failed) - set(base.get("failed", [])))
+    bymod, fn = snapshot(ok, noisy)
+    dropped = set(base.get("dropped", []))
+    changed = {}
+    for m in ok:
+        b = base["bymod"].get(m, {})
+        n = bymod.get(m, {})
+        for k in set(b) | set(n):
+            if k not in dropped and b.get(k) != n.get(k):
+                changed[k] = [k in b, k in n]
+    bfn = base.get("fn", {})
+    return {"ok": True, "newly_failed": newly_failed, "changed": changed,
+            "bfn": {k: bfn[k] for k in changed if k in bfn}, "nfn": {k: fn[k] for k in changed if k in fn}}
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--compare":
+        # --compare ROOT PATCHED_JSON NOISY_JSON BASE_JSON CLOSURE_JSON
+        root, pj, nj, bj, cj = sys.argv[2:7]
+        out = compare(root, json.loads(open(pj).read()), frozenset(json.loads(open(nj).read())), bj,
+                      json.loads(open(cj).read()))
+        json.dump(out, sys.stdout, separators=(",", ":"))
+        return
     root = sys.argv[1]
     patched = json.loads(open(sys.argv[2]).read()) if len(sys.argv) > 2 and sys.argv[2] != "-" else {}
     noisy = frozenset(json.loads(open(sys.argv[3]).read())) if len(sys.argv) > 3 else frozenset()
@@ -218,8 +266,8 @@ def main():
     except BaseException as e:  # noqa: BLE001
         json.dump({"ok": False, "error": repr(e)}, sys.stdout)
         return
-    fp, fn = snapshot(ok, noisy)
-    json.dump({"ok": True, "mods": sorted(ok), "failed": sorted(failed), "fp": fp, "fn": fn}, sys.stdout,
+    bymod, fn = snapshot(ok, noisy)
+    json.dump({"ok": True, "mods": sorted(ok), "failed": sorted(failed), "bymod": bymod, "fn": fn}, sys.stdout,
               separators=(",", ":"))
 
 
