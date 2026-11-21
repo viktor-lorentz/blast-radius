@@ -8,3 +8,4 @@ next	165.2 (0 miss); c1 360: 0 miss	pending		v2b: cache-isolated maps, class-val
 v2c	165.2 (0 miss); c1 0; c2 0 (after fix)	yes (BB-8F41C77F)	175.6 (172.7 sim + 2.9 cpu, 0 miss)	helper-module importers, property removal line mapping
 v2e	115.0 (0 miss); c1 0; c2 0; c4 0; c5 0	yes (BB-EA69003C)	176.0 (172.712 sim, 3.25 cpu, 0 miss) - no gain vs v2c, cpu +0.3		is/== equiv, slots+dict fingerprint, side-effect test modules -> ALL
 e6080ac	108.0 (0 miss); c1 3036.7/0; c2 2172.9/0; c4 2195.5/0; c5 6.6/0	yes (BB-AD82E23D)	185.3 (166.345 sim, 19.0 cpu, 0 miss) WORSE than 175.6		runner saved 6.4s sim and spent 16s CPU. Runner now off by default.
+47fae13	115.0 static (0 miss); c1 2903.0/0; c2 2150.9/0; c4 2271.0/0; c3 2245.4/0; c5 12.7/0	pending slot 12:41 UTC		dialect load map, runner off. Sample unchanged vs static 115. c1 save is six leaf-dialect syntax commits (1620 tests down to 9-322).
