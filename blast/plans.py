@@ -42,6 +42,7 @@ _MIN_MARGINAL_S = 4.0
 _BUDGET_S = float(os.environ.get("BR_PLAN_BUDGET", "20"))
 _COMMIT_TIMEOUT_S = 25
 _MAXQ = int(os.environ.get("BR_PLAN_MAXQ", "20"))
+_PHASES = os.environ.get("BR_PLAN_PHASES", "1") != "0"  # per-phase plan + optimizer snapshots
 
 
 def _cost(nums, ms) -> float:
@@ -154,6 +155,9 @@ def _load_qmap(path) -> dict | None:
     try:
         q = json.loads(Path(path).read_text())
         q["boot"] = set(q["boot"])
+        q["tags"] = {k: set(v) for k, v in q["funcs"].items()}
+        q["funcs"] = {k: {t if t == "S" else int(t.lstrip("PROpreUX").rpartition("_")[2]) for t in v}
+                      for k, v in q["funcs"].items()}
         q["loaded"] = {k.rsplit(":", 1)[0] for k in q["boot"] | set(q["funcs"])}
         q["exec"] = set(q["exec"])
         q["_scopes"] = {}
@@ -201,10 +205,17 @@ def _reach(src: Path, rel: str, fp, qmap: dict):
                 old += 1
     if None in keys or keys & qmap["boot"]:
         return None
-    qs = set()
+    qs, tags, xonly = set(), set(), set()
     for k in keys:
         qs.update(qmap["funcs"].get(k, ()))
-    return None if "S" in qs else qs
+        kt = qmap["tags"].get(k, set())
+        tags |= kt
+        for t in kt:  # entered only while executing query q, not in its parse/render/optimize
+            if t.startswith("X"):
+                q = t[1:]
+                if not any(u[1:] == q or u.endswith("_" + q) or u == "Opre" + q for u in kt if u[0] != "X"):
+                    xonly.add(int(q))
+    return None if "S" in qs else (qs, tags, xonly)
 
 
 def _reach_plan(src: Path, text: str, qmap: dict):
@@ -217,6 +228,7 @@ def _reach_plan(src: Path, text: str, qmap: dict):
     if not files:
         return None
     out, qs, guard, every = {}, set(), False, False
+    tags, xonly = set(), set()
     for fp in files:
         path = str(fp.path)
         if _unread(src, fp):
@@ -238,10 +250,35 @@ def _reach_plan(src: Path, text: str, qmap: dict):
         if r is None:
             every = True
         else:
-            qs |= r
+            qs |= r[0]
+            tags |= r[1]
+            xonly |= r[2]
     if every:
-        return None if guard else (out, None, False)
-    return out, qs, guard
+        return None if guard else (out, None, False, None)
+    return out, qs, guard, (tags, xonly)
+
+
+def _phase_plan(qs: set, phase, qmap: dict, guard: bool) -> list:
+    """Per reached query [qi, exec index or -1, parse?, render?, first optimizer rule
+    to rerun (0 = all, None = none), execute?]. A query whose parse, optimize()
+    prologue/loop or snapshot unpickling enters an edited function reruns optimize
+    from the raw parse; otherwise from the snapshot before the first edited rule."""
+    tags, xonly = phase
+    eidx = {q: i for i, q in enumerate(qmap["exec_order"])}
+    nrules = len(qmap.get("rules", ()))
+    plan = []
+    for q in sorted(qs):
+        parse = f"P{q}" in tags
+        if q not in eidx:
+            plan.append([q, -1, parse, False, None, False])
+            continue
+        if parse or f"Opre{q}" in tags or f"U{q}" in tags:
+            start = 0
+        else:
+            hit = [r for r in range(nrules) if f"O{r}_{q}" in tags]
+            start = min(hit) if hit else None
+        plan.append([q, eidx[q], parse, parse or f"R{q}" in tags, start, guard or q in xonly])
+    return plan
 
 
 def _run(src: Path, patched: dict, golden) -> dict:
@@ -298,6 +335,8 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
     qmap = None
     if golden_path is not None and os.environ.get("BR_PLAN_REACH", "1") != "0":
         qmap = _load_qmap(Path(golden_path).with_name("tpcds_qmap.json"))
+        if qmap is not None:
+            qmap["exec_order"] = sorted(qmap["exec"])
     for stem, text, nums in rows:
         if number not in nums:
             continue
@@ -311,7 +350,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
             plan = _reach_plan(src, text, qmap)
             if plan is None:
                 continue
-            patched, qs, guard = plan
+            patched, qs, guard, phase = plan
             if qs is not None and not qs and _EMPTY == "drop":
                 updates[stem] = set(nums) - {number}  # no query reaches an edited function
                 continue
@@ -319,7 +358,13 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                 if guard:
                     continue
                 qs = None
-            if qs is not None and len(qs) > _MAXQ:
+            phased = qs is not None and _PHASES and "snap_rules" in qmap
+            if phased:
+                plan_q = _phase_plan(qs, phase, qmap, guard)
+                if sum(1 for e in plan_q if e[5]) > _MAXQ:
+                    continue  # too many queries to execute: keep
+                qs = ("phase", plan_q)
+            elif qs is not None and len(qs) > _MAXQ:
                 if guard:
                     continue
                 qs = None
@@ -357,10 +402,16 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
     for _marginal, stem, patched, nums, qs, guard in ranked:
         if cpu() - start >= budget_s:
             break
-        spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
+        if isinstance(qs, tuple):
+            spec = {"rows": rows_golden, "plan": qs[1], "snapdir": str(Path(golden_path).parent),
+                    "rules": qmap["snap_rules"]}
+            label = "PH%d/%s" % (len(qs[1]), ",".join(sorted({str(e[4]) for e in qs[1] if e[1] >= 0})))
+        else:
+            spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
+            label = "ALL" if qs is None else len(qs)
         got = _run(Path(src), patched, spec)
         if os.environ.get("BR_PLAN_DEBUG"):
-            print(f"plan {stem} q={'ALL' if qs is None else len(qs)} guard={guard} -> {got}", file=sys.stderr)
+            print(f"plan {stem} q={label} guard={guard} -> {got}", file=sys.stderr)
         if got.get("ok") and got.get("same"):
             updates[stem] = set(nums) - {number}
     return updates
@@ -404,6 +455,9 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from sqlglot.optimizer import optimize
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
+        if isinstance(golden, dict) and "plan" in golden:  # phase mode
+            Path(out_path).write_text(json.dumps(_child_phase(golden)))
+            return
         if isinstance(golden, dict):  # reach mode: only the queries the patch can reach
             Path(out_path).write_text(json.dumps(_child_only(golden)))
             return
@@ -463,6 +517,51 @@ def _child_only(spec: dict) -> dict:
         row = [hashlib.blake2b("|".join(rendered).encode(), digest_size=8).hexdigest(), _digest(tree)]
         if ei >= len(golden) or row != golden[ei]:
             run.append(sql)
+    same = _execute_changed(run) if run else True
+    return {"ok": True, "same": same, "changed": len(run)}
+
+
+def _child_phase(spec: dict) -> dict:
+    """Run only the phases each reached query needs (see _phase_plan); execute the
+    ones whose DuckDB render or optimized tree differs, or that the plan marks."""
+    import pickle
+
+    from sqlglot import parse_one, transpile
+    from sqlglot.optimizer import optimize
+    from sqlglot.optimizer.optimizer import RULES
+    from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+
+    golden, rules = spec["rows"], spec["rules"]
+    sqls = [sql for _meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")]
+    snaps: dict = {}
+
+    def snap(r: int):
+        if r not in snaps:
+            with open(os.path.join(spec["snapdir"], "tpcds_snap_%d.pkl" % r), "rb") as handle:
+                snaps[r] = pickle.load(handle)
+        return snaps[r]
+
+    run = []
+    for qi, ei, parse, render, start, execute in spec["plan"]:
+        sql = sqls[qi]
+        if parse:
+            pickle.loads(pickle.dumps(parse_one(sql)))
+        if ei < 0:
+            continue
+        if execute:
+            run.append(sql)
+            continue
+        row = list(golden[ei])
+        if render:
+            row[0] = hashlib.blake2b("|".join(transpile(sql, write="duckdb")).encode(), digest_size=8).hexdigest()
+        if start is not None:
+            base = max((r for r in rules if r <= start and snap(r)[ei] is not None), default=0)
+            tree = pickle.loads(snap(base)[ei]) if base else parse_one(sql)
+            row[1] = _digest(optimize(tree, TPCDS_SCHEMA, rules=RULES[base:], leave_tables_isolated=True))
+        if row != golden[ei]:
+            run.append(sql)
+    if len(run) > _MAXQ:
+        return {"ok": True, "same": False, "changed": len(run)}
     same = _execute_changed(run) if run else True
     return {"ok": True, "same": same, "changed": len(run)}
 
