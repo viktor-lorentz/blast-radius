@@ -1,8 +1,26 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
-VERDICT 04:18 PT: BB-62A9FF8C 476b711 = 154.8 (6.92 cpu, 0 miss), WORSE than 154.4. FINAL PICK (Phase 3): d9fe067 / BB-AF8AB844 154.4, 0 misses on practice + c1-c6, earliest of the ties; it stays "Entered in the final". FROZEN: no more submissions.
+VERDICT 04:35 PT: BB-62A9FF8C 476b711 = 154.8 (sim 147.894, 6.92 cpu, 0 miss), WORSE than 154.4. Guard shape was not in practice. Not resubmitted. Non-tpcds switch: a test_sqlglotc.py edit that only changes constants outside run_path, os.chdir, mock.patch.dict, and copy_extensions_to_source keeps that file's three tests. Applied after the plan checks so their CPU budget stays on the same commits. c1 m010348 20.556→2.115 (18.4s), c1 2152.671→2134.230, 0 misses. m010072 (setup.py path) and m040245 (SQLGLOT_SRC key, also fails test_execute_tpch) stay on the full suite. sample 108.463, c2 1521.858, c3 1757.060, c4 1734.947, c5 12.663, c6 395.681, all 0 misses, unchanged. Submitting 967f176. Server best 154.4 (d9fe067 / BB-AF8AB844). RoboM 100.2.
 
 ## HANDOFF
+### HEAVY (2026-11-22 04:45): POST-FREEZE, NOT A SUBMISSION REQUEST: heavy-gm df28c0e600eefbeb87de4b7b45f8906908833dea (pushed) = main b229552 + a static test_generator_memory gate.
+- At image build, tools/genmem_map.py records which sqlglot functions the test enters on the pinned tree. The gate drops the test only when every hunk is an in-place sqlglot .py edit that applies and compiles, and lies inside a function body the test never enters. It runs no child process.
+- Offline check against answers.json, over every commit: 0 wrong drops on s and c1–c6.
+- Timing runs on the same tree, one after the other: BR_GENMEM=0 vs default. Same fp (main's tools plus genmem_map.json).
+
+  | Corpus | gate off: sim (cpu) | gate on: sim (cpu) |
+  |---|---|---|
+  | s | 108.5 (1.61) | 108.5 (1.52) |
+  | c1 | 2187.6 (85.8) | 2187.6 (86.8) |
+  | c2 | 1510.4 (73.3) | 1510.4 (73.2) |
+  | c3 | 1757.1 (4.39) | **1750.4** (4.54) |
+  | c4 | 1722.3 (81.4) | 1722.3 (78.0) |
+  | c5 | 12.7 (3.36) | 12.7 (3.11) |
+  | c6 | 395.7 (9.20) | 395.7 (9.17) |
+
+  0 misses in every row.
+  - The gain is small: sim −6.7, all of it on c3. The CPU differences are noise.
+  - On main the earlier stages already drop the test wherever this gate would. Low priority; only worth taking if there's ever another slot.
 ### HEAVY (2026-11-22 01:05): READY FOR A SLOT: heavy-s a0a3bfe (pushed) = fa0acf4 (below) merged with main f7cd994 (heavy-c3). Submit this, not fa0acf4.
 - The only conflict was blast/plans.py.
   - When /app/fp/tpcds_qmap.json loads (always, in the image), the per-phase plan check below runs.

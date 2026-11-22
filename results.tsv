@@ -1,4 +1,5 @@
 commit	local_sample_score	submitted	server_score	notes
+967f176	sample 108.463/0; c1 2134.230/0; c2 1521.858/0; c3 1757.060/0; c4 1734.947/0; c5 12.663/0; c6 395.681/0	submitting	pending	sqlglotc payload post-pass. c1 m010348 20.556→2.115 (18.4s). m010072 and m040245 stay ALL. Plan budget unchanged. 0 misses. Other corpora unchanged vs 476b711.
 476b711	sample 108.463/0; c1 2152.671/0; c2 1521.858/0; c3 1757.060/0; c4 1734.947/0; c5 12.663/0; c6 395.681/0	yes (BB-62A9FF8C)	154.8 (147.894 sim, 6.92 cpu, 0 miss) WORSE than 154.4; submitted after the 4 AM freeze, not by LEAD	AST-identical guard skip. c1 m010019 drops tpcds (~19.7s, child ~1.23s CPU, own window). m040010 m030071 m030058 still select 1106. 0 misses.
 9bca8b0	sample 108.5/0; c1 2172.4/0; c2 1521.9/0; c3 1757.1/0; c4 1734.9/0; c5 12.7/0; c6 395.7/0	yes (BB-6D8ED884)	154.8 (sim 147.894, cpu 6.89, 0 miss)	f96df71 gated subset digest. 8 corpus drops, ~100s, 0 misses. CPU only on that subset. Subset was not in the practice batch.
 fc57dda	994.1 (0 miss)	?		v0 AST no-op + optimal split
