@@ -388,6 +388,49 @@ class _AnnNorm(ast.NodeTransformer):
         return node
 
 
+def _plain_def(s, fut: bool) -> bool:
+    """A top-level def whose execution runs nothing but binding its name."""
+    if not isinstance(s, (ast.FunctionDef, ast.AsyncFunctionDef)) or s.decorator_list:
+        return False
+    if s.name.startswith("__") and s.name.endswith("__"):
+        return False
+    a = s.args
+    if any(d is not None and not isinstance(d, ast.Constant) for d in a.defaults + a.kw_defaults):
+        return False
+    if not fut and (s.returns is not None or any(
+            x.annotation is not None for x in a.posonlyargs + a.args + a.kwonlyargs + [a.vararg, a.kwarg] if x)):
+        return False
+    return ">>>" not in (ast.get_docstring(s, clean=False) or "")
+
+
+def plain_new_module(src: str):
+    """Names a module defines when its body is only a docstring, stdlib imports and plain defs; else None.
+
+    Importing such a module runs nothing observable beyond creating it.
+    """
+    import sys
+    try:
+        n = ast.parse(src)
+    except (SyntaxError, ValueError, RecursionError):
+        return None
+    fut = _future_annotations(n)
+    std = sys.stdlib_module_names
+    names = set()
+    for i, s in enumerate(n.body):
+        if i == 0 and isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant) and isinstance(s.value.value, str):
+            continue
+        if isinstance(s, ast.ImportFrom) and not s.level and s.module and \
+                (s.module == "__future__" or s.module.split(".")[0] in std) and all(a.name != "*" for a in s.names):
+            continue
+        if isinstance(s, ast.Import) and all(a.name.split(".")[0] in std for a in s.names):
+            continue
+        if _plain_def(s, fut):
+            names.add(s.name)
+            continue
+        return None
+    return names
+
+
 def unused_new_defs(old_src: str, new_src: str) -> set:
     """Top-level plain functions that new_src adds and spells nowhere else in either version.
 
@@ -425,7 +468,7 @@ def unused_new_defs(old_src: str, new_src: str) -> set:
 
 
 def diff(old_src: str, new_src: str, version_norm: bool = True, code_norm: bool = True,
-         drop: frozenset = frozenset()) -> Optional[List[Region]]:
+         drop: frozenset = frozenset(), drop_imports: frozenset = frozenset()) -> Optional[List[Region]]:
     """Regions of the old file that changed, [] if ASTs are identical, None if either side is unparsable."""
     try:
         o = ast.parse(old_src)
@@ -434,6 +477,9 @@ def diff(old_src: str, new_src: str, version_norm: bool = True, code_norm: bool 
         return None
     if drop:
         n.body = [s for s in n.body if not (isinstance(s, (ast.FunctionDef, ast.AsyncFunctionDef)) and s.name in drop)]
+    if drop_imports:
+        n.body = [s for s in n.body if not (isinstance(s, ast.ImportFrom) and not s.level and all(
+            (s.module, a.name, a.asname or a.name) in drop_imports for a in s.names))]
     if (
         version_norm
         and ".version" in old_src
