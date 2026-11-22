@@ -13,10 +13,14 @@ class Maps:
         self.sha = idx["sha"]
         # map-index -> test number (or -1 when the scorer's tests.json does not list it)
         self.num = [id_to_number.get(t, -1) for t in idx["tests"]]
+        self._ids = {n: t for n, t in zip(self.num, idx["tests"]) if n >= 0}
         self._files = idx["files"]
         self._opens = idx["opens"]
         self.pyfiles = set(idx["pyfiles"])
         self._cov: Dict[str, Optional[dict]] = {}
+
+    def id_of(self, number: int) -> Optional[str]:
+        return self._ids.get(number)
 
     def _nums(self, idxs) -> Set[int]:
         num = self.num

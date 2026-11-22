@@ -1,16 +1,132 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
 ## HANDOFF
-### HEAVY (2026-11-21, in progress, not pushed): cheaper and wider tpcds plan check
-- Three changes to blast/plans.py, each behind an env knob. Merged with main 53c2f06 as branch heavy-merge 6f0f65d plus WIP; the merge was clean.
-  1. Golden digests are precomputed at build time (tools/plan_golden.py → /app/fp/tpcds_golden.json), so the ~3 s server golden run moves out of the selector. `BR_PLAN_BUDGET` sets the budget, default 12.
-  2. `BR_PLAN_INPUTS`: drop tpcds for free when the patch only edits fixtures outside tpc-ds/, and any tpc-h.sql edit still loads with the pristine helpers. Across the sample and c1–c5 it matches 149 commits, and tpcds fails on 0 of them.
-  3. `BR_PLAN_MAXQ=8`: when 1–8 queries render or optimize differently from the golden run, run only those queries with the patched executor and compare them with duckdb, exactly as subtestHelper does. Before, any difference kept tpcds. On every commit kept so far that has 1–8 differing queries, it agrees with the true result: c1 m010004, m010028, m010086, m010112, m010269 and m010340 pass, and c4 m040050 and m040081 fail. The cost is 3–6 s local CPU per check, which LEAD should weigh against the ~6 s server cap. The 2 sample tpcds commits hit guard files, so the sample adds no CPU.
-- c6eq, merged tree with config D (MAXQ=8, inputs on, budget 12) vs main 53c2f06: sim 491.4 vs 491.4, 0 misses, CPU 12.9 vs 13.1. Neutral on c6, as expected.
-- The merged image builds, and /app/fp/tpcds_golden.json has 57 rows. Docker sample CPU under scorer flags, alternating runs on a loaded host: main 4.37 and 2.93 s, heavy-merge 3.02 and 3.47 s, so no measurable difference. Main itself is now about 3 s, up from 1.75 s before the EQUIV merges.
-- Config B (MAXQ=0, inputs on, budget 12), local sim+CPU vs r_head2: s 110.1 vs 109.5, c5 16.3 vs 14.9, c3 1763.0 vs 1762.7, c2 1831.8 vs 1828.5, c4 2003.8 vs 1966.9, c1 2511.6 vs 2572.5. 0 misses. Total 8236.6 vs 8255.0, which is within run-to-run noise. The golden and inputs rule alone are neutral.
-- Config D (MAXQ=8, inputs on, budget 12), partial at 19:15: s cpu 1.18 / sim 108.5, c5 2.69 / 12.7, c3 4.56 / 1757.1, 0 misses. Same sim as B, lower CPU. c2, c4, c1, then config C, are still running in a background job (scratchpad r_D and r_C summaries).
-- Next (HEAVY session paused at the usage limit): read r_D and r_C. Re-time HEAD on a quiet host with `W=/Users/viktor/blast-radius ./runall2.sh r_main head s c5 c3 c2 c4 c1`. If D or C beats it with 0 misses, commit plans.py, selector.py, tools/plan_golden.py and the Dockerfile on heavy-merge and push.
+### HEAVY (2026-11-22 00:35): READY FOR A SLOT: heavy-s fa0acf4 (pushed) = heavy-g 520655b + per-phase map + optimizer snapshots. If only one slot is free, pick this over heavy-g.
+- The map (tools/plan_qmap.py, pinned tree only, about 20 s at image build) now tags each function with the phase of each query that entered it:
+  - P parse + pickle
+  - R DuckDB render
+  - Opre: optimize() outside its rules
+  - O{r}: optimizer rule r, via the real optimize() with wrapped rules
+  - U: snapshot unpickle
+  - X: execute
+- It also writes /app/fp/tpcds_snap_{2,4,5,8,11,12,13}.pkl, about 20 MB in total: the pinned tree just before rule r, for each executed query. A snapshot is kept only if optimize(snapshot, rules=RULES[r:]) reproduces the full digest; 399/399 do.
+- Per commit, for each reached query:
+  - Reparse only if P was hit. Re-render only if P or R was hit.
+  - Re-optimize from the latest snapshot at or before the first edited rule. That is from the raw parse if P, Opre or U was hit, and not at all if no O rule was hit.
+  - Execute if the row differs from golden, if the file is a guard, or if the query was reached only through X.
+  - The reach > 20 cutoff now applies only to queries actually executed.
+  - Structural hunks and empty reach still get the full digest. We never drop on coverage alone.
+  - A child error means keep. Errors do occur, e.g. an AttributeError on a patched class reading an old snapshot, and those commits are simply kept.
+- Local, clean, sequential runs, against heavy-g's r_hg1 runs from the same machine:
+
+  | Corpus | heavy-g 520655b sim (cpu) | heavy-s fa0acf4 sim (cpu) |
+  |---|---|---|
+  | s | 108.5 (1.20) | 108.5 (1.30) |
+  | c1 | 2294.2 (81.7) | **2230.8 (82.6)**, tpcds dropped 21 → 25 |
+  | c2 | 1629.7 (65.5) | **1606.2 (62.7)** |
+  | c3 | 1757.1 (4.22) | 1757.1 (4.30) |
+  | c4 | 1780.0 (74.1) | **1767.3 (73.3)** |
+  | c5 | 12.7 (3.11) | 12.7 (3.15) |
+  | c6 | 395.7 (9.16) | 395.7 (9.17) |
+
+  0 misses in every row. CPU is flat because the extra checks spend the time saved.
+- Cache caveat (applies to heavy-g too): the map is a single-process trace.
+  - The generator's per-class `_DISPATCH_CACHE` is now warmed at boot, so its builder counts as "every query".
+  - sqlglot has no lru_cache or cached_property. No other cross-query cache is known.
+### HEAVY (2026-11-22 ~00:10): READY FOR A SLOT: heavy-g 520655b (pushed), a lower-CPU tpcds plan check from a per-query reach map. 0 misses everywhere; it beats heavy-t on sim and CPU on every corpus.
+- Answers LEAD's "Next: a lower-CPU check". Branch = heavy-t fbf4c38 + blast/plans.py, tools/plan_qmap.py, Dockerfile. The image builds and /app/fp/tpcds_qmap.json is created (99 queries, 57 executed, about 7 s at build).
+- The map: built at image build from the pinned tree only (PLAN-compliant).
+  - tools/plan_qmap.py runs what test_execute_tpcds does for each TPC-DS query: parse, pool pickle, execute (optimize included), result pickle, rows/columns and the DuckDB render.
+  - It records which sqlglot functions each query enters (sys.monitoring PY_START). Import time and setUpClass count as "every query".
+- Per commit, in the parent, each hunk is mapped to its enclosing function:
+  - **Reach ≤ 20 queries:** the child parses and pickles only those queries, and executes the reached executed queries whose render or tree differs.
+    - Executor-side (`_GUARD`) files get all their reached queries executed, under the same 1.7 s local cap. Before, those commits were refused outright.
+  - **A module-level, class-level or import-time hunk:** the old full digest, or keep for `_GUARD` files.
+  - **A syntax error in a file the test loads:** keep.
+  - **Empty reach:** the full digest by default (`BR_PLAN_EMPTY=digest`), so we never drop on coverage alone. `drop` gives identical numbers on c1/c2/c4, because no plan-checked commit there has empty reach.
+  - **Flag for LEAD:** a commit that only edits sqlglot files the test never imports at the pinned commit is dropped without a child (e.g. a dialect that is never imported). Say so if you want those digested as well.
+- Local, clean, sequential runs. heavy-t was rerun now on the same machine.
+
+  | Corpus | heavy-t fbf4c38 sim (cpu) | heavy-g 520655b sim (cpu) |
+  |---|---|---|
+  | s | 108.5 (1.44) | 108.5 (1.20) |
+  | c1 | 2389.4 (94.0) | **2294.2 (81.7)** |
+  | c2 | 1680.3 (71.4) | **1629.7 (65.5)** |
+  | c3 | 1757.1 (5.44) | 1757.1 (4.22) |
+  | c4 | 1857.0 (79.3) | **1780.0 (74.1)** |
+  | c5 | 12.7 (4.06) | 12.7 (3.11) |
+  | c6 | 395.7 (11.2) | 395.7 (9.16) |
+
+  0 misses in every row of both columns.
+- Validation of the map, over s and c1–c5 (reach_all): every failing tpcds commit is either "every query", over 20 queries, kept, or has its failing query in the reached set (c2 m020200, R=[0]). No failing commit has empty reach (676 passing commits do).
+- Caveat: the map is a single-process trace, so a function served from a cache in later queries is credited only to the first query that entered it. The corpora show no case of this.
+- Measured local CPU per check with 0 differing queries: an only-mode child costs 0.14 / 0.36 / 0.57 s at reach 1 / 10 / 16 (c1 m010323 / m010212 / m010360), against 1.51 s for the full digest (c1 m010331). Practice CPU should drop below heavy-t's 8.58, but I can't measure the practice set locally.
+### LEAD (2026-11-21 23:45): heavy-t fbf4c38 = heavy-merge 920a533 + "ignore test-side files tpcds never reads" (blast/plans.py `_unread`)
+- Why: config D (243de96) scored with sim 167.914 unchanged, so the plan check never fired on practice. `_safe_patch` refused any patch that also edits a test file. On c1–c4 that kept tpcds on 9 of the 33 passing commits: 6 code+fixture commits, plus 3 test_sqlglotc.py-only commits.
+- `_unread(fp)` passes a file that:
+  - is under tests/,
+  - is not test_executor.py or helpers.py,
+  - is not an `__init__`/conftest file,
+  - is not under tpc-ds/,
+  - and, under fixtures, is a modified file, with tpc-h only for tpc-h.sql under `_loads`.
+
+  `_inputs_unchanged` is now "all files `_unread`". `_safe_patch` skips `_unread` files.
+- Result: the 6 code+fixture commits (m010037 m020256 m040095 m040143 m040283 m040288) now RUN with same:True. Gate eval and submission are in progress. HEAVY: please review the soundness of `_unread`.
+### HEAVY (2026-11-21 ~23:55): review of heavy-t `_unread`: SOUND, ship it. My uncommitted `_MIXED` is a subset of it and is dropped.
+- What test_execute_tpcds reads under tests/ (checked in .cache/src):
+  - `tests/__init__.py` and test_executor.py.
+  - helpers.py, which imports only os.
+  - Fixtures: `optimizer/tpc-h/*.csv.gz` and tpc-h.sql (in setUpClass), and everything under `optimizer/tpc-ds/`.
+  - Nothing else. No conftest exists, pytest config adds no plugins, and leakcheck.py and gen_fixtures.py are never imported.
+  - `tests/sqlglot/__init__.py` only extends `__path__`, and `_unread` rejects every `__init__.py` anyway.
+- The queries run in spawn workers, which re-import sqlglot fresh. So module-level side effects of other edited test modules in the same pytest process cannot reach the executor. The parent process only parses and transpiles to duckdb for the comparison. I see no residual risk worth a miss.
+- Nits (all conservative, no action needed):
+  - Added or deleted fixtures and non-.py files outside fixtures keep tpcds.
+  - A rename into helpers.py, conftest.py or `__init__.py` is rejected.
+- Correction to my ~20:20 note below: "main regressed c3 1757.1→1833.1" was measured in the polluted `.cache/src` window and is **wrong**. On the clean tree, c3 is 1757.1 for main ad14fd1 and heavy-merge alike.
+- Clean reruns, 0 misses everywhere, BUDGET=20 as shipped:
+
+  | Corpus | main ad14fd1 | heavy-merge 920a533 |
+  |---|---|---|
+  | s | 108.5 | 108.5 |
+  | c5 | 12.7 | 12.7 |
+  | c3 | 1757.1 | 1757.1 |
+  | c2 | 1794.4 | 1680.4 |
+  | c4 | 1895.7 | 1870.0 |
+  | c1 | 2531.1 | 2427.0 |
+
+  heavy-merge CPU is about +15 to +30 s local per large corpus.
+- BUDGET=20 runs out on the 300-commit corpora. With BUDGET=999 (standing in for a per-batch budget) and fixtures mixed in, c1/c2/c4 sim is 2107/1606/1776.
+- Canary fallback on cap, many or unsafe commits: tried and **not worth it**. Over c1, c2 and c4 it dropped 1 commit for -13 s sim and +11 s canary CPU. On almost every passing commit that the plan check can't clear, the canaries fail too, or the coverage guard rejects the commit.
+- Biggest remaining tpcds waste: commits that touch a guard file (`_GUARD_EXACT`/`_GUARD_PREFIXES`) and return "unsafe". That is ~314 s of passing marginal over c1/c2/c4, but 17 of those 39 commits really fail tpcds, so they can't be dropped blindly. Next I'm looking at running the changed queries for guard-file commits under the same CPU cap instead of refusing them.
+### HEAVY (2026-11-21 ~23:20): WARNING: the shared pristine tree `.cache/src` was polluted at 23:10:49
+Someone wrote `json.py` (`X = 1`), `mytool.py` and `scripts/runit.py` into `.cache/src`. These look like new-file test stubs.
+The `json.py` shadows the stdlib in every subprocess that runs with cwd=src, so the tpcds plan check and the max_nodes proof silently returned "keep" (c1: tpcds drops 35→4, max_nodes 6→0, sim +~800 s).
+I removed the stubs at 23:20. **Any local run between 23:10 and 23:20 that uses BR_SRC=.cache/src is invalid. Rerun it.** Please test new-file shapes on a copy of the tree, never on `.cache/src`.
+The image's /opt/sqlglot is unaffected, so submitted commits are fine.
+### HEAVY (2026-11-21 ~20:00): READY FOR A SLOT: heavy-merge 8ac54a9 (pushed), the tpcds plan check runs the differing queries. 0 misses on sample and c1–c5, local sim+CPU 7785.6 vs HEAD 8255.0
+- **Update ~20:20: heavy-merge is now 920a533 = 8ac54a9 merged with main ad14fd1** (clean). It builds, and the golden has 57 rows. 0 misses on s, c5, c3 and c6: sim s 108.5, c5 12.7, c3 1833.1, c6 395.7. LEAD FYI: main ad14fd1 alone also gives c3 1833.1 (it was 1757.1 at 53c2f06), so an EQUIV merge regressed c3 by +76 s. That is not from HEAVY.
+- Branch heavy-merge = main 53c2f06 + blast/plans.py, selector.py, tools/plan_golden.py, Dockerfile. The merge was clean. The image builds, and the golden has 57 rows.
+- What changed in the tpcds plan check (blast/plans.py):
+  1. Golden digests are built at image build time (/app/fp/tpcds_golden.json) instead of in the selector.
+  2. `BR_PLAN_INPUTS=1`: a commit that only edits fixtures outside tpc-ds/ drops tpcds for free. tpcds fails on 0 of the 149 corpus commits that match.
+  3. When the patched tree renders or optimizes some queries differently from the golden run, those queries (up to `BR_PLAN_MAXQ=20`) are executed the way test_execute_tpcds does: the patched Python executor vs duckdb, with assert_frame_equal. The test is dropped only if every one of them matches. This is never a coverage-only drop: the real test assertion runs on every query whose plan changed.
+  4. Per-commit CPU cap `BR_PLAN_QCPU=1.7` s local (about 3 s server) on that execution step. When it runs out, the test is kept. The digest step costs about 2 s local on top. The batch budget `BR_PLAN_BUDGET` is now 20 s CPU, up from 12.
+- Local sim+CPU (budget 999, i.e. per-commit cap only, which stands in for a ~30-commit batch). HEAD = r_head2. 0 misses on every config:
+
+  | Corpus | HEAD | E = 8ac54a9 (QCPU 1.7) | C (uncapped) |
+  |---|---|---|---|
+  | s | 109.5 | 109.9 | 109.8 |
+  | c5 | 14.9 | 16.3 | 15.9 |
+  | c3 | 1762.7 | 1761.7 | 1762.1 |
+  | c2 | 1828.5 | 1709.2 | 1712.1 |
+  | c4 | 1966.9 | 1945.9 | 1937.5 |
+  | c1 | 2572.5 | 2242.7 | 2170.0 |
+  | **Total** | **8255.0** | **7785.6** | **7707.4** |
+
+  E's sim is -460 vs HEAD and its CPU is about +139 s local. Even scaling the extra CPU by 1.75x for the server, it still nets about -366. The cap only loses c1 m010004, a 4-query commit that passes.
+- The sample is neutral: both of its tpcds commits hit guard files, so the check never runs on them. Expect a hidden-batch gain on the commits A2 found (about 57 s where tpcds passes), at about 3–6 s server CPU per checked commit. If the 6 s cap is tight, set `BR_PLAN_QCPU=1.0` and/or `BR_PLAN_BUDGET=12`.
+- Not done yet: the canary fallback for when many queries differ (over MAXQ, or out of CPU). Next on my list.
 ### HEAVY (2026-11-21): guarded tpcds canary, c07e9e5 on heavy (local only, not pushed): 0 misses but no clear win
 - What it is: behind `BR_CANARY=1` (off by default), drop test_execute_tpcds when cheap test_optimizer and test_executor canaries pass on the patched tree. A fork runs them with unittest under a CPU cap. A pinned-map guard refuses:
   - fixture and data edits,
@@ -78,9 +194,12 @@
 - **(f) Display flags and same-directory test renames**, 72bd437 on `equiv` (= (e) plus about 55 lines in filelevel.py); bench run 44977607222 (green). A pytest config edit that changes only display flags in addopts (-q, -v, -r, --tb=, --color=, --durations= and similar) counts as the same config. A test module renamed within its directory, whose module-level non-definition statements all appeared in the old module, no longer runs everything. Before (1c486e0) → after, all 0 misses: sample 108.5→108.5, c1 2549.5→2567.9 (noise; no config edits or test renames), c2 1811.6→1828.2 (noise), c3 1757.1→1757.1, c4 1951.2→1938.2, c5 12.7→12.7, c6 491.4→421.1.
 - **(g) Unused imports from a new plain-function module**, 01e287c on `equiv` (= (f) plus about 120 lines in astdiff.py and selector.py); bench run 44978066011 (green). An added `from M import name`, where M is a new sqlglot module holding only a docstring, stdlib imports and plain functions, is a no-op when no other module can read the bound name. That rules out attribute, string, import-line and star-import mentions in the tree, plus any mention in other patched files. Before (72bd437) → after, all 0 misses: sample 108.5→108.5, c1 2567.9→2567.9, c2 1828.2→1811.6 (noise), c3 1757.1→1757.1, c4 1938.2→1951.2 (noise), c5 12.7→12.7, c6 421.1→395.7.
 - **(h) Dropped**: tried having a deleted or broken sqlglot leaf module (e.g. typing/snowflake) select the union of its importers' load traces instead of the static import closure. Scratch c6 395.7→372.4, but c3 had 6 misses. The dialects.duckdb trace in maps/dialect_load.json does not list test_execute_tpcds, test_optimize_joins or test_unnest_subqueries, yet all three fail when typing/duckdb cannot import. Load traces therefore under-cover import breakage, so the static closure stays. Also, walkers such as tests/test_typing.py must be added, not just skipped.
-- **EQUIV next (not started):** edits inside the module-level schema literals of tests/helpers.py (TPCH_SCHEMA at line 68, TPCDS_SCHEMA at line 148) hit "side-effecting test module changed" and run everything. That happens on 4 commits: m020027, m020069, m020082 and m040139; m020069 alone wastes 23.6 s (truth: only test_tpch and test_optimized_tpch fail). Idea: an edit that stays inside a pure-literal module-level assignment cannot leak, so select the tests that reach that name, never every test. region_tests returns 0 for those lines.
-- **(k) Import failure narrows to importers (small)**, e89679c on `equiv` (= (j) plus about 30 lines in selector.py and blast/semantic.py); bench run 44979629250. When patched modules stop importing (`newly_failed`), the selector used to run everything. Now it selects the union of the static import closure of each failed module, plus the normal semantic analysis of the other changed keys. If any failed module's importer set is unknown, it still runs everything. On m020048 (c2, `_LAZY_ATTRS` "Scope"→"ScoZe" breaks sqlglot.lineage) the closure is exactly the 53 failing tests. The win is only 2 s because the removed global `Scope` (a G key) selects every test covering a line that spells "Scope", tpcds included. Before (0488b2b) → after, all 0 misses: sample 108.5→108.5, c1 2567.9→2549.5 (noise), c2 1811.6→1826.2 (noise; m020048 29.5→27.5), c3 1757.1→1757.1, c4 1908.7→1908.7, c5 12.7→12.7, c6 395.7→395.7. No extra server CPU.
-- **(j) `__main__.py` edits select nothing**, 0488b2b on `equiv` (= (i) plus about 25 lines in selector.py); bench run 44979369090. Python runs a package's `__main__.py` only for `python -m pkg` or runpy. When no file under tests/ spells `-m <pkg>`, `run_module` or `__main__.py`, an edit there cannot fail a test, so both the unparsable branch and the module-level structural branch return no tests instead of ALL. (tests/test_docs.py names `sqlglot.__main__` only to skip it, so the check looks for ways of running it, not for the name.) Fires on m040199 (c4, 0 failing, 29.5 s of waste). Before (4496618) → after, all 0 misses: sample 108.5→108.5, c1 2549.5→2567.9 (noise, no c1 commit touches `__main__.py`), c2 1796.4→1811.6 (noise), c3 1757.1→1757.1, c4 1951.2→1908.7, c5 12.7→12.7, c6 395.7→395.7. Server CPU: one rglob+regex over tests/ (~20 ms), paid only when `__main__.py` is patched.
+- **(l) A3-safe: narrower file-level fallbacks**, f80d9c7 on `equiv` (= main ad14fd1 merged in, plus about 45 lines in blast/filelevel.py and 4 in selector.py); bench run 44997391393 (green). Two more run-everything fallbacks now select tests. (1) A new `__init__.py` used to be ALL everywhere. Now it selects nothing under docs/, benchmarks/, posts/, .github/, pdoc/ and in a fresh tests/ or other directory with no Python files. In a fresh sqlglot/ subdirectory it selects the tests that spell the package name (same rule as a new module), and it stays ALL when a sibling module of that name exists or the directory already holds Python files. A root `__init__.py` stays ALL. (2) An edited .py outside sqlglot/, tests/, sqlglotc/ and the inert trees used to be ALL. Now it selects tests that open it (maps.opened_by) or spell its module name, and stays ALL when the root module or directory shadows an importable name (json.py, say). Still ALL on purpose: pytest config (pytest.ini, tox.ini, a changed setup.cfg or pyproject.toml pytest section), conftest with hooks or autouse, side-effecting test modules, loadable files (.pth, .so), core import failures, an unparsable module, a module-level change to a module nothing imports, and a removed module with unknown importers. I tried narrowing a deleted root setup.cfg or pyproject.toml and backed it out: every test opens pyproject.toml at pytest startup, and test_sqlglotc reads it from the cwd. Synthetic check of about 45 shapes (new, deleted, renamed, mode-changed and binary files in docs/, tests/, sqlglot/, root): the only ones still selecting everything are the global ones above. All 0 misses: sample 108.5, c1 2709.9, c2 1980.8, c3 1833.1, c4 2055.8, c5 12.7, c6 395.7. The c1-c4 totals are higher than (k)'s (2549.5, 1826.2, 1757.1, 1908.7) only because of load. Selections differ in about 47 commits by exactly one extra test (the tpcds test the plan check dropped in the earlier run), and HEAD without (l) reproduces it (m020268 selects 7 tests, not 6). The corpora have no new-`__init__` or outside-py commits, so (l) moves no corpus number by design; it is a hidden-set safety and waste fix. No extra server CPU.
+- **EQUIV status (2026-11-22):** `equiv` de35248 holds (a)-(n), each 0 misses on sample and c1-c6, benches green through (n). Tasks 1-3 are done. What waste is left on c1-c4 is test_execute_tpcds (21.5 s) kept on code edits where nothing fails, and that is the HEAVY plan check. With tpcds excluded, c1-c4 waste is about 850 s over 1071 commits, mostly under 12 s a commit (largest non-tpcds is m020088 at 21.8 s, and that is tpcds too). Candidates I looked at and left alone: syntax errors in sqlglot/typing/<dialect>.py (importers cover the failures but include the heavy tests, no gain), decorator removals, and test_sqlglotc.py edits (m040245 is a real leak). Suggested merge: `equiv` de35248 (or origin/main merged in; main's new commits are logs only).
+- **(n) setUpClass fixtures select only their readers**, de35248 on `equiv` (= (m) 95d45ce plus about 120 lines in blast/filelevel.py and 4 in blast/maps.py); bench run 44999978090 (green). tests/test_executor.py loads tpc-h.sql and tpc-ds.sql in `setUpClass` into `cls.tpch_sqls` and `cls.tpcds_sqls`, so the opens map says all 60 tests of the class open both files. An edit to either fixture selected 61 tests including test_execute_tpcds (21.5 s). Now, when the fixture path is spelled in the test file only inside `cls.X = ...` assignments in setUpClass and the file has no glob, walk or listdir call, a test of that class stays only if its call closure reads `.X`. The closure follows `self.m(...)`, binds constant arguments and takes only the branch a constant condition picks, which is what separates `_mp_execute(..., False)` from `True`. An unresolvable method call keeps the test. Result: tpc-h.sql edit selects test_execute_tpch, test_optimized_tpch and test_tpch; tpc-ds.sql edit selects test_execute_tpcds and test_tpcds. Every failing test of those commits is in the selection (m010108, m010322 checked). Fires on 10 commits. Before (95d45ce run) → after, all 0 misses: sample 108.5→108.5, c1 2513.6→2460.9, c2 1952.7→1753.3 (about 20 s is this change, the rest is load noise recovered), c3 1833.1→1757.1 (noise), c4 2046.4→1880.8 (noise), c5 12.7→12.7, c6 395.7→395.7. The class-level step alone, run first, gave c2 1773.2 and c4 1880.8, so the walk with constants is worth about 53 s on c1 and 20 s on c2. No extra server CPU.
+- **(m) Literal edits in side-effecting test modules**, 95d45ce on `equiv` (= (l) f80d9c7 plus about 60 lines in selector.py); bench run 44997747801 (green). An edit inside a module-level `NAME = <pure literal>` (before and after) of a side-effecting test module, such as TPCH_SCHEMA or TPCDS_SCHEMA in tests/helpers.py, used to run everything. A literal runs nothing, so it now selects the tests that spell the name or cover a line that does (227 tests for helpers.py). Anything else in a side-effecting test module still runs everything. Fires on 4 commits (m020027, m020069, m020082, m040139); the selection holds every failing test of each. Before (f80d9c7 run) → after, all 0 misses: sample 108.5→108.5, c1 2709.9→2513.6 (load noise dominates), c2 1980.8→1952.7, c3 1833.1→1833.1, c4 2055.8→2046.4, c5 12.7→12.7, c6 395.7→395.7. No extra server CPU.
+- **(k) Import failure narrows to importers (small)**, e89679c on `equiv` (= (j) plus about 30 lines in selector.py and blast/semantic.py); bench run 44979629250 (green). When patched modules stop importing (`newly_failed`), the selector used to run everything. Now it selects the union of the static import closure of each failed module, plus the normal semantic analysis of the other changed keys. If any failed module's importer set is unknown, it still runs everything. On m020048 (c2, `_LAZY_ATTRS` "Scope"→"ScoZe" breaks sqlglot.lineage) the closure is exactly the 53 failing tests. The win is only 2 s because the removed global `Scope` (a G key) selects every test covering a line that spells "Scope", tpcds included. Before (0488b2b) → after, all 0 misses: sample 108.5→108.5, c1 2567.9→2549.5 (noise), c2 1811.6→1826.2 (noise; m020048 29.5→27.5), c3 1757.1→1757.1, c4 1908.7→1908.7, c5 12.7→12.7, c6 395.7→395.7. No extra server CPU.
+- **(j) `__main__.py` edits select nothing**, 0488b2b on `equiv` (= (i) plus about 25 lines in selector.py); bench run 44979369090 (green). Python runs a package's `__main__.py` only for `python -m pkg` or runpy. When no file under tests/ spells `-m <pkg>`, `run_module` or `__main__.py`, an edit there cannot fail a test, so both the unparsable branch and the module-level structural branch return no tests instead of ALL. (tests/test_docs.py names `sqlglot.__main__` only to skip it, so the check looks for ways of running it, not for the name.) Fires on m040199 (c4, 0 failing, 29.5 s of waste). Before (4496618) → after, all 0 misses: sample 108.5→108.5, c1 2549.5→2567.9 (noise, no c1 commit touches `__main__.py`), c2 1796.4→1811.6 (noise), c3 1757.1→1757.1, c4 1951.2→1908.7, c5 12.7→12.7, c6 395.7→395.7. Server CPU: one rglob+regex over tests/ (~20 ms), paid only when `__main__.py` is patched.
 - **(i) Safety fix, take it even though no corpus number moves**, 4496618 on `equiv` (= (g) plus blast/helper_dialects.py and about 20 lines in selector.py); bench run 44978715832 (green). Main has a latent miss. A syntax error in sqlglot/dialects/duckdb.py (or parsers/ or generators/duckdb.py) selects DIALECT_TESTS (1110 tests) but misses test_execute_tpcds, test_optimize_joins and test_unnest_subqueries. Those three fail whenever dialects.duckdb cannot import (truth of m030031 and m030056); they reach duckdb only through a helper (check_file executes fixtures via .sql(dialect="duckdb"); subtestHelper does transpile(write="duckdb")). No commit in c1–c6 breaks a duckdb leaf, so the corpora show 0 misses. Fix: blast/helper_dialects.py, a static per-file call-closure map from dialect-name literals to tests, unioned into DIALECT_TESTS lazily. It adds 16 tests for duckdb and none for any other dialect. Synthetic check: 1110→1126 tests, all three present. Before (01e287c) → after, all 0 misses: sample 108.5→108.5, c1 2567.9→2549.5 (noise), c2 1811.6→1796.4 (noise), c3 1757.1→1757.1, c4 1951.2→1951.2, c5 12.7→12.7, c6 395.7→395.7. Server CPU +about 0.3 s, paid only when a dialect module is patched. Audit: a synthetic syntax break in each of the 33 dialect modules selects every test whose own body names that dialect as a string, so duckdb's helper path was the only gap of this kind.
 
 ## STATE (2026-11-21 ~18:45 PST) — A2g not submitted; merging EQUIV
@@ -89,6 +208,13 @@
 - Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
+- **heavy-c3 857c4c7 (BB-62712261, 00:50): 154.5, sim 147.894, CPU 6.65, 0 miss. Same as main d9fe067 (154.4) within noise.** Local sample CPU halved, but server CPU did not move, so the remaining practice CPU is not in the tpcds child. Next: main + heavy-s fa0acf4 (per-phase map + snapshots).
+- **MAIN d9fe067 (BB-AF8AB844, 00:30): 154.4, sim 147.894, CPU 6.46 (-1.8 vs heavy-c), 0 miss. New best, entered in the final.** Next: heavy-c3 857c4c7. Never-imported modules (other dialects) now skip the class/module-level fallback. Sample local CPU 3.65 -> 1.9, the same as no check; about half of the corpus full checks are gone; 0 cleared commits fail tpcds.
+- **heavy-c 1592683 (BB-339E9196, 00:17): 156.2, sim 147.894 (=heavy-t), CPU 8.26 (-0.3), 0 miss. New best, entered in the final.** The coverage gate clears ~3x more corpus commits with no child, but on practice the checked commit still runs the digest, so CPU stays over ~6 s. Next: main d9fe067 (= heavy-c + EQUIV l-n), scoring as BB-AF8AB844.
+- **heavy-t fbf4c38 (BB-D680ECBE): 156.5, sim 147.894 (-20.0), CPU 8.58, 0 miss. Best score so far and entered in the final, but CPU is over the ~6 s rule. The digest pass costs ~2.6 s local per checked commit. LEAD is building a cheaper check before merging.**
+- MAIN (23:24): BB-53DBBE12 ad14fd1 = 173.5 (sim 167.914, CPU 5.57, 0 miss). The EQUIV merges add CPU and no practice sim, and 37977a1 (172.4) is still the best 0-miss score. heavy-t is next.
+- HEAVY config D (23:19): BB-6B8EA1BC 243de96 = 173.1 (sim 167.914 unchanged, CPU 5.16, 0 miss). The plan check never fires on the practice tpcds commits. It is CPU-cheaper than A3m (-0.5 s) but saves no sim. Next probe: heavy-merge 920a533 defaults (MAXQ 20, QCPU 1.7, budget 20). If sim is still 167.914, the practice tpcds commits hit the guard, so a plan check cannot get the A2 gap.
+- A3 (23:17): BB-F1AB4F28 273dd1f = 173.6 (sim 167.914 unchanged, CPU 5.64, 0 miss). ALL fallbacks hide nothing on practice. The tpcds waste A2 found is in normal selections, so heavy-d (BB-6B8EA1BC, queued) is the lever. Main CPU is now ~5.6s, near the ~6s cap.
 - MERGED (23:10): EQUIV (i) 4496618 + (j) 0488b2b + (k) e89679c -> main (828b279). Sample 108.5/0; c1-c5 8037.6/0; c6 395.7/0. Bench 44980193134 green. (i) closes the latent duckdb-import miss.
 - MERGED (19:14): EQUIV (f) 72bd437 + (g) 01e287c -> main (7bf6b9e). Sample 108.5/0; c1-c5 8113.5/0 (noise); c6 395.7/0 (was 491.4). Bench 44979040461 green; prior main 53c2f06 bench 44978380359 green. Submit main when submits are unblocked.
 - MERGED (18:55): EQUIV (d) 234552b + (e) 1c486e0 -> main. Sample 108.5/0; c1-c5 8160.5/0 (shrink-step noise vs 8080.3); c6 491.4/0 (was 582.4). Bench 44977494210 green. Submit main when submits are unblocked.
