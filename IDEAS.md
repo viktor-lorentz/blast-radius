@@ -1,6 +1,6 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
-VERDICT 06:43 PT: Planner-only 3-query tpcds canary (in-place sqlglot/planner.py, own window) and a 4s overflow window for phase checks the shared budget skips. This machine: c1 2134.230→2106.308 (m010251, m010037), c2 1510.427→1488.973 (m020061, −21.454). m020146 and m060033 still select 1106. m040010, m030071, m030058 still select 1106. 0 misses: sample 108.463, c1 2106.308, c2 1488.973, c3 1757.060, c4 1722.283, c5 12.663, c6 395.681. c1 CPU 85.21→90.17 (+4.96s). Submitting.
+VERDICT 06:43 PT: Planner-only 3-query tpcds canary (in-place sqlglot/planner.py, own window) and a 4s overflow window for phase checks the shared budget skips. This machine: c1 2134.230→2106.308 (m010251, m010037), c2 1510.427→1488.973 (m020061, −21.454). m020146 and m060033 still select 1106. m040010, m030071, m030058 still select 1106. 0 misses: sample 108.463, c1 2106.308, c2 1488.973, c3 1757.060, c4 1722.283, c5 12.663, c6 395.681. c1 CPU 85.21→90.17 (+4.96s). Submitted af1283b as BB-009F3031 (06:44 PT, scoring).
 
 VERDICT 06:13 PT: Short tpcds execution canary (first 3 executed queries, in-place refused-guard files only, own CPU window) kept m040010, m030071, m030058 and dropped only c2 m020061 (−21.454s; c2 1521.858→1500.404). 0 misses on sample and c1–c6. No second commit: other frame-matching passes already omit tpcds, and m010251 (14.8s) is queued by the phase check, which skips it once the 20s window is spent. Not submitted. Code reverted.
 
