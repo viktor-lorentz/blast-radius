@@ -385,7 +385,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
 
     old = (SRC / path).read_text()
     new = P.apply(old, fp)
-    regions = astdiff.diff(old, new, version_norm=version_norm)
+    # tests/test_typing.py compares the code objects (co_varnames, co_code) of sqlglot/typing/ functions
+    regions = astdiff.diff(old, new, version_norm=version_norm,
+                           code_norm=not path.startswith("sqlglot/typing/"))
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
