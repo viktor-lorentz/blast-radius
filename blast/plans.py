@@ -147,7 +147,7 @@ def _loads(src: Path, fp) -> bool:
 # whose hunks sit only inside functions reaches just the union of their queries; any
 # hunk at module or class level, in an import-time function, or in setUpClass reaches
 # every query. Files the test never imports at the pinned commit are not loaded.
-_EMPTY = os.environ.get("BR_PLAN_EMPTY", "drop")  # drop | digest: reach is empty
+_EMPTY = os.environ.get("BR_PLAN_EMPTY", "digest")  # digest | drop: reach is empty
 
 
 def _load_qmap(path) -> dict | None:
