@@ -4,6 +4,12 @@
 - A2 (cbc7b7e, BB-87155FD8, 415.3): dropping test_execute_tpcds outside ALL cuts hidden sim 167.914 -> 111.101 (-56.8s) but misses 1 hidden commit. tpcds IS the hidden waste; ship it only behind a canary (HEAVY). Sample also misses 2jrq/3utz, where tpcds co-fails with 7 and 36 other selected tests.
 - A1 (78c092f, BB-74C1E36C, 172.0): dropping test_max_nodes outside ALL leaves hidden sim at 167.914, 0 misses. No hidden waste there. Auto-entered in the final but has local corpus misses (c3 18), so Phase 3 must Pick over it.
 
+## STATE (2026-11-21 ~18:10 PST) — A3, A2g, A4 built; evals running
+- Branches: abl-a3 0fcf0f4, abl-a2g 874a29e (pushed, bench dispatched), abl-a4 25d65bc = A3+A2g (local, eval running). abl-a1 bench green.
+- Sample: A3, A2g and main all 108.5, 0 misses. c1: main 2605.3/0, A3 2531.7/0 (-73.6s), A2g 1893.7/6 misses (A2 had 12).
+- A2g's c1 misses are mutations of generator.py / optimizer (merge_subqueries, canonicalize, qualify_columns): plan-changing edits that the plan check exists to catch. A2g is not final-safe; it is a diagnosis. Its hidden score at ~111 with 0 misses would mean the hidden tpcds commits touch unguarded modules and the plan check (blast/plans.py) never fired in the container ("did not fire on the hidden batch" since 25d3142). A miss means the hidden failure is in an unguarded module the guard does not cover.
+- Plan: 18:30 slot A3 + A2g; 19:00 A4 (if A3/A2g clean) or plan-check-in-container fix.
+
 ## STATE (2026-11-21 ~18:05 PST) — A1 and A2 scored, both slots used
 Both ablations went in at 17:30 and 17:38 PST, before this LEAD session. The page shows 0 of 2 left; the next slot frees at 18:30 PST. Next: A3 (narrow ALL fallbacks) and a canary-guarded tpcds drop (A2-safe). A4 as defined (combine the ablations that cut sim without a miss) has nothing to combine, because A1 cut nothing and A2 missed.
 
