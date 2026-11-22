@@ -190,6 +190,23 @@ class All(Exception):
 
 import re as _re  # noqa: E402
 
+
+_TREE_TEXT: dict | None = None
+
+
+def _spelled_elsewhere(name: str, path: str) -> bool:
+    """True when any other Python file in the pinned tree spells `name` as a word."""
+    global _TREE_TEXT
+    if _TREE_TEXT is None:
+        _TREE_TEXT = {}
+        for f in SRC.rglob("*.py"):
+            try:
+                _TREE_TEXT[str(f.relative_to(SRC))] = f.read_text(errors="replace")
+            except OSError:
+                continue
+    w = _re.compile(rf"\b{_re.escape(name)}\b")
+    return any(w.search(t) for p, t in _TREE_TEXT.items() if p != path)
+
 _SIDE_EFFECTS = _re.compile(r"write_bytes|write_text|\.unlink\(|rmtree|os\.environ|\.mkdir\(|subprocess|chdir|os\.remove|tempfile")
 # Calls that mutate the tree or another process even when the regex misses the callee body.
 _LEAK_CALLS = frozenset({"run_path", "copy_extensions_to_source", "Popen", "rmtree"})
@@ -386,8 +403,10 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     old = (SRC / path).read_text()
     new = P.apply(old, fp)
     # tests/test_typing.py compares the code objects (co_varnames, co_code) of sqlglot/typing/ functions
-    regions = astdiff.diff(old, new, version_norm=version_norm,
-                           code_norm=not path.startswith("sqlglot/typing/"))
+    code_norm = not path.startswith("sqlglot/typing/")
+    drop = frozenset(n for n in astdiff.unused_new_defs(old, new) if not _spelled_elsewhere(n, path)) \
+        if code_norm else frozenset()
+    regions = astdiff.diff(old, new, version_norm=version_norm, code_norm=code_norm, drop=drop)
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
