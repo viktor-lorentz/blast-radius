@@ -20,5 +20,5 @@ RUN python -m compileall -q /app /opt/sqlglot/sqlglot /opt/sqlglot/tests \
  && python /app/tools/fp_baseline.py /opt/sqlglot /app/fp \
  && python /app/tools/plan_golden.py /opt/sqlglot /app/fp \
  && PYTHONHASHSEED=0 python /app/tools/plan_qmap.py /opt/sqlglot /app/fp/tpcds_qmap.json
-ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONDONTWRITEBYTECODE=1 BR_MAXNODES=0
 CMD ["python", "/app/selector.py"]
