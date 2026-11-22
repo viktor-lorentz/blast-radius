@@ -56,6 +56,33 @@ def load_dialect_tests(id_to_number: dict) -> None:
         got = {nums[i] for i in idxs if 0 <= i < len(nums) and nums[i] >= 0}
         if got:
             DIALECT_TESTS[mod] = got
+    global _HELPER_IDS
+    _HELPER_IDS = id_to_number
+
+
+_HELPER_IDS = None
+
+
+def _with_helper_dialects() -> dict:
+    """DIALECT_TESTS plus the tests that name each dialect through a helper of their file.
+
+    The load trace misses a test that reaches a dialect only inside a helper (the optimizer
+    fixture runner executes queries via .sql(dialect="duckdb")). Built once, on first use.
+    """
+    global _HELPER_IDS
+    if _HELPER_IDS is None:
+        return DIALECT_TESTS
+    ids, _HELPER_IDS = _HELPER_IDS, None
+    try:
+        from blast.helper_dialects import build
+        named = build(SRC)
+    except Exception as e:
+        log("helper dialects skip:", repr(e))
+        return DIALECT_TESTS
+    for mod, got in DIALECT_TESTS.items():
+        extra = {ids[t] for t in named.get(mod.rsplit(".", 1)[-1], ()) if t in ids}
+        got |= extra
+    return DIALECT_TESTS
 
 
 def _module_name(path: str) -> str:
@@ -73,7 +100,7 @@ def _importers_of(path: str, maps):
     """
     if not path.startswith("sqlglot/"):
         return None
-    dial = DIALECT_TESTS.get(_module_name(path))
+    dial = _with_helper_dialects().get(_module_name(path))
     if dial:
         return set(dial)
     try:
@@ -82,6 +109,44 @@ def _importers_of(path: str, maps):
     except Exception as e:
         log("importers skip:", repr(e))
         return None
+
+
+def _failed_importers(mods, maps):
+    """Tests that import every module that stopped importing, or None if any is unknown.
+
+    A module that raises at import fails every test that imports it, and only
+    those; the static import closure names them.
+    """
+    acc: set = set()
+    for mod in mods:
+        got = _importers_of(mod.replace(".", "/") + ".py", maps)
+        if not got:
+            got = _importers_of(mod.replace(".", "/") + "/__init__.py", maps)
+        if not got:
+            return None
+        acc |= got
+    log("import failure narrowed:", list(mods)[:3], len(acc))
+    return acc
+
+
+def _unrun_main(path: str) -> bool:
+    """True for a package's __main__.py that no test can run.
+
+    Python runs __main__.py only for ``python -m pkg`` or runpy. When no test
+    file spells -m, run_module or the __main__.py path, nothing executes it.
+    """
+    if not path.endswith("/__main__.py"):
+        return False
+    import re
+    pkg = re.escape(_module_name(path[: -len("/__main__.py")] + ".py"))
+    pat = re.compile(r"run_module|[\"']-m[\"']|-m\s+" + pkg + r"\b|__main__\.py")
+    try:
+        for f in (SRC / "tests").rglob("*.py"):
+            if pat.search(f.read_text(errors="replace")):
+                return False
+    except OSError:
+        return False
+    return True
 
 
 _MAX_NODES_ID = "tests/test_parser.py::TestParser::test_max_nodes"
@@ -138,7 +203,7 @@ def _dialect_load_union(files):
             return None
         if not path.startswith("sqlglot/"):
             return None
-        dial = DIALECT_TESTS.get(_module_name(path))
+        dial = _with_helper_dialects().get(_module_name(path))
         if not dial:
             return None
         acc |= set(dial)
@@ -192,11 +257,67 @@ class All(Exception):
 import re as _re  # noqa: E402
 
 
+# per patch: dotted name -> names defined, for new sqlglot modules that only hold plain defs;
+# and the added text of every patched file
+_NEW_PLAIN: dict = {}
+_PATCH_ADDED: dict = {}
+
+
+def _note_new_modules(files) -> None:
+    _NEW_PLAIN.clear()
+    _PATCH_ADDED.clear()
+    for f in files:
+        p = f.new_path or f.path
+        try:
+            _PATCH_ADDED[p] = "\n".join(l[1:] for h in f.hunks for l in h.lines if l.startswith("+"))
+        except Exception:
+            _PATCH_ADDED[p] = None
+        if (f.old_path is None and p and p.startswith("sqlglot/") and p.endswith(".py")
+                and not p.endswith("/__init__.py") and not f.binary and not f.special):
+            try:
+                names = astdiff.plain_new_module(P.apply("", f))
+            except Exception:
+                names = None
+            if names is not None:
+                _NEW_PLAIN[p[:-3].replace("/", ".")] = (p, names)
+
+
+def _unused_new_imports(old: str, new: str, path: str) -> frozenset:
+    """(module, name, bound) for added `from M import name` lines of a new plain module M whose
+    bound name nothing else spells: not the old file, not the rest of the new file, not the pinned
+    tree, and no other file of the patch apart from M's own def."""
+    if not _NEW_PLAIN:
+        return frozenset()
+    try:
+        tree = ast.parse(new)
+    except (SyntaxError, ValueError, RecursionError):
+        return frozenset()
+    out = set()
+    for s in tree.body:
+        if not isinstance(s, ast.ImportFrom) or s.level or s.module not in _NEW_PLAIN:
+            continue
+        mpath, names = _NEW_PLAIN[s.module]
+        for a in s.names:
+            bound = a.asname or a.name
+            if a.name not in names:
+                continue
+            w = _re.compile(rf"\b{_re.escape(bound)}\b")
+            if w.search(old) or len(w.findall(new)) != 1 or _reachable_elsewhere(bound, path):
+                continue
+            others = [t for p, t in _PATCH_ADDED.items() if p not in (path, mpath)]
+            if any(t is None or w.search(t) for t in others):
+                continue
+            if a.asname and a.asname != a.name and len(_re.findall(rf"\b{_re.escape(a.name)}\b", new)) != 1:
+                continue
+            out.add((s.module, a.name, bound))
+    return frozenset(out)
+
+
 _TREE_TEXT: dict | None = None
 
 
-def _spelled_elsewhere(name: str, path: str) -> bool:
-    """True when any other Python file in the pinned tree spells `name` as a word."""
+def _tree_text() -> dict:
+    """Pinned-tree path -> text of every Python file, read once."""
     global _TREE_TEXT
     if _TREE_TEXT is None:
         _TREE_TEXT = {}
@@ -205,8 +326,23 @@ def _spelled_elsewhere(name: str, path: str) -> bool:
                 _TREE_TEXT[str(f.relative_to(SRC))] = f.read_text(errors="replace")
             except OSError:
                 continue
+    return _TREE_TEXT
+
+
+def _reachable_elsewhere(name: str, path: str) -> bool:
+    """True when another file of the pinned tree could read `name` from the module at `path`:
+    as an attribute, a string (getattr, serialized names), in an import line, or through a star
+    import. A bare local or global of the same spelling in another module is its own binding."""
+    e, m = _re.escape(name), _re.escape(path[:-3].rsplit("/", 1)[-1])
+    pat = _re.compile(rf"\.\s*{e}\b|['\"]{e}['\"]|^\s*(from\s+\S+\s+)?import\b.*\b{e}\b"
+                      rf"|^\s*{e}\s*(as\s+\w+\s*)?[,)]?\s*(#.*)?$|^\s*from\s+\S*\b{m}\s+import\s+\*", _re.M)
+    return any(pat.search(t) for p, t in _tree_text().items() if p != path)
+
+
+def _spelled_elsewhere(name: str, path: str) -> bool:
+    """True when any other Python file in the pinned tree spells `name` as a word."""
     w = _re.compile(rf"\b{_re.escape(name)}\b")
-    return any(w.search(t) for p, t in _TREE_TEXT.items() if p != path)
+    return any(w.search(t) for p, t in _tree_text().items() if p != path)
 
 _SIDE_EFFECTS = _re.compile(r"write_bytes|write_text|\.unlink\(|rmtree|os\.environ|\.mkdir\(|subprocess|chdir|os\.remove|tempfile")
 # Calls that mutate the tree or another process even when the regex misses the callee body.
@@ -407,7 +543,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     code_norm = not path.startswith("sqlglot/typing/")
     drop = frozenset(n for n in astdiff.unused_new_defs(old, new) if not _spelled_elsewhere(n, path)) \
         if code_norm else frozenset()
-    regions = astdiff.diff(old, new, version_norm=version_norm, code_norm=code_norm, drop=drop)
+    drop_imports = _unused_new_imports(old, new, path) if code_norm else frozenset()
+    regions = astdiff.diff(old, new, version_norm=version_norm, code_norm=code_norm, drop=drop,
+                           drop_imports=drop_imports)
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
@@ -415,6 +553,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             global _IMPORTER_HIT
             _IMPORTER_HIT = True
             return loaded
+        if _unrun_main(path):
+            return set()
         raise All(f"unparsable: {path}")
     out: set = set()
     for r in regions:
@@ -430,6 +570,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             if loaded:
                 _IMPORTER_HIT = True
                 return loaded
+            if _unrun_main(path):
+                continue
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
         if is_tests and _SIDE_EFFECTS.search(old) and _region_leaks(path, old, new, r.start, r.end):
@@ -1105,6 +1247,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         if not files:
             raise All("empty patch")
         version_norm = not _edits_version_ctor(patch_text)
+        _note_new_modules(files)
         try:
             if _only_redundant_assignments(files):
                 return set()
@@ -1135,7 +1278,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                         and fp.old_path == fp.new_path and not fp.binary):
                     patched[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
             try:
-                out |= sem.tests_for(patched)
+                out |= sem.tests_for(patched, lambda mods: _failed_importers(mods, maps))
             except (NeedAll, RuntimeError, ValueError, OSError) as e:
                 # An import failure is observed by the tests that load the module.
                 # The dialect trace is that set for a leaf dialect module. A core
