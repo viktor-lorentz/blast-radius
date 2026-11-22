@@ -37,6 +37,9 @@ def _base(path: str) -> str:
     return path.rsplit("/", 1)[-1]
 
 
+INERT_TOPS = ("benchmarks", "posts", "docs", ".github", "pdoc")  # same as selector.INERT_PREFIXES
+
+
 def _shadows(name: str) -> bool:
     """A root-level module or directory named like an importable module shadows it (cwd is on sys.path)."""
     if not name.isidentifier():
@@ -248,7 +251,7 @@ class FileLevel:
         b = _base(path)
         stem = b[:-3]
         if b == "__init__.py":
-            raise NeedAll(f"new package: {path}")
+            return self._new_package(path)
         if b == "conftest.py":
             if plain_module(text) and "autouse" not in text and not re.search(r"\bpytest_\w+", text):
                 return set()
@@ -275,6 +278,48 @@ class FileLevel:
                 raise NeedAll(f"root module shadows an import: {path}")
             return set()
         if _shadows(top):
+            raise NeedAll(f"root directory shadows an import: {path}")
+        return set()
+
+    def py_elsewhere(self, path: str) -> set:
+        """An existing Python file outside sqlglot/, tests/ and sqlglotc/ was edited.
+
+        Only a test that opens it or spells its module name can run it. A root
+        module or directory named like an importable module shadows it, so that
+        stays on the full suite.
+        """
+        if _shadows(path.split("/")[0][:-3] if "/" not in path else path.split("/")[0]):
+            raise NeedAll(f"py outside sqlglot/tests shadows an import: {path}")
+        stem = _base(path)[:-3]
+        out = set(self.maps.opened_by(path) or ())
+        if stem.isidentifier():
+            out |= set(self.mentioning({stem}, scoped=True))
+        return out
+
+    def _has_py(self, d: str) -> bool:
+        """The pinned tree already holds Python files under directory `d`."""
+        root = self.src / d
+        return root.is_dir() and any("__pycache__" not in x.parts for x in root.rglob("*.py"))
+
+    def _new_package(self, path: str) -> set:
+        """A new __init__.py. Only a directory that already holds Python files can change how those load."""
+        if "/" not in path:
+            raise NeedAll(f"new package: {path}")
+        d = path.rsplit("/", 1)[0]
+        if d.split("/")[0] in INERT_TOPS:
+            return set()  # no scored test imports or reads these
+        if self._has_py(d):
+            raise NeedAll(f"new package over existing modules: {path}")
+        if path.startswith("sqlglot/"):
+            if (self.src / (d + ".py")).exists():
+                raise NeedAll(f"new package shadows a module: {path}")
+            name = d.rsplit("/", 1)[-1]
+            return set(self.mentioning({name}, scoped=True)) if name.isidentifier() else set()
+        if path.startswith("sqlglotc/"):
+            return self._sqlglotc()
+        if path.startswith("tests/"):
+            return set()  # a fresh directory: nothing collected there yet
+        if _shadows(d.split("/")[0]):
             raise NeedAll(f"root directory shadows an import: {path}")
         return set()
 

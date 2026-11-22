@@ -530,7 +530,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     if not (is_tests or is_pkg):
         if path.startswith(INERT_PREFIXES):
             return set()
-        raise All(f"py outside sqlglot/tests: {path}")
+        if maps is None:
+            raise All("no maps")
+        return _level_call(maps, lambda fl: fl.py_elsewhere(path))
     if maps is None:
         raise All("no maps")
     if is_pkg and path not in maps.pyfiles:
