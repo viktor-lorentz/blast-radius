@@ -8,6 +8,7 @@
 - Branches: abl-a3 0fcf0f4, abl-a2g 874a29e (pushed, bench dispatched), abl-a4 25d65bc = A3+A2g (local, eval running). abl-a1 bench green.
 - Sample: A3, A2g and main all 108.5, 0 misses. c1: main 2605.3/0, A3 2531.7/0 (-73.6s), A2g 1893.7/6 misses (A2 had 12).
 - A2g's c1 misses are mutations of generator.py / optimizer (merge_subqueries, canonicalize, qualify_columns): plan-changing edits that the plan check exists to catch. A2g is not final-safe; it is a diagnosis. Its hidden score at ~111 with 0 misses would mean the hidden tpcds commits touch unguarded modules and the plan check (blast/plans.py) never fired in the container ("did not fire on the hidden batch" since 25d3142). A miss means the hidden failure is in an unguarded module the guard does not cover.
+- Plan check works in a container (main's c1 eval, run in Docker with the scorer's flags, logs "tpcds dropped 2"). Sample tpcds selections are only 2jrq (eliminate_joins) and 3utz (serde): both guarded, both real failures. So the hidden waste is most likely commits whose DuckDB SQL or optimized tree changes while tpcds still passes: the plan check is too strict for them, not broken. For HEAVY: per query, only the queries whose rendering or tree changed need checking (execute just those with the patched executor), rather than all-or-nothing on the whole tree.
 - Plan: 18:30 slot A3 + A2g; 19:00 A4 (if A3/A2g clean) or plan-check-in-container fix.
 
 ## STATE (2026-11-21 ~18:05 PST) — A1 and A2 scored, both slots used
