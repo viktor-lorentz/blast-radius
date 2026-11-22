@@ -101,6 +101,15 @@ def _plain_body(stmts, in_class=False) -> bool:
     return True
 
 
+def _unplain_stmts(text: str):
+    """ast.dump of the module-level statements that are not plain definitions, or None if unparsable."""
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError):
+        return None
+    return [ast.dump(s) for s in tree.body if not _plain_body([s])]
+
+
 def plain_module(text: str) -> bool:
     """Module-level code is only imports and definitions (nothing runs at collection beyond imports)."""
     try:
@@ -120,6 +129,35 @@ def _cfg_pytest(text: str):
     return dict(cp["tool:pytest"]) if cp.has_section("tool:pytest") else None
 
 
+# addopts flags that change only how pytest reports, never which tests run or how they end
+_DISPLAY_OPT = re.compile(r"^(-q+|-v+|--quiet|--verbose|-r\S*|--tb=\S+|--color=\S+|--code-highlight=\S+"
+                          r"|--durations=\d+|--durations-min=[\d.]+|--no-header|--no-summary)$")
+
+
+def _strip_display(cfg):
+    if not isinstance(cfg, dict):
+        return cfg
+    cfg = dict(cfg)
+    ini = cfg.get("ini_options") if "ini_options" in cfg else None
+    target = ini if isinstance(ini, dict) else cfg
+    a = target.get("addopts")
+    if a is None:
+        return cfg
+    toks = a if isinstance(a, list) else str(a).split()
+    keep = [t for t in toks if not _DISPLAY_OPT.match(t)]
+    target = dict(target)
+    if keep:
+        target["addopts"] = " ".join(keep)
+    else:
+        target.pop("addopts")
+    if target is not cfg and isinstance(ini, dict):
+        cfg["ini_options"] = target
+        if not target:
+            cfg.pop("ini_options")
+        return cfg or None
+    return target or None
+
+
 def pytest_config_same(path: str, old: str | None, new: str | None) -> bool:
     """True when pytest reads the same configuration before and after (root pyproject.toml / setup.cfg)."""
     reader = _toml_pytest if path.endswith(".toml") else _cfg_pytest
@@ -128,7 +166,7 @@ def pytest_config_same(path: str, old: str | None, new: str | None) -> bool:
         b = reader(new) if new is not None else None
     except Exception:
         return False
-    return a is None and b is None or a == b
+    return _strip_display(a) == _strip_display(b)
 
 
 class FileLevel:
@@ -206,7 +244,7 @@ class FileLevel:
             return self._root_importers(path[:-3])
         return set()
 
-    def py_added(self, path: str, text: str) -> set:
+    def py_added(self, path: str, text: str, moved_from: str | None = None) -> set:
         b = _base(path)
         stem = b[:-3]
         if b == "__init__.py":
@@ -225,7 +263,8 @@ class FileLevel:
                 out |= self.maps.file_tests(TYPING_TEST)
             return out
         if path.startswith("tests/"):
-            if (b.startswith("test_") or b.endswith("_test.py")) and not plain_module(text):
+            if (b.startswith("test_") or b.endswith("_test.py")) and not plain_module(text) \
+                    and not self._same_collection_code(moved_from, path, text):
                 raise NeedAll(f"new test module runs code at collection: {path}")
             return set()
         if path.startswith("sqlglotc/"):
@@ -238,6 +277,19 @@ class FileLevel:
         if _shadows(top):
             raise NeedAll(f"root directory shadows an import: {path}")
         return set()
+
+    def _same_collection_code(self, moved_from: str | None, path: str, text: str) -> bool:
+        """A moved test module whose collection-time statements all ran before, under its old name."""
+        if not moved_from or not moved_from.startswith("tests/") or not moved_from.endswith(".py"):
+            return False
+        if moved_from.rsplit("/", 1)[0] != path.rsplit("/", 1)[0]:
+            return False  # another directory may bring another conftest
+        try:
+            old = (self.src / moved_from).read_text(errors="replace")
+        except OSError:
+            return False
+        a, b = _unplain_stmts(old), _unplain_stmts(text)
+        return a is not None and b is not None and set(b) <= set(a)
 
     # ------------------------------------------------------------ entry
     def select(self, fp, new_text_of) -> set:
@@ -258,7 +310,8 @@ class FileLevel:
         if new_p and (old_p != new_p or fp.copy):
             text = new_text_of(fp)
             if new_p.endswith(".py"):
-                out |= self.py_added(new_p, text)
+                moved = old_p if (old_p and old_p != new_p and not fp.copy) else None
+                out |= self.py_added(new_p, text, moved)
             else:
                 out |= self.data_changed(new_p, None, text)
         return out
