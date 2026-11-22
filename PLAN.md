@@ -58,7 +58,7 @@ Before Phase 3 it does not matter which commit is auto-entered.
 
 ## Rules
 - Only LEAD submits, merges to main, and edits results.tsv. Everyone else works in their own git worktree
-  (`git worktree add ../br-<name> -b <name>`) and hands LEAD a pushed commit plus numbers in an
+  (`git worktree add .wt/<name> -b <name>`, inside the repo so the overnight Stop hook and permissions apply; `.wt/` is git-excluded) and hands LEAD a pushed commit plus numbers in an
   "## HANDOFF" section at the top of IDEAS.md.
 - Every submitted commit is pushed and builds (bench workflow green). Never force-push.
 - Keep server CPU at or under ~6 s in total.
