@@ -141,7 +141,7 @@ def _loads(src: Path, fp) -> bool:
         return False
 
 
-def _run(src: Path, patched: dict, golden: list | None) -> dict:
+def _run(src: Path, patched: dict, golden: list | None, only: set | None = None) -> dict:
     src = Path(src).resolve()
     tmp = os.environ.get("TMPDIR", "/tmp")
     paths = []
@@ -157,6 +157,9 @@ def _run(src: Path, patched: dict, golden: list | None) -> dict:
         repo = str(Path(__file__).resolve().parents[1])
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0")
         env["PYTHONPATH"] = repo + os.pathsep + env.get("PYTHONPATH", "")
+        env.pop("BR_PLAN_ONLY", None)
+        if only is not None:
+            env["BR_PLAN_ONLY"] = ",".join(str(i) for i in sorted(only))
         proc = subprocess.run(
             [sys.executable, "-m", "blast.plans", "--child", str(src), paths[0], paths[1], outp],
             env=env,
@@ -192,6 +195,12 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         return {}
     ranked = []
     updates = {}
+    cover = None
+    if golden_path is not None and os.environ.get("BR_PLAN_COVER", "1") != "0":
+        try:
+            cover = load_cover(Path(golden_path).with_name("tpcds_cover.json"))
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            cover = None
     for stem, text, nums in rows:
         if number not in nums:
             continue
@@ -204,10 +213,13 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         patched = _safe_patch(Path(src), text)
         if patched is None:
             continue
-        ranked.append((marginal, stem, patched, nums))
+        only = _affected(Path(src), text, cover) if cover is not None else None
+        if only is not None and not only:
+            updates[stem] = set(nums) - {number}
+            continue
+        ranked.append((marginal, stem, patched, nums, only))
     if not ranked:
         return updates
-    ranked.sort(reverse=True)
     import resource
 
     def cpu() -> float:
@@ -227,13 +239,220 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         rows_golden = golden.get("rows") if golden.get("ok") else None
     if not rows_golden:
         return updates
-    for _marginal, stem, patched, nums in ranked:
+    ranked.sort(key=lambda r: r[:2], reverse=True)
+    for _marginal, stem, patched, nums, only in ranked:
         if cpu() - start >= budget_s:
             break
-        got = _run(Path(src), patched, rows_golden)
+        got = _run(Path(src), patched, rows_golden, only)
         if got.get("ok") and got.get("same"):
             updates[stem] = set(nums) - {number}
     return updates
+
+
+def _changed_lines(fp, n_old: int) -> tuple:
+    """(old lines a patch touches: deleted lines and both neighbours of an insertion,
+    new lines it adds), 1-based."""
+    old_out, new_out = set(), set()
+    for h in fp.hunks:
+        line = h.old_start if h.old_len else h.old_start + 1  # next old line
+        nline = h.new_start if h.new_len else h.new_start + 1  # next new line
+        for raw in h.lines:
+            tag = raw[:1]
+            if tag == "-":
+                old_out.add(line)
+                line += 1
+            elif tag == "+":
+                old_out.update((line - 1, line))
+                new_out.add(nline)
+                nline += 1
+            else:
+                line += 1
+                nline += 1
+    return {n for n in old_out if 1 <= n <= max(n_old, 1)} or {1}, new_out
+
+
+def _owners(tree) -> list:
+    """(body first line, body last line, code first line, qualified name) of every def."""
+    import ast
+    out = []
+
+    def walk(node, prefix):
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                name = prefix + (child.name,)
+                if not isinstance(child, ast.ClassDef) and child.body:
+                    first = min([child.lineno] + [d.lineno for d in child.decorator_list])
+                    out.append((max(child.lineno + 1, child.body[0].lineno), child.end_lineno, first, name))
+                walk(child, name)
+            else:
+                walk(child, prefix)
+
+    walk(tree, ())
+    return out
+
+
+def _owner(owners, line):
+    inner = [o for o in owners if o[0] <= line <= o[1]]
+    return max(inner, key=lambda o: o[2]) if inner else None
+
+
+def _edit_keys(src: Path, text: str):
+    """{module: first lines of the functions whose bodies the patch edits}, or None
+    when an edit touches a module, class or def-header line, a renamed or ambiguous
+    function, or the patched module no longer compiles."""
+    import ast
+    import warnings
+    try:
+        files = P.parse(text)
+    except P.PatchError:
+        return None
+    out: dict = {}
+    for fp in files:
+        if _unread(src, fp):
+            continue
+        path = str(fp.path)
+        try:
+            old = (src / path).read_text()
+            new = P.apply(old, fp)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                old_owners = _owners(ast.parse(old))
+                new_owners = _owners(compile(new, path, "exec", ast.PyCF_ONLY_AST))
+                compile(new, path, "exec")  # symbol-table errors only show here
+        except (OSError, UnicodeError, SyntaxError, ValueError, P.PatchError):
+            return None
+        keys = out.setdefault(path, set())
+        by_name: dict = {}
+        for o in old_owners:
+            by_name.setdefault(o[3], []).append(o[2])
+        old_lines, new_lines = _changed_lines(fp, old.count("\n") + 1)
+        for line in old_lines:
+            o = _owner(old_owners, line)
+            if o is None:
+                return None
+            keys.add(o[2])
+        for line in new_lines:
+            o = _owner(new_owners, line)
+            if o is None or o[3] not in by_name:
+                return None
+            keys.update(by_name[o[3]])
+    return out or None
+
+
+def _affected(src: Path, text: str, cover):
+    """TPC-DS query indices whose run in the pristine tree called a function the patch
+    edits, or None when the edit may reach every query (import-time code, a function
+    whose callers depend on query order, i.e. caches, or a module the recording never
+    imported). An empty set means the patch cannot change any plan or executor run."""
+    keys = _edit_keys(src, text)
+    if keys is None:
+        return None
+    modules, eager, per_query = cover
+    out: set = set()
+    for path, lines in keys.items():
+        if path not in modules:
+            return None
+        hit = per_query.get(path, {})
+        for line in lines:
+            if line in eager.get(path, ()):
+                return None
+            out.update(hit.get(line, ()))
+    return out
+
+
+def _uncovered(src: Path, text: str, cover) -> bool:
+    return _affected(src, text, cover) == set()
+
+
+def _cover_child(src: str, out_path: str, order: str) -> None:
+    """Build time: which sqlglot functions run on import, and on each TPC-DS query's
+    plans and executor run over empty tables, in the pristine tree."""
+    sys.path.insert(0, src)
+    os.chdir(src)
+    root = os.path.realpath(src) + os.sep
+    seen: dict = {}  # path -> {(first line, name): set of query indices, -1 = import}
+    state = {"q": -1}
+
+    def start(code, _offset):
+        name = os.path.realpath(code.co_filename)
+        if name.startswith(root):
+            seen.setdefault(name[len(root):], {}).setdefault(
+                (code.co_firstlineno, code.co_name), set()).add(state["q"])
+        return sys.monitoring.DISABLE
+
+    mon = sys.monitoring
+    mon.use_tool_id(mon.PROFILER_ID, "brcover")
+    mon.register_callback(mon.PROFILER_ID, mon.events.PY_START, start)
+    mon.set_events(mon.PROFILER_ID, mon.events.PY_START)
+    ok = False
+    try:
+        import sqlglot  # noqa: F401
+        from sqlglot import parse_one, transpile
+        from sqlglot.executor import execute
+        from sqlglot.executor.table import Table
+        from sqlglot.optimizer import optimize
+        from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+        try:
+            import tests.test_executor  # noqa: F401
+        except Exception:
+            pass
+        empty = {t: Table(columns=tuple(cols)) for t, cols in TPCDS_SCHEMA.items()}
+        queries = [sql for meta, sql, _e in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")
+                   if meta.get("execute")]
+        order_ix = list(range(len(queries)))
+        if order == "rev":
+            order_ix.reverse()
+        for i in order_ix:
+            mon.restart_events()
+            state["q"] = i
+            sql = queries[i]
+            transpile(sql, write="duckdb")
+            optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
+            try:
+                execute(parse_one(sql), schema=TPCDS_SCHEMA, tables=empty)
+            except Exception:
+                pass
+        ok = True
+    finally:
+        mon.set_events(mon.PROFILER_ID, 0)
+        mon.free_tool_id(mon.PROFILER_ID)
+    if ok:
+        Path(out_path).write_text(json.dumps({
+            path: [[line, name, sorted(qs)] for (line, name), qs in codes.items()]
+            for path, codes in seen.items()
+        }))
+
+
+def merge_cover(fwd: dict, rev: dict) -> dict:
+    """tpcds_cover.json from the forward and reverse recordings. A function whose set
+    of calling queries depends on the order (a cache, a lazy table) or that runs on
+    import counts as eager: an edit to it reaches every query."""
+    modules, eager, per_query = set(), {}, {}
+    for path in set(fwd) | set(rev):
+        f = {(l, n): set(q) for l, n, q in fwd.get(path, [])}
+        r = {(l, n): set(q) for l, n, q in rev.get(path, [])}
+        for key in set(f) | set(r):
+            line, name = key
+            qf, qr = f.get(key, set()), r.get(key, set())
+            if name == "<module>":
+                modules.add(path)
+            if -1 in qf or -1 in qr or qf != qr:
+                eager.setdefault(path, set()).add(line)
+            else:
+                per_query.setdefault(path, {}).setdefault(line, set()).update(qf)
+    for path, lines in eager.items():  # same first line, two code objects: be safe
+        for line in lines:
+            per_query.get(path, {}).pop(line, None)
+    return {"modules": sorted(modules),
+            "eager": {p: sorted(v) for p, v in eager.items()},
+            "per_query": {p: {str(l): sorted(q) for l, q in v.items()} for p, v in per_query.items()}}
+
+
+def load_cover(path: Path):
+    raw = json.loads(Path(path).read_text())
+    return (frozenset(raw["modules"]),
+            {p: frozenset(v) for p, v in raw["eager"].items()},
+            {p: {int(l): frozenset(q) for l, q in v.items()} for p, v in raw["per_query"].items()})
 
 
 def _digest(expr) -> str:
@@ -275,10 +494,18 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
         max_q = int(os.environ.get("BR_PLAN_MAXQ", "20")) if golden else 0
+        raw_only = os.environ.get("BR_PLAN_ONLY") if golden else None
+        only = {int(i) for i in raw_only.split(",") if i} if raw_only is not None else None
         rows, changed = [], []
         for meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql"):
             if not meta.get("execute"):
-                parse_one(sql)
+                if only is None:
+                    parse_one(sql)
+                continue
+            if only is not None and len(rows) not in only:
+                if len(rows) >= len(golden):
+                    changed.append(sql)
+                rows.append(golden[len(rows)] if len(rows) < len(golden) else None)
                 continue
             rendered = transpile(sql, write="duckdb")
             tree = optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
@@ -374,6 +601,9 @@ def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1] == "--child":
         _, _, src, patched_path, golden_path, out_path = sys.argv
         _child(src, patched_path, golden_path, out_path)
+        return
+    if len(sys.argv) > 1 and sys.argv[1] == "--cover":
+        _cover_child(sys.argv[2], sys.argv[3], sys.argv[4])
         return
     raise SystemExit("run via blast.plans.narrow_tpcds")
 
