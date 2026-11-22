@@ -296,7 +296,7 @@ def _owner(owners, line):
     return max(inner, key=lambda o: o[2]) if inner else None
 
 
-def _edit_keys(src: Path, text: str):
+def _edit_keys(src: Path, text: str, imported=None):
     """{module: first lines of the functions whose bodies the patch edits}, or None
     when an edit touches a module, class or def-header line, a renamed or ambiguous
     function, or the patched module no longer compiles."""
@@ -322,6 +322,11 @@ def _edit_keys(src: Path, text: str):
         except (OSError, UnicodeError, SyntaxError, ValueError, P.PatchError):
             return None
         keys = out.setdefault(path, set())
+        if imported is not None and path not in imported:
+            # Never imported by the recording or the digest child, and nothing the
+            # patch leaves untouched imports it: any edit, module or class level
+            # included, cannot reach a query. It still has to compile (above).
+            continue
         by_name: dict = {}
         for o in old_owners:
             by_name.setdefault(o[3], []).append(o[2])
@@ -343,10 +348,10 @@ def _affected(src: Path, text: str, cover):
     """TPC-DS query indices whose run in the pristine tree called a function the patch
     edits, or None when the edit may reach every query (import-time code, a function
     whose callers depend on query order, i.e. caches). An empty set means the patch cannot change any plan or executor run."""
-    keys = _edit_keys(src, text)
+    modules, eager, per_query = cover
+    keys = _edit_keys(src, text, modules)
     if keys is None:
         return None
-    modules, eager, per_query = cover
     out: set = set()
     for path, lines in keys.items():
         if path not in modules:
