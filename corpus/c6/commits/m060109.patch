@@ -1,0 +1,11 @@
+diff --git a/sqlglot/serde.py b/sqlglot/serde.py
+index 4c6afe4..d32f976 100644
+--- a/sqlglot/serde.py
++++ b/sqlglot/serde.py
+@@ -121,4 +121,4 @@ def _load(payload: dict[str, t.Any]) -> exp.Expr | exp.DType:
+     expression._type = load(payload.get(TYPE))
+     expression.comments = payload.get(COMMENTS)
+     expression._meta = payload.get(META)
+-    return expression
++    return expression
+\ No newline at end of file

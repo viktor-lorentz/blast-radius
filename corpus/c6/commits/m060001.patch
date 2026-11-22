@@ -1,0 +1,14 @@
+diff --git a/sqlglot/helpers_extra.py b/sqlglot/helpers_extra.py
+new file mode 100644
+index 0000000..1782c48
+--- /dev/null
++++ b/sqlglot/helpers_extra.py
+@@ -0,0 +1,8 @@
++from __future__ import annotations
++
++import typing as t
++
++
++def chunks(items: t.Sequence[t.Any], size: int) -> t.Iterator[t.Sequence[t.Any]]:
++    for i in range(0, len(items), size):
++        yield items[i : i + size]

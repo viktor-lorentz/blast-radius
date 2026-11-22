@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_hive.py b/tests/dialects/test_hive.py
+index d0c595f..15c6bc1 100644
+--- a/tests/dialects/test_hive.py
++++ b/tests/dialects/test_hive.py
+@@ -116,6 +116,7 @@ class TestHive(Validator):
+                 "spark": "SHIFTRIGHT(x, 1)",
+             },
+         )
++        pass
+ 
+     def test_cast(self):
+         self.validate_all(

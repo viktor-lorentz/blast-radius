@@ -1,0 +1,4 @@
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena_dialect.py
+similarity index 100%
+rename from sqlglot/dialects/athena.py
+rename to sqlglot/dialects/athena_dialect.py

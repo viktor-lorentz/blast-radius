@@ -1,0 +1,14 @@
+diff --git a/sqlglot/optimizer/qualify_tables.py b/sqlglot/optimizer/qualify_tables.py
+index 958dd4e..8f66c99 100644
+--- a/sqlglot/optimizer/qualify_tables.py
++++ b/sqlglot/optimizer/qualify_tables.py
+@@ -3,8 +3,8 @@ from __future__ import annotations
+ import typing as t
+ 
+ from sqlglot import exp
+-from sqlglot.dialects.dialect import Dialect, DialectType
+ from sqlglot.helper import name_sequence, seq_get, ensure_list
++from sqlglot.dialects.dialect import Dialect, DialectType
+ from sqlglot.optimizer.normalize_identifiers import normalize_identifiers
+ from sqlglot.optimizer.scope import Scope, traverse_scope
+ 

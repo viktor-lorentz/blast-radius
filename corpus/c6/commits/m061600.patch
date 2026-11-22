@@ -1,0 +1,18 @@
+diff --git a/tests/dialects/test_starrocks.py b/tests/dialects/test_starrocks.py
+index 166021a..15acbde 100644
+--- a/tests/dialects/test_starrocks.py
++++ b/tests/dialects/test_starrocks.py
+@@ -616,10 +616,10 @@ class TestStarrocks(Validator):
+             "CREATE TABLE aggregate_tbl (site_id LARGEINT NOT NULL COMMENT 'id of site', date DATE NOT NULL COMMENT 'time of event', city_code VARCHAR(20) COMMENT 'city_code of user', pv BIGINT SUM DEFAULT '0' COMMENT 'total page views') AGGREGATE KEY (site_id, date, city_code) DISTRIBUTED BY HASH (site_id)"
+         ).find(exp.AggregateKeyProperty).assert_is(exp.AggregateKeyProperty)
+ 
+-        for agg in ("SUM", "MAX", "MIN", "REPLACE", "REPLACE_IF_NOT_NULL"):
+-            with self.subTest(agg):
++        for agg_tmp in ("SUM", "MAX", "MIN", "REPLACE", "REPLACE_IF_NOT_NULL"):
++            with self.subTest(agg_tmp):
+                 self.validate_identity(
+-                    f"CREATE TABLE t (k1 INT, v1 INT {agg} NULL) AGGREGATE KEY (k1) DISTRIBUTED BY HASH (k1)"
++                    f"CREATE TABLE t (k1 INT, v1 INT {agg_tmp} NULL) AGGREGATE KEY (k1) DISTRIBUTED BY HASH (k1)"
+                 ).assert_is(exp.Create)
+ 
+         self.validate_identity(

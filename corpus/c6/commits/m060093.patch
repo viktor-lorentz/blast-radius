@@ -1,0 +1,10 @@
+diff --git a/.gitpod.yml b/.gitpod.yml
+index 2028683..9c49691 100644
+--- a/.gitpod.yml
++++ b/.gitpod.yml
+@@ -11,3 +11,5 @@ tasks:
+       source .venv/bin/activate
+ 
+ 
++
++# workspace

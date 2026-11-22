@@ -1,0 +1,22 @@
+diff --git a/tests/dialects/test_clickhouse.py b/tests/dialects/test_clickhouse.py
+index 08c7113..6201c9e 100644
+--- a/tests/dialects/test_clickhouse.py
++++ b/tests/dialects/test_clickhouse.py
+@@ -1331,7 +1331,7 @@ class TestClickhouse(Validator):
+         )
+ 
+     def test_signed_and_unsigned_types(self):
+-        data_types = [
++        data_types2 = [
+             "UInt8",
+             "UInt16",
+             "UInt32",
+@@ -1345,7 +1345,7 @@ class TestClickhouse(Validator):
+             "Int128",
+             "Int256",
+         ]
+-        for data_type in data_types:
++        for data_type in data_types2:
+             self.validate_all(
+                 f"pow(2, 32)::{data_type}",
+                 write={"clickhouse": f"CAST(pow(2, 32) AS {data_type})"},

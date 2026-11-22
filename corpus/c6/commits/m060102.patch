@@ -1,0 +1,10 @@
+diff --git a/pdoc/cli.py b/pdoc/cli.py
+index b879826..e858d9f 100755
+--- a/pdoc/cli.py
++++ b/pdoc/cli.py
+@@ -36,3 +36,5 @@ if __name__ == "__main__":
+ 
+         with mock.patch("pdoc.__main__.parser", **{"parse_args.return_value": opts}):
+             cli()
++
++# docs entry point

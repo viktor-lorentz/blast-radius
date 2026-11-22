@@ -1,0 +1,4 @@
+diff --git a/tests/test_time.py b/tests/test_time2.py
+similarity index 100%
+copy from tests/test_time.py
+copy to tests/test_time2.py

@@ -1,0 +1,14 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+index 8607ab2..b402453 100644
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -17,8 +17,8 @@ from sqlglot.expressions.core import (
+ # Re-export from focused submodules (backward compatibility)
+ from sqlglot.expressions.math import *  # noqa: F401,F403
+ from sqlglot.expressions.string import *  # noqa: F401,F403
+-from sqlglot.expressions.temporal import *  # noqa: F401,F403
+ from sqlglot.expressions.aggregate import *  # noqa: F401,F403
++from sqlglot.expressions.temporal import *  # noqa: F401,F403
+ from sqlglot.expressions.array import *  # noqa: F401,F403
+ from sqlglot.expressions.json import *  # noqa: F401,F403
+ 

@@ -1,0 +1,16 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+index 3ba279a..82db1a0 100644
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -475,7 +475,10 @@ class MySQLParser(parser.Parser):
+             persisted = self._prev.text.upper() == "STORED"
+ 
+             if isinstance(this, exp.ComputedColumnConstraint):
+-                this.set("persisted", persisted)
++                this.set(
++                    "persisted",
++                    persisted,
++                )
+             elif isinstance(this, exp.GeneratedAsIdentityColumnConstraint):
+                 this = self.expression(
+                     exp.ComputedColumnConstraint(this=this.expression, persisted=persisted)

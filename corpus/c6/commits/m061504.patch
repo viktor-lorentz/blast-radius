@@ -1,0 +1,31 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+index e4335f0..6e6fa76 100644
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -339,7 +339,7 @@ class ClickHouseGenerator(generator.Generator):
+         exp.DayOfYear: rename_func("toDayOfYear"),
+         exp.Explode: rename_func("arrayJoin"),
+         exp.FarmFingerprint: rename_func("farmFingerprint64"),
+-        exp.Final: lambda self, e: f"{self.sql(e, 'this')} FINAL",
++        exp.Final: lambda self, e: f"{self.sql(e, "this")} FINAL",
+         exp.IsInf: rename_func("isInfinite"),
+         exp.IsNan: rename_func("isNaN"),
+         exp.JarowinklerSimilarity: jarowinkler_similarity("jaroWinklerSimilarity"),
+@@ -354,7 +354,7 @@ class ClickHouseGenerator(generator.Generator):
+         exp.Map: _map_sql,
+         exp.Median: rename_func("median"),
+         exp.Nullif: rename_func("nullIf"),
+-        exp.PartitionedByProperty: lambda self, e: f"PARTITION BY {self.sql(e, 'this')}",
++        exp.PartitionedByProperty: lambda self, e: f"PARTITION BY {self.sql(e, "this")}",
+         exp.Pivot: no_pivot_sql,
+         exp.Quantile: _quantile_sql,
+         exp.RegexpLike: lambda self, e: self.func("match", e.this, e.expression),
+@@ -750,7 +750,7 @@ class ClickHouseGenerator(generator.Generator):
+         return f"PROJECTION {self.sql(expression.this)} {self.wrap(expression.expression)}"
+ 
+     def nestedjsonselect_sql(self, expression: exp.NestedJSONSelect) -> str:
+-        return f"{self.sql(expression, 'this')}.^{self.sql(expression, 'expression')}"
++        return f"{self.sql(expression, 'this')}.^{self.sql(expression, "expression")}"
+ 
+     def is_sql(self, expression: exp.Is) -> str:
+         is_sql = super().is_sql(expression)

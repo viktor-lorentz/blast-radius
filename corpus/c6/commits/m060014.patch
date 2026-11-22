@@ -1,0 +1,14 @@
+diff --git a/tests/test_broken_import.py b/tests/test_broken_import.py
+new file mode 100644
+index 0000000..b0342d1
+--- /dev/null
++++ b/tests/test_broken_import.py
+@@ -0,0 +1,8 @@
++import unittest
++
++from sqlglot.nope import nothing
++
++
++class TestBroken(unittest.TestCase):
++    def test_x(self):
++        nothing()

@@ -1,0 +1,10 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 949ece8..ed362a5 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -49,4 +49,4 @@ line-length = 100
+ 
+ [tool.ruff.lint]
+ extend-select = ["UP"]
+-ignore = ["E721", "E741"]
++ignore = ["E721", "E741", "E501"]

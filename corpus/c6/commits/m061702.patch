@@ -1,0 +1,15 @@
+diff --git a/tests/dialects/test_druid.py b/tests/dialects/test_druid.py
+index 466fa46..a024aa8 100644
+--- a/tests/dialects/test_druid.py
++++ b/tests/dialects/test_druid.py
+@@ -10,7 +10,9 @@ class TestDruid(Validator):
+         self.validate_identity("SELECT CEIL(__time TO WEEK) FROM t")
+         self.validate_identity("SELECT CEIL(col) FROM t")
+         self.validate_identity("SELECT CEIL(price, 2) AS rounded_price FROM t")
+-        self.validate_identity("SELECT FLOOR(__time TO WEEK) FROM t")
++        self.validate_identity(
++            "SELECT FLOOR(__time TO WEEK) FROM t",
++        )
+         self.validate_identity("SELECT FLOOR(col) FROM t")
+         self.validate_identity("SELECT FLOOR(price, 2) AS rounded_price FROM t")
+         self.validate_identity("SELECT CURRENT_TIMESTAMP")

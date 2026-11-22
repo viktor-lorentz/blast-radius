@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/broken_rule.py b/sqlglot/optimizer/broken_rule.py
+new file mode 100644
+index 0000000..3beb2a7
+--- /dev/null
++++ b/sqlglot/optimizer/broken_rule.py
+@@ -0,0 +1,6 @@
++from sqlglot import exp
++from sqlglot.optimizer.does_not_exist import thing
++
++
++def rule(e):
++    return thing(e)

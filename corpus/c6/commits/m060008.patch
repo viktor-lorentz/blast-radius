@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/newdb.py b/sqlglot/generators/newdb.py
+new file mode 100644
+index 0000000..35840e9
+--- /dev/null
++++ b/sqlglot/generators/newdb.py
+@@ -0,0 +1,7 @@
++from __future__ import annotations
++
++from sqlglot import generator
++
++
++class NewDBGenerator(generator.Generator):
++    pass

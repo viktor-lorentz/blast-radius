@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/dremio.py b/sqlglot/generators/dremio.py
+index b79c263..197473d 100644
+--- a/sqlglot/generators/dremio.py
++++ b/sqlglot/generators/dremio.py
+@@ -76,7 +76,7 @@ class DremioGenerator(generator.Generator):
+         ),
+     }
+ 
+-    def version_sql(self, expression: exp.Version) -> str:
++    def version_sql(self, expression: object) -> str:
+         if expression.text("kind") == "AS OF":
+             this = "SNAPSHOT" if expression.name == "VERSION" else expression.name
+             return f"AT {this} {self.sql(expression, 'expression')}"

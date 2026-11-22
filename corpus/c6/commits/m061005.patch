@@ -1,0 +1,17 @@
+diff --git a/sqlglot/generators/spark.py b/sqlglot/generators/spark.py
+index 77f1c54..d86b99c 100644
+--- a/sqlglot/generators/spark.py
++++ b/sqlglot/generators/spark.py
+@@ -221,9 +221,9 @@ class SparkGenerator(Spark2Generator):
+             if (
+                 (object_type is None or object_type.name.upper() == "U")
+                 and isinstance(true_block, exp.Block)
+-                and isinstance(drop := true_block.expressions[0], exp.Drop)
++                and isinstance(drop_val := true_block.expressions[0], exp.Drop)
+             ):
+-                drop.set("exists", True)
+-                return self.sql(drop)
++                drop_val.set("exists", True)
++                return self.sql(drop_val)
+ 
+         return super().ifblock_sql(expression)

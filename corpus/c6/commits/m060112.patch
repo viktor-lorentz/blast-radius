@@ -1,0 +1,11 @@
+diff --git a/README.md b/README.md
+index db8dd6c..85a08e9 100644
+--- a/README.md
++++ b/README.md
+@@ -666,4 +666,4 @@ from sqlglot import transpile
+ transpile("SELECT * FROM t", read="mydb", write="postgres")
+ ```
+ 
+-See the [Custom Dialects](#custom-dialects) section for implementation details.
++See the [Custom Dialects](#custom-dialects) section for implementation details.
+\ No newline at end of file

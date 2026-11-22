@@ -1,0 +1,15 @@
+diff --git a/pdoc/cli.py b/pdoc/build_docs.py
+similarity index 98%
+rename from pdoc/cli.py
+rename to pdoc/build_docs.py
+index b879826..59641bc 100755
+--- a/pdoc/cli.py
++++ b/pdoc/build_docs.py
+@@ -1,5 +1,7 @@
+ #!/usr/bin/env python3
+ 
++# Moved from pdoc/cli.py
++
+ from importlib import import_module
+ from pathlib import Path
+ from unittest import mock

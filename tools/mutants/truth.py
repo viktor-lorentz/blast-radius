@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -20,13 +21,29 @@ SHA = "eb11aec4be8cb2122afe713a4816662c3f0fb2fa"
 PRISTINE = Path("/work/pristine")
 WORK = Path("/work/tree")
 
-sys.path.insert(0, str(REPO))
-from blast import patch as P  # noqa: E402
 
 
 def sh(cmd, **kw):
     print("+", cmd, flush=True)
     subprocess.run(cmd, shell=True, check=True, **kw)
+
+
+def strip_dataless_binary(text: str) -> str:
+    """Drop file sections that say only 'Binary files ... differ' (no data, git apply cannot use them)."""
+    parts = re.split(r"(?m)^(?=diff --git )", text)
+    return "".join(x for x in parts if not re.search(r"(?m)^Binary files .* differ$", x))
+
+
+def apply_patch(pf: Path) -> None:
+    """Apply with git itself (new/deleted/renamed/copied files, modes, binary, CRLF, quoted paths)."""
+    if shutil.which("git") is None:
+        sh("apt-get update -qq && apt-get install -y -qq git > /dev/null")
+    text = strip_dataless_binary(pf.read_bytes().decode("utf-8", "surrogateescape"))
+    if not text.strip():
+        return
+    tmp = Path("/work/cur.patch")
+    tmp.write_bytes(text.encode("utf-8", "surrogateescape"))
+    subprocess.run(["git", "apply", "--binary", "--whitespace=nowarn", str(tmp)], cwd=WORK, check=True)
 
 
 def all_test_ids():
@@ -55,9 +72,7 @@ def main():
         shutil.rmtree(WORK, ignore_errors=True)
         shutil.copytree(PRISTINE, WORK, symlinks=True)
         try:
-            for fp in P.parse(pf.read_text()):
-                old = (WORK / fp.old_path).read_text()
-                (WORK / fp.new_path).write_text(P.apply(old, fp))
+            apply_patch(pf)
         except Exception as e:  # noqa: BLE001
             print("apply failed", cid, e)
             continue

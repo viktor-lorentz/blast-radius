@@ -1,0 +1,10 @@
+diff --git a/sqlglotc/pyproject.toml b/sqlglotc/pyproject.toml
+index cfe8933..676c4e8 100644
+--- a/sqlglotc/pyproject.toml
++++ b/sqlglotc/pyproject.toml
+@@ -35,3 +35,5 @@ local_scheme = "no-local-version"
+ [[tool.mypy.overrides]]
+ module = ["sqlglot._version", "sqlglotc"]
+ ignore_missing_imports = true
++
++# sqlglotc build

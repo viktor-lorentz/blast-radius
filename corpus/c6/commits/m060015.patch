@@ -1,0 +1,8 @@
+diff --git a/tests/optimizer_helpers.py b/tests/optimizer_helpers.py
+new file mode 100644
+index 0000000..ce60725
+--- /dev/null
++++ b/tests/optimizer_helpers.py
+@@ -0,0 +1,2 @@
++def normalize(sql):
++    return sql.strip().upper()

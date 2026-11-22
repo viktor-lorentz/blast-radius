@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/lint.yml b/.github/workflows/lint.yml
+new file mode 100644
+index 0000000..f7d4c4a
+--- /dev/null
++++ b/.github/workflows/lint.yml
+@@ -0,0 +1,7 @@
++name: lint
++on: [push]
++jobs:
++  lint:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4

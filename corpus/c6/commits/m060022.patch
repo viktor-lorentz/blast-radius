@@ -1,0 +1,7 @@
+diff --git a/sqlglot/README.txt b/sqlglot/README.txt
+new file mode 100644
+index 0000000..d2e1548
+--- /dev/null
++++ b/sqlglot/README.txt
+@@ -0,0 +1 @@
++Package notes.

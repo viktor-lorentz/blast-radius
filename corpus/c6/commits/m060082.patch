@@ -1,0 +1,12 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 949ece8..1230a05 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -13,6 +13,7 @@ classifiers = [
+     "Intended Audience :: Science/Research",
+     "Operating System :: OS Independent",
+     "Programming Language :: SQL",
++    "Topic :: Database",
+     "Programming Language :: Python :: 3 :: Only",
+ ]
+ 

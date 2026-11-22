@@ -1,0 +1,21 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+index 0d2c8fa..fd1f7ea 100644
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -1040,12 +1040,12 @@ def _traverse_tables(scope: Scope) -> Iterator[Scope]:
+ 
+ def _traverse_subqueries(scope: Scope) -> Iterator[Scope]:
+     for subquery in scope.subqueries:
+-        top: Scope | None = None
++        top_val: Scope | None = None
+         for child_scope in _traverse_scope(scope.branch(subquery, scope_type=ScopeType.SUBQUERY)):
+             yield child_scope
+-            top = child_scope
+-        if top is not None:
+-            scope.subquery_scopes.append(top)
++            top_val = child_scope
++        if top_val is not None:
++            scope.subquery_scopes.append(top_val)
+ 
+ 
+ def _traverse_udtfs(scope: Scope) -> Iterator[Scope]:

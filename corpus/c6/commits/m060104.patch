@@ -1,0 +1,6 @@
+diff --git a/benchmarks/__init__.py b/benchmarks/__init__.py
+index e69de29..21fa635 100644
+--- a/benchmarks/__init__.py
++++ b/benchmarks/__init__.py
+@@ -0,0 +1 @@
++# benchmarks

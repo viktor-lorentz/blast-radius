@@ -1,0 +1,13 @@
+diff --git a/sqlglot/expressions/json.py b/sqlglot/expressions/json.py
+index a801678..d0a2c8f 100644
+--- a/sqlglot/expressions/json.py
++++ b/sqlglot/expressions/json.py
+@@ -121,7 +121,7 @@ class JSONExtract(Expression, Binary, Func):
+     is_var_len_args = True
+ 
+     @property
+-    def output_name(self) -> str:
++    def output_name(self) -> t.Optional[str]:
+         return self.expression.output_name if not self.expressions else ""
+ 
+ 

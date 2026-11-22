@@ -1,0 +1,13 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+index 3e7c97f..161532b 100644
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -53,7 +53,7 @@ class ParseError(SqlglotError):
+         start_context: str | None = None,
+         highlight: str | None = None,
+         end_context: str | None = None,
+-        into_expression: str | None = None,
++        into_expression: object = None,
+     ) -> ParseError:
+         return cls(
+             message,

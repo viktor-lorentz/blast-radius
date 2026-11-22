@@ -1,0 +1,10 @@
+diff --git a/sqlglotc/setup.py b/sqlglotc/setup.py
+index a9a97d1..1e7d384 100644
+--- a/sqlglotc/setup.py
++++ b/sqlglotc/setup.py
+@@ -197,3 +197,5 @@ setup(
+     ),
+     cmdclass={"build_ext": build_ext, "sdist": sdist},
+ )
++
++# Built with mypyc.

@@ -1,0 +1,21 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+index a7a0c01..79577df 100644
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -594,13 +594,13 @@ def _expand_order_by_and_distinct_on(
+                 scope, modifier_expressions, resolver.dialect, alias_names=alias_names
+             ),
+         ):
+-            precedence = resolver.dialect.column_alias_precedence(clause, original)
+-            prefer_column = precedence in (AliasPrecedence.SOURCE, AliasPrecedence.MERGED_SOURCE)
++            precedence2 = resolver.dialect.column_alias_precedence(clause, original)
++            prefer_column = precedence2 in (AliasPrecedence.SOURCE, AliasPrecedence.MERGED_SOURCE)
+             for node in (original,) if prefer_column else find_all_in_scope(original, exp.AggFunc):
+                 for col in find_all_in_scope(node, exp.Column):
+                     if not col.table:
+                         if prefer_column and (tables := using_column_tables.get(col.name)):
+-                            if precedence == AliasPrecedence.SOURCE and any(
++                            if precedence2 == AliasPrecedence.SOURCE and any(
+                                 col.name in resolver.get_source_columns(source)
+                                 for source in scope.selected_sources
+                                 if source not in tables

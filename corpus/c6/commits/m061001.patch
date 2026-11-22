@@ -1,0 +1,15 @@
+diff --git a/sqlglot/expressions/ddl.py b/sqlglot/expressions/ddl.py
+index cadf424..435a286 100644
+--- a/sqlglot/expressions/ddl.py
++++ b/sqlglot/expressions/ddl.py
+@@ -423,8 +423,8 @@ class Alter(Expression):
+ 
+     @property
+     def kind(self) -> str | None:
+-        kind = self.args.get("kind")
+-        return kind and kind.upper()
++        kind2 = self.args.get("kind")
++        return kind2 and kind2.upper()
+ 
+     @property
+     def actions(self) -> list[Expr]:

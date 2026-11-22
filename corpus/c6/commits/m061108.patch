@@ -1,0 +1,13 @@
+diff --git a/sqlglot/executor/context.py b/sqlglot/executor/context.py
+index 98c9aa1..486a850 100644
+--- a/sqlglot/executor/context.py
++++ b/sqlglot/executor/context.py
+@@ -98,7 +98,7 @@ class Context:
+             table.reader.row = row
+         self.env["scope"] = self.row_readers
+ 
+-    def set_index(self, index: int) -> None:
++    def set_index(self, index: int) -> t.Any:
+         for table in self.tables.values():
+             table[index]
+         self.env["scope"] = self.row_readers

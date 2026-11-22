@@ -1,0 +1,16 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+index 3ba279a..f4f3714 100644
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -816,7 +816,10 @@ class MySQLParser(parser.Parser):
+         this = super()._parse_primary_key(
+             wrapped_optional=wrapped_optional, in_props=in_props, named_primary_key=True
+         )
+-        if isinstance(this, exp.PrimaryKey):
++        if isinstance(
++            this,
++            exp.PrimaryKey,
++        ):
+             # KEY_BLOCK_SIZE, COMMENT etc. after the key parts belong to the key, not the table
+             this.set(
+                 "options",
