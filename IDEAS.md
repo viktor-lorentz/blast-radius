@@ -119,6 +119,7 @@ The image's /opt/sqlglot is unaffected, so submitted commits are fine.
 - Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
+- MAIN (23:24): BB-53DBBE12 ad14fd1 = 173.5 (sim 167.914, CPU 5.57, 0 miss). The EQUIV merges add CPU and no practice sim, and 37977a1 (172.4) is still the best 0-miss score. heavy-t is next.
 - HEAVY config D (23:19): BB-6B8EA1BC 243de96 = 173.1 (sim 167.914 unchanged, CPU 5.16, 0 miss). The plan check never fires on the practice tpcds commits. It is CPU-cheaper than A3m (-0.5 s) but saves no sim. Next probe: heavy-merge 920a533 defaults (MAXQ 20, QCPU 1.7, budget 20). If sim is still 167.914, the practice tpcds commits hit the guard, so a plan check cannot get the A2 gap.
 - A3 (23:17): BB-F1AB4F28 273dd1f = 173.6 (sim 167.914 unchanged, CPU 5.64, 0 miss). ALL fallbacks hide nothing on practice. The tpcds waste A2 found is in normal selections, so heavy-d (BB-6B8EA1BC, queued) is the lever. Main CPU is now ~5.6s, near the ~6s cap.
 - MERGED (23:10): EQUIV (i) 4496618 + (j) 0488b2b + (k) e89679c -> main (828b279). Sample 108.5/0; c1-c5 8037.6/0; c6 395.7/0. Bench 44980193134 green. (i) closes the latent duckdb-import miss.
