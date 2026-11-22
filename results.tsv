@@ -1,4 +1,5 @@
 commit	local_sample_score	submitted	server_score	notes
+f96df71	sample 108.5/0; c1 2172.4/0; c2 1521.9/0; c3 1757.1/0; c4 1734.9/0; c5 12.7/0; c6 395.7/0	submitting	pending	gated subset digest drops tpcds on 8 corpus commits (~100s), 0 misses. CPU only on that subset.
 fc57dda	994.1 (0 miss)	?		v0 AST no-op + optimal split
 7a83571	296.7 (0 miss)	? (asked user)		v1 coverage maps + fixture opens
 WIP	-	no		semantic diff wired, untested with new maps
