@@ -1238,6 +1238,36 @@ def _tests_with_escapes(keys: set[str], maps) -> set[int]:
     return out
 
 
+def _a3_narrow(files, reason, maps):
+    """Ablation A3: a full-suite fallback becomes the tests that import or open the edited files.
+
+    A core-module import failure (no semantic diff, or the semantic import broke) keeps the
+    full suite. A sqlglot module whose importer set is unknown keeps it too.
+    """
+    msg = str(reason)
+    if (maps is None or msg.startswith("semantic:") or "no semantic diff" in msg or msg == "empty patch"
+            or "side-effecting" in msg):
+        return None
+    out: set = set()
+    for fp in files:
+        for path in {p for p in (fp.old_path, fp.new_path, fp.path) if p}:
+            if path.endswith(".py") and path.startswith("sqlglot/"):
+                imp = _importers_of(path, maps)
+                if not imp:
+                    if path in maps.pyfiles:
+                        return None
+                    continue  # a new module nothing imports yet
+                out |= imp
+            elif path.endswith(".py") and path.startswith("tests/"):
+                if (SRC / path).exists():
+                    out |= tests_module_tests(maps, path)
+            else:
+                opened = maps.opened_by(path)
+                if opened:
+                    out |= opened
+    return out
+
+
 def select(patch_text: str, maps, all_tests: set, sem) -> set:
     global _IMPORTER_HIT
     _IMPORTER_HIT = False
@@ -1330,6 +1360,13 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         return out
     except All as e:
         log("ALL:", e)
+        try:
+            narrowed = _a3_narrow(files, e, maps)
+            if narrowed is not None:
+                log("A3 narrowed", len(narrowed))
+                return narrowed
+        except Exception as err:
+            log("A3 keep:", repr(err))
         nums = set(all_tests)
         try:
             nums = _without_unloaded_max_nodes(files, e, maps, nums)
