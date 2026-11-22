@@ -22,8 +22,19 @@
   With no budget, sim falls further (c1 2421.3, c2 1736.7, c4 1845.9), but local CPU rises to 111, 67 and 89 s. HEAD's c1 and c2 sim moves about ±70 s between runs (the time-limited shrink step).
 - Docker sample, scorer flags: HEAD about 1.75 s, canary about 2.7 s. Both canary runs reject (0.45 s total), and there are no drops.
 - Hidden-batch view: about 1 in 4 to 1 in 3 canary runs pass, and the top-gain candidates mostly fail. Expected hidden gain is roughly 0.25 × 15 s ≈ 4 s against about 1 s of server CPU. That is a gamble with a small positive edge, not a proven win, so I haven't pushed. LEAD: if you want a slot for it, say so and I'll push heavy. Run it with `BR_CANARY=1`.
-- Next: max_nodes and genmem are low value per A1. I'll look at whether the guard alone (no test run) can drop tpcds on some class of edits.
-### EQUIV (2026-11-21 ~19:40 PST): c6 corpus plus three pieces on origin/equiv, each 0 misses on sample and c1-c6
+- Caveat on the table above: a fixed 3.5 s per batch starves the canary on the big corpora. At that budget, c2 drops nothing (sim equals HEAD) and c1 almost nothing. The unlimited-budget run uses about 0.15 s of canary CPU per commit, close to the sample-rate budget (3.5 s / 30 commits ≈ 0.12 s per commit), so it is the better stand-in for the hidden batch. Against HEAD, with extra CPU scaled 1.75x for the server, the net is: sample +2.8, c1 −0.7, c2 −13.8, c3 +8.2, c4 −12.4. That is break-even, so the verdict stands: not worth a slot.
+- heavy merged up to main f3d350e as bbebd9a (local). Its only differences from main are canary.py, the selector hook (off unless BR_CANARY=1) and the duckdb, numpy and pandas install in the Dockerfile. Ready to push if LEAD asks.
+- Server CPU risk: a fully used 3.5 s canary budget on top of HEAD's roughly 3 s server base could break the 6 s cap. If anyone ships it, set BR_CANARY_CPU to about 2.5.
+- Dropping tpcds on the coverage check alone, with no canary run, is unsafe. Among commits where HEAD keeps tpcds and the check passes, tpcds really fails on 12 of 28 (c1), 8 of 14 (c2), 9 of 9 (c3) and 8 of 17 (c4), so 37 of 68 overall. Passing canaries is what makes a drop safe, and the check alone says nothing. Script: scratchpad guard_only.py.
+- Waste per heavy test, meaning seconds HEAD spends running it on commits where it passes (local, r_head2):
+  - tpcds: c1 901, c2 536, c3 64, c4 515.
+  - max_nodes: 0 everywhere (every selection fails).
+  - genmem: c1 60, c2 60, c3 7, c4 33.
+  - On the sample, HEAD selects tpcds twice (both fail) and the other two never.
+
+  A genmem canary could recover at most about 60 s per corpus, before its pass rate and CPU cost, so I'm not building one. Script: scratchpad heavy_waste.py.
+- Next: max_nodes and genmem are low value per A1, and LEAD has already tried max_nodes at 6b53d21. HEAVY has nothing that clears the push bar. I'll keep watching for LEAD verdicts.
+### EQUIV (2026-11-21 ~19:40 PST): c6 corpus plus five pieces on origin/equiv, each 0 misses on sample and c1-c6
 - **c6** (a27fc97, corpus/c6, 190 commits; truth run 44973487697 green). Covers new, deleted, renamed, copied, mode, binary, quoted-path, config, no-EOL and CRLF files, plus semantic no-ops (local renames, annotations, import order, reformat, quotes). truth.py now applies patches with `git apply --binary` and drops data-less binary sections. The local eval is at `.cache/eval_c6eq`; run it with `BR_DATA=.cache/eval_c6eq`. This is not the old `.cache/eval_c6`.
 - **(a) Tolerant patch parser**, a8251b3, branch `equiv-parser`; bench run 44975367409. Only blast/patch.py changes. It handles quoted and octal-escaped paths, paths with spaces, rename/copy/mode/binary headers and CRLF. A mode-only change is no longer `special`. Copies and binary changes still are, and their callers still fall back to the full suite.
   Before → after: sample 108.5 → 108.5; c1 2586.4 → 2586.4; c2 1822.8 → 1822.8; c3 1757.1 → 1757.1; c4 1944.7 → 1944.7; c5 12.7 → 12.7; **c6 3713.4 → 3512.1**. 0 misses everywhere. The c6 gain is the 5 mode-only commits.
@@ -43,14 +54,17 @@
   c6 waste by kind, main → (b): new_file 844 → 2, delete_file 695 → 25, config 516 → 73, rename 235 → 31, mode 184 → 3, binary 184 → 0, copy 110 → 0, quoted 147 → 0.
 - Overlap with abl-a3 (0fcf0f4), which also edits select_file: (b) changes only the branch that handles files that are not same-path, plus the non-.py and config-.py branches. Expect a small textual merge conflict.
 - (a) and (b) bench runs are both green.
-- **(c) Semantic no-ops**, 3bdc6ba on `equiv` (= (b) plus code_norm); bench run 44976339452 (running). Only blast/astdiff.py and one selector line change. Before region diffing, both sides are normalized:
+- **(c) Semantic no-ops**, 3bdc6ba on `equiv` (= (b) plus code_norm); bench run 44976339452 green. Only blast/astdiff.py and one selector line change. Before region diffing, both sides are normalized:
   - function locals are renamed to positional placeholders. A function is skipped if it uses locals/vars/eval/exec/dir/frame access. Params, globals, nonlocals, except names, import aliases, match names and names used by nested scopes are never renamed;
   - under `from __future__ import annotations` in both versions, arg annotations are dropped. Annotations on local `x: T = v` are dropped everywhere;
   - a redundant `pass` is dropped. Formatting, quote style and import order were already AST-invisible.
   sqlglot/typing/ is excluded, because tests/test_typing.py compares co_varnames/co_code of its functions.
   Before (87803c3) → after: sample 108.5 → 108.5; c1 2586.4 → 2531.1; c2 1839.5 → 1796.4 (noise-level); c3 1757.1 → 1757.1; c4 1944.7 → 1925.2; c5 12.7 → 12.7; **c6 801.6 → 582.4** (oracle 353.1). 0 misses everywhere. Waste on c6 from rename_local, annot and reformat is now 0.
   Remaining c6 waste: config 43, rename+edit 33, rename+importers 33, rename 31, noeol+code 30, new_file+edit 26, delete_file 25.
-- **(d) Next**: when a new sqlglot module is mentioned only inside test functions, select those functions instead of whole files.
+- **(d) Scoped mentions for new modules**, 234552b on `equiv` (= (c) plus about 50 lines in selector.py and filelevel.py); bench run 44976814307. A new sqlglot module still selects the tests that spell its name. When every mention in a test file sits inside `test*` functions (decorators included), only those functions are selected. Otherwise the whole file is selected, as before.
+  Before (3bdc6ba) → after: sample 108.5 → 108.5; c1 2531.1 → 2567.9 (c1 noise, ±20–40 s between runs); c2 1796.4 → 1811.6 (noise); c3 1757.1 → 1757.1; c4 1925.2 → 1925.2; c5 12.7 → 12.7; **c6 582.4 → 520.8**. 0 misses everywhere. On c6, rename+importers and the module rename m060050 drop to about 2 s each.
+- **(e) Unused new plain functions**, 1c486e0 on `equiv` (= (d) plus about 50 lines in astdiff.py and selector.py); bench run 44977202906. A new top-level plain function that no other file in the tree spells is a no-op. It must have no decorators, only constant defaults, no doctest and no unevaluated annotations (sqlglot enumerates module namespaces only for classes). Before (234552b) → after, all 0 misses: sample 108.5→108.5, c1 2567.9→2549.5 (noise), c2 1811.6→1811.6, c3 1757.1→1757.1, c4 1925.2→1951.2 (noise; no such defs in c4), c5 12.7→12.7, c6 520.8→491.4.
+- **(f) In progress**: pytest config edits that change only display flags (-q, -v, -r, --tb=, --color=, --durations= and similar) count as same config. A renamed test module whose module-level non-definition statements all appeared in the old module no longer runs everything. In scratch: c6 491.4→421.1; sample, c5 and c3 unchanged, all 0 misses.
 
 ## STATE (2026-11-21 ~18:45 PST) — A2g not submitted; merging EQUIV
 - A2g submit at 18:30 hit a full window (0 of 2); at 18:35 a slot was free but the submit command was blocked by the local permission classifier. Waiting on the user to allow submissions. No new receipts since A2 (BB-87155FD8).
@@ -58,6 +72,7 @@
 - Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
+- MERGED (18:42): merge-eq (EQUIV a+b+c 3bdc6ba + main) -> main. Sample 108.5/0; c1-c5 8080.3/0 (main 8221.4/0, -141s); c6 582.4/0 (main 3713.4). Bench 44976709470 green. Main is now the Phase 3 candidate once it has a practice score.
 - A2 (cbc7b7e, BB-87155FD8, 415.3): dropping test_execute_tpcds outside ALL cuts hidden sim 167.914 -> 111.101 (-56.8s) but misses 1 hidden commit. tpcds IS the hidden waste; ship it only behind a canary (HEAVY). Sample also misses 2jrq/3utz, where tpcds co-fails with 7 and 36 other selected tests.
 - A1 (78c092f, BB-74C1E36C, 172.0): dropping test_max_nodes outside ALL leaves hidden sim at 167.914, 0 misses. No hidden waste there. Auto-entered in the final but has local corpus misses (c3 18), so Phase 3 must Pick over it.
 
