@@ -342,8 +342,7 @@ def _edit_keys(src: Path, text: str):
 def _affected(src: Path, text: str, cover):
     """TPC-DS query indices whose run in the pristine tree called a function the patch
     edits, or None when the edit may reach every query (import-time code, a function
-    whose callers depend on query order, i.e. caches, or a module the recording never
-    imported). An empty set means the patch cannot change any plan or executor run."""
+    whose callers depend on query order, i.e. caches). An empty set means the patch cannot change any plan or executor run."""
     keys = _edit_keys(src, text)
     if keys is None:
         return None
@@ -351,7 +350,10 @@ def _affected(src: Path, text: str, cover):
     out: set = set()
     for path, lines in keys.items():
         if path not in modules:
-            return None
+            # Neither the recording nor the digest child ever imports it, and nothing
+            # the patch leaves untouched can import it: the full check would only
+            # confirm "same". Its own compile was checked above.
+            continue
         hit = per_query.get(path, {})
         for line in lines:
             if line in eager.get(path, ()):
