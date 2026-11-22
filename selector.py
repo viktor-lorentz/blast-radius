@@ -190,6 +190,23 @@ class All(Exception):
 
 import re as _re  # noqa: E402
 
+
+_TREE_TEXT: dict | None = None
+
+
+def _spelled_elsewhere(name: str, path: str) -> bool:
+    """True when any other Python file in the pinned tree spells `name` as a word."""
+    global _TREE_TEXT
+    if _TREE_TEXT is None:
+        _TREE_TEXT = {}
+        for f in SRC.rglob("*.py"):
+            try:
+                _TREE_TEXT[str(f.relative_to(SRC))] = f.read_text(errors="replace")
+            except OSError:
+                continue
+    w = _re.compile(rf"\b{_re.escape(name)}\b")
+    return any(w.search(t) for p, t in _TREE_TEXT.items() if p != path)
+
 _SIDE_EFFECTS = _re.compile(r"write_bytes|write_text|\.unlink\(|rmtree|os\.environ|\.mkdir\(|subprocess|chdir|os\.remove|tempfile")
 # Calls that mutate the tree or another process even when the regex misses the callee body.
 _LEAK_CALLS = frozenset({"run_path", "copy_extensions_to_source", "Popen", "rmtree"})
@@ -332,7 +349,7 @@ def _level_call(maps, fn) -> set:
         raise All("no maps")
     if _FL is None:
         _FL = filelevel.FileLevel(SRC, maps, lambda p: _importers_of(p, maps), tests_module_tests,
-                                  lambda w: _tests_mentioning_full(w, maps), log)
+                                  lambda w, scoped=False: _tests_mentioning_full(w, maps, scoped), log)
     try:
         return set(fn(_FL))
     except filelevel.NeedAll as e:
@@ -386,8 +403,10 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     old = (SRC / path).read_text()
     new = P.apply(old, fp)
     # tests/test_typing.py compares the code objects (co_varnames, co_code) of sqlglot/typing/ functions
-    regions = astdiff.diff(old, new, version_norm=version_norm,
-                           code_norm=not path.startswith("sqlglot/typing/"))
+    code_norm = not path.startswith("sqlglot/typing/")
+    drop = frozenset(n for n in astdiff.unused_new_defs(old, new) if not _spelled_elsewhere(n, path)) \
+        if code_norm else frozenset()
+    regions = astdiff.diff(old, new, version_norm=version_norm, code_norm=code_norm, drop=drop)
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
@@ -623,8 +642,11 @@ def _full_mention_index(maps):
         return _FULL_MENTIONS
     tests = json.loads((DATA / "tests.json").read_text())["tests"]
     by_file: dict[str, list] = {}
+    global _FILE_IDS
+    _FILE_IDS = {}
     for t in tests:
         by_file.setdefault(t["id"].split("::")[0], []).append(t["number"])
+        _FILE_IDS.setdefault(t["id"].split("::")[0], []).append((t["id"], t["number"]))
     texts = {}
     for rel, nums in by_file.items():
         try:
@@ -637,13 +659,52 @@ def _full_mention_index(maps):
     return _FULL_MENTIONS
 
 
-def _tests_mentioning_full(words: set[str], maps) -> set[int]:
+_FILE_IDS: dict = {}
+
+
+def _scoped_hits(rel: str, text: str, pats) -> set | None:
+    """Tests of rel whose own test function holds every match; None if a match is outside one."""
+    import ast as _ast
+    try:
+        tree = _ast.parse(text)
+    except (SyntaxError, ValueError):
+        return None
+    spans = []
+    for node in _ast.walk(tree):
+        if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)) and node.name.startswith("test"):
+            first = min([node.lineno] + [d.lineno for d in node.decorator_list])
+            spans.append((first, node.end_lineno, node.name))
+    names = set()
+    starts = [0]
+    for i, ch in enumerate(text):
+        if ch == "\n":
+            starts.append(i + 1)
+    import bisect
+    for p in pats:
+        for m in p.finditer(text):
+            line = bisect.bisect_right(starts, m.start())
+            owner = [n for a, b, n in spans if a <= line <= b]
+            if not owner:
+                return None
+            names.update(owner)
+    out = set()
+    for tid, num in _FILE_IDS.get(rel, ()):
+        if tid.split("::")[-1].split("[")[0] in names:
+            out.add(num)
+    return out
+
+
+def _tests_mentioning_full(words: set[str], maps, scoped: bool = False) -> set[int]:
+    """Tests whose file spells one of the words. scoped: a match inside a test function
+    selects only the tests named like that function (a name that only reaches a module
+    by import cannot be seen from a test that never spells it)."""
     by_file, texts, fixtures = _full_mention_index(maps)
     pats = [_re.compile(rf"\b{_re.escape(w)}\b", _re.I) for w in words]
     hit: set[int] = set()
     for rel, text in texts.items():
         if text and any(p.search(text) for p in pats):
-            hit.update(by_file[rel])
+            got = _scoped_hits(rel, text, pats) if scoped else None
+            hit.update(by_file[rel] if got is None else got)
     for rel, text in fixtures:
         if not any(p.search(text) for p in pats):
             continue

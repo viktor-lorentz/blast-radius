@@ -388,13 +388,52 @@ class _AnnNorm(ast.NodeTransformer):
         return node
 
 
-def diff(old_src: str, new_src: str, version_norm: bool = True, code_norm: bool = True) -> Optional[List[Region]]:
+def unused_new_defs(old_src: str, new_src: str) -> set:
+    """Top-level plain functions that new_src adds and spells nowhere else in either version.
+
+    Defining one runs nothing but the def statement. sqlglot only enumerates module namespaces for
+    classes (helper.subclasses, Dialect lookup by dir()), so a new function is observable only through
+    its name, which the caller checks across the tree.
+    """
+    import re
+    try:
+        n = ast.parse(new_src)
+    except (SyntaxError, ValueError, RecursionError):
+        return set()
+    fut = _future_annotations(n)
+    out = set()
+    for s in n.body:
+        if not isinstance(s, (ast.FunctionDef, ast.AsyncFunctionDef)) or s.decorator_list:
+            continue
+        name = s.name
+        if name.startswith("__") and name.endswith("__"):
+            continue
+        a = s.args
+        if any(d is not None and not isinstance(d, ast.Constant) for d in a.defaults + a.kw_defaults):
+            continue
+        if not fut and (s.returns is not None or any(
+                x.annotation is not None for x in a.posonlyargs + a.args + a.kwonlyargs + [a.vararg, a.kwarg] if x)):
+            continue
+        doc = ast.get_docstring(s, clean=False) or ""
+        if ">>>" in doc:
+            continue
+        w = re.compile(rf"\b{re.escape(name)}\b")
+        if w.search(old_src) or len(w.findall(new_src)) != 1:
+            continue
+        out.add(name)
+    return out
+
+
+def diff(old_src: str, new_src: str, version_norm: bool = True, code_norm: bool = True,
+         drop: frozenset = frozenset()) -> Optional[List[Region]]:
     """Regions of the old file that changed, [] if ASTs are identical, None if either side is unparsable."""
     try:
         o = ast.parse(old_src)
         n = ast.parse(new_src)
     except (SyntaxError, ValueError, RecursionError):
         return None
+    if drop:
+        n.body = [s for s in n.body if not (isinstance(s, (ast.FunctionDef, ast.AsyncFunctionDef)) and s.name in drop)]
     if (
         version_norm
         and ".version" in old_src

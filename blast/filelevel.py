@@ -220,7 +220,7 @@ class FileLevel:
             # a module next to an existing package of the same name loses to the package
             if (self.src / path[:-3]).is_dir():
                 return set()
-            out = set(self.mentioning({stem})) if stem.isidentifier() else set()
+            out = set(self.mentioning({stem}, scoped=True)) if stem.isidentifier() else set()
             if len(parts) == 3 and parts[1] == "typing":
                 out |= self.maps.file_tests(TYPING_TEST)
             return out
