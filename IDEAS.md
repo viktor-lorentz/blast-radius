@@ -1,5 +1,12 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~17:40 PST) — A1 is the practice best at 172.0; A2 is scoring
+A1 78c092f scored as BB-74C1E36C. Runs: 167.914 sim / 4.96 CPU / 0 miss, 167.914 / 4.10 / 0, 167.914 / 4.13 / 0. Middle total 172.0. Simulated seconds stayed 167.914. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 78c092f. Local, dropping test_max_nodes on every non-full-suite selection was sample 0 miss, c1 1, c2 0, c3 18, c4 2, c5 0 (saves 0 / 49.7 / 33.6 / 208.6 / 47.9 / 0). That corpus miss rate is too high for the Phase 3 pick. The robust candidate remains 37977a1 at 172.4 until a later commit is 0 practice misses and at most 1 corpus miss per 400 commits.
+
+A2 cbc7b7e is BB-87155FD8, status Scoring when submitted. It drops test_execute_tpcds from every selection that is not a full-suite fallback. Against the 37977a1 dumps the only difference is removal of test 1106. Local misses are exactly the commits where that test fails: sample 2 (2jrq, 3utz; passing save 0), c1 12 miss / 47 pass (pass save 702s), c2 12 / 30 (417s), c3 41 / 3 (6s), c4 15 / 29 (358s), c5 0. A practice miss does not replace 172.0. Do not Pick A2 unless it is 0 practice misses and strictly under 172.0.
+
+Practice board: 67 103.5, 1212 114.6, @GMUNVIS 115.0, RoboM 116.7, Steve WK 120.2, Overcooked 172.0. Slot is 0 of 2 after the A2 submit. /tmp/blast-ready is no. The gap is still the 167.914 schedule.
+
 ## STATE (2026-11-21 ~16:38 PST) — slot left open
 No new submission. /tmp/blast-ready is no and /tmp/blast-next-sha is empty. At 16:27 PST the page showed 2 of 2 left and "None used in the last hour". BB-D4A7EF6F remains 172.4, entered in the final. Do not click Pick. Do not resubmit 37977a1. Practice board unchanged: 1212 114.6, RoboM 116.7, Steve WK 120.2, team 67 124.8, Aqua 126.1, Overcooked 172.4. Signed in; not an email-code page.
 
