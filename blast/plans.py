@@ -41,6 +41,7 @@ _GUARD_PREFIXES = ("sqlglot/executor/", "sqlglot/expressions/")
 _MIN_MARGINAL_S = 4.0
 _BUDGET_S = float(os.environ.get("BR_PLAN_BUDGET", "20"))
 _COMMIT_TIMEOUT_S = 25
+_MAXQ = int(os.environ.get("BR_PLAN_MAXQ", "20"))
 
 
 def _cost(nums, ms) -> float:
@@ -141,7 +142,109 @@ def _loads(src: Path, fp) -> bool:
         return False
 
 
-def _run(src: Path, patched: dict, golden: list | None) -> dict:
+# Per-query reach (tools/plan_qmap.py, built from the pinned tree in the image): for
+# each sqlglot function, the TPC-DS queries whose part of the test entered it. A patch
+# whose hunks sit only inside functions reaches just the union of their queries; any
+# hunk at module or class level, in an import-time function, or in setUpClass reaches
+# every query. Files the test never imports at the pinned commit are not loaded.
+_EMPTY = os.environ.get("BR_PLAN_EMPTY", "drop")  # drop | digest: reach is empty
+
+
+def _load_qmap(path) -> dict | None:
+    try:
+        q = json.loads(Path(path).read_text())
+        q["boot"] = set(q["boot"])
+        q["loaded"] = {k.rsplit(":", 1)[0] for k in q["boot"] | set(q["funcs"])}
+        q["exec"] = set(q["exec"])
+        q["_scopes"] = {}
+        return q
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _key_of(scopes: list, rel: str, line: int):
+    best = None
+    for b0, end, first, defl in scopes:
+        if b0 <= line <= end and line > defl and (best is None or b0 >= best[0]):
+            best = (b0, first)
+    return None if best is None else f"{rel}:{best[1]}"
+
+
+def _reach(src: Path, rel: str, fp, qmap: dict):
+    """Queries this file edit can reach, or None for every query."""
+    import ast
+    scopes = qmap["_scopes"].get(rel)
+    if scopes is None:
+        scopes = []
+        for n in ast.walk(ast.parse((src / rel).read_text())):
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                first = min([n.lineno] + [d.lineno for d in n.decorator_list])
+                scopes.append((n.body[0].lineno, n.end_lineno, first, n.lineno))
+        qmap["_scopes"][rel] = scopes
+    keys = set()
+    for h in fp.hunks:
+        old = h.old_start
+        run_del = ins = False
+        for ln in list(h.lines) + [" "]:
+            t = ln[:1]
+            if t == "-":
+                keys.add(_key_of(scopes, rel, old))
+                old += 1
+                run_del = True
+            elif t == "+":
+                ins = True
+            else:
+                if ins and not run_del:  # pure insertion between lines old-1 and old
+                    a, b = _key_of(scopes, rel, old - 1), _key_of(scopes, rel, old)
+                    keys.add(a if a == b else None)
+                ins = run_del = False
+                old += 1
+    if None in keys or keys & qmap["boot"]:
+        return None
+    qs = set()
+    for k in keys:
+        qs.update(qmap["funcs"].get(k, ()))
+    return None if "S" in qs else qs
+
+
+def _reach_plan(src: Path, text: str, qmap: dict):
+    """(patched, queries, guard) for the plan check; queries None = every query.
+    None when the patch cannot be checked soundly (keep the test)."""
+    try:
+        files = P.parse(text)
+    except P.PatchError:
+        return None
+    if not files:
+        return None
+    out, qs, guard, every = {}, set(), False, False
+    for fp in files:
+        path = str(fp.path)
+        if _unread(src, fp):
+            continue
+        if fp.special or fp.old_path != fp.new_path or not path.endswith(".py"):
+            return None
+        if not path.startswith("sqlglot/"):
+            return None
+        if path not in qmap["loaded"]:
+            continue  # never imported by the test at the pinned commit
+        try:
+            new = P.apply((src / path).read_text(), fp)
+            compile(new, path, "exec", dont_inherit=True)
+            r = _reach(src, path, fp, qmap)
+        except Exception:  # unparsable patch or source, syntax error: keep
+            return None
+        out[path] = new
+        guard = guard or path in _GUARD_EXACT or path.startswith(_GUARD_PREFIXES)
+        if r is None:
+            every = True
+        else:
+            qs |= r
+    if every:
+        return None if guard else (out, None, False)
+    return out, qs, guard
+
+
+def _run(src: Path, patched: dict, golden) -> dict:
     src = Path(src).resolve()
     tmp = os.environ.get("TMPDIR", "/tmp")
     paths = []
@@ -192,6 +295,9 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         return {}
     ranked = []
     updates = {}
+    qmap = None
+    if golden_path is not None and os.environ.get("BR_PLAN_REACH", "1") != "0":
+        qmap = _load_qmap(Path(golden_path).with_name("tpcds_qmap.json"))
     for stem, text, nums in rows:
         if number not in nums:
             continue
@@ -201,13 +307,34 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         marginal = _cost(nums, ms) - _cost(nums - {number}, ms)
         if marginal < min_marginal_s:
             continue
+        if qmap is not None:
+            plan = _reach_plan(src, text, qmap)
+            if plan is None:
+                continue
+            patched, qs, guard = plan
+            if qs is not None and not qs and _EMPTY == "drop":
+                updates[stem] = set(nums) - {number}  # no query reaches an edited function
+                continue
+            if qs is not None and not qs:  # BR_PLAN_EMPTY=digest: verify the plans anyway
+                if guard:
+                    continue
+                qs = None
+            if qs is not None and len(qs) > _MAXQ:
+                if guard:
+                    continue
+                qs = None
+            if not patched:
+                updates[stem] = set(nums) - {number}  # only files the test never loads
+                continue
+            ranked.append((marginal, stem, patched, nums, qs, guard))
+            continue
         patched = _safe_patch(Path(src), text)
         if patched is None:
             continue
-        ranked.append((marginal, stem, patched, nums))
+        ranked.append((marginal, stem, patched, nums, None, False))
     if not ranked:
         return updates
-    ranked.sort(reverse=True)
+    ranked.sort(key=lambda r: r[:2], reverse=True)
     import resource
 
     def cpu() -> float:
@@ -227,10 +354,13 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         rows_golden = golden.get("rows") if golden.get("ok") else None
     if not rows_golden:
         return updates
-    for _marginal, stem, patched, nums in ranked:
+    for _marginal, stem, patched, nums, qs, guard in ranked:
         if cpu() - start >= budget_s:
             break
-        got = _run(Path(src), patched, rows_golden)
+        spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
+        got = _run(Path(src), patched, spec)
+        if os.environ.get("BR_PLAN_DEBUG"):
+            print(f"plan {stem} q={'ALL' if qs is None else len(qs)} guard={guard} -> {got}", file=sys.stderr)
         if got.get("ok") and got.get("same"):
             updates[stem] = set(nums) - {number}
     return updates
@@ -274,6 +404,9 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from sqlglot.optimizer import optimize
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
+        if isinstance(golden, dict):  # reach mode: only the queries the patch can reach
+            Path(out_path).write_text(json.dumps(_child_only(golden)))
+            return
         max_q = int(os.environ.get("BR_PLAN_MAXQ", "20")) if golden else 0
         rows, changed = [], []
         for meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql"):
@@ -302,11 +435,44 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
     Path(out_path).write_text(json.dumps(result))
 
 
+def _child_only(spec: dict) -> dict:
+    """Parse and pickle every reached query; execute the reached executed ones whose
+    DuckDB render or optimized tree differs (all of them when the patch touches the
+    executor side, spec["all"])."""
+    import pickle
+
+    from sqlglot import parse_one, transpile
+    from sqlglot.optimizer import optimize
+    from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+
+    only, golden, run_all = set(spec["only"]), spec["rows"], spec["all"]
+    run, ei = [], -1
+    for qi, (meta, sql, _expected) in enumerate(load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")):
+        if meta.get("execute"):
+            ei += 1
+        if qi not in only:
+            continue
+        pickle.loads(pickle.dumps(parse_one(sql)))
+        if not meta.get("execute"):
+            continue
+        if run_all:
+            run.append(sql)
+            continue
+        rendered = transpile(sql, write="duckdb")
+        tree = optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
+        row = [hashlib.blake2b("|".join(rendered).encode(), digest_size=8).hexdigest(), _digest(tree)]
+        if ei >= len(golden) or row != golden[ei]:
+            run.append(sql)
+    same = _execute_changed(run) if run else True
+    return {"ok": True, "same": same, "changed": len(run)}
+
+
 def _execute_changed(sqls: list) -> bool:
     """Run each changed query the way test_execute_tpcds does, under the patched tree:
     DuckDB on the rendered SQL is the expected frame, the Python executor the actual."""
     import ast
     import csv
+    import pickle
 
     import duckdb
     import numpy as np
@@ -354,12 +520,13 @@ def _execute_changed(sqls: list) -> bool:
         for sql in sqls:
             if time.process_time() - t0 > cap:
                 return False  # out of per-commit CPU: keep the test
-            expression = parse_one(sql)
+            expression = pickle.loads(pickle.dumps(parse_one(sql)))  # to the pool and back
             needed = {t.name: None for t in find_tables(expression)}
             for name in needed:
                 if name not in tables:
                     setup(name)
             table = execute(expression, schema=TPCDS_SCHEMA, tables={n: tables[n] for n in needed})
+            table = pickle.loads(pickle.dumps(table))
             a = conn.execute(transpile(sql, write="duckdb")[0]).fetchdf()
             b = pd.DataFrame(((np.nan if c is None else c for c in r) for r in table.rows), columns=table.columns)
             assert_frame_equal(a, b, check_dtype=False, check_index_type=False)
