@@ -410,6 +410,50 @@ def _leak_spans(text: str):
     return [(a, b, n in leak_names, (c, n)) for c, n, a, b, calls, direct in funcs]
 
 
+def _literal_assign_name(old: str, new: str, start: int, end: int):
+    """Name of a module-level `NAME = <literal>` that lines start..end sit inside, or None.
+
+    The statement must be a pure literal (nothing runs) before and after the edit,
+    bound to the same single name. Only a reader of that name can see the change.
+    """
+    import ast
+
+    def find(text, lo, hi):
+        try:
+            tree = ast.parse(text)
+        except (SyntaxError, ValueError, RecursionError):
+            return None
+        for st in tree.body:
+            if isinstance(st, ast.Assign) and len(st.targets) == 1 and isinstance(st.targets[0], ast.Name):
+                name, val = st.targets[0].id, st.value
+            elif isinstance(st, ast.AnnAssign) and isinstance(st.target, ast.Name) and st.value is not None:
+                name, val = st.target.id, st.value
+            else:
+                continue
+            if st.lineno <= lo and (st.end_lineno or st.lineno) >= hi:
+                try:
+                    ast.literal_eval(val)
+                except (ValueError, SyntaxError, TypeError, RecursionError, MemoryError):
+                    return None
+                return name
+        return None
+
+    try:
+        a = find(old, start, end)
+        if a is None:
+            return None
+        # the same name must still be a literal assignment in the new text
+        tree = ast.parse(new)
+        for st in tree.body:
+            t = st.targets[0] if isinstance(st, ast.Assign) and len(st.targets) == 1 else getattr(st, "target", None)
+            if isinstance(t, ast.Name) and t.id == a and getattr(st, "value", None) is not None:
+                ast.literal_eval(st.value)
+                return a
+    except Exception:
+        return None
+    return None
+
+
 def _region_leaks(path: str, old: str, new: str, start: int, end: int) -> bool:
     """True when a change in a side-effecting test module can break other files.
 
@@ -531,7 +575,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
     if not (is_tests or is_pkg):
         if path.startswith(INERT_PREFIXES):
             return set()
-        raise All(f"py outside sqlglot/tests: {path}")
+        if maps is None:
+            raise All("no maps")
+        return _level_call(maps, lambda fl: fl.py_elsewhere(path))
     if maps is None:
         raise All("no maps")
     if is_pkg and path not in maps.pyfiles:
@@ -578,7 +624,18 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             # a function that writes, spawns, or calls one can break unrelated tests.
             # a change that stays inside a function with no such leak only affects
             # the tests that execute it (the coverage set below).
-            raise All(f"side-effecting test module changed: {path}")
+            lit = _literal_assign_name(old, new, r.start, r.end)
+            if lit is None:
+                raise All(f"side-effecting test module changed: {path}")
+            # a pure literal runs nothing: only tests that read the name can see an edit
+            got = set(_tests_mentioning_full({lit}, maps))
+            try:
+                got |= set(maps.name_tests(lit))
+            except Exception as e:
+                log("name_tests skip:", repr(e))
+            log("literal in side-effecting module narrowed:", lit, len(got))
+            out |= got
+            continue
         if r.kind == "rt":
             out |= tests
             if imp and not r.lam:  # function body that also runs at import time

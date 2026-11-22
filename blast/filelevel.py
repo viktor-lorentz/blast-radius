@@ -19,6 +19,7 @@ import importlib.util
 import re
 import sys
 import tomllib
+import unittest
 
 SQLGLOTC_TEST = "tests/test_sqlglotc.py"
 TYPING_TEST = "tests/test_typing.py"
@@ -35,6 +36,9 @@ class NeedAll(Exception):
 
 def _base(path: str) -> str:
     return path.rsplit("/", 1)[-1]
+
+
+INERT_TOPS = ("benchmarks", "posts", "docs", ".github", "pdoc")  # same as selector.INERT_PREFIXES
 
 
 def _shadows(name: str) -> bool:
@@ -215,7 +219,7 @@ class FileLevel:
             return self._sqlglotc()
         opened = self.maps.opened_by(path)
         if opened is not None:
-            return set(opened)
+            return self._without_setup_only(path, set(opened))
         # no test opens it in the pinned tree, and no sqlglot module reads package files
         return set()
 
@@ -248,7 +252,7 @@ class FileLevel:
         b = _base(path)
         stem = b[:-3]
         if b == "__init__.py":
-            raise NeedAll(f"new package: {path}")
+            return self._new_package(path)
         if b == "conftest.py":
             if plain_module(text) and "autouse" not in text and not re.search(r"\bpytest_\w+", text):
                 return set()
@@ -275,6 +279,183 @@ class FileLevel:
                 raise NeedAll(f"root module shadows an import: {path}")
             return set()
         if _shadows(top):
+            raise NeedAll(f"root directory shadows an import: {path}")
+        return set()
+
+    def _without_setup_only(self, path: str, opened: set) -> set:
+        """Drop tests that only share a class whose setUpClass loads the fixture.
+
+        `cls.X = load(<fixture>)` in setUpClass makes every test of the class
+        open the file, but only a test that reads `.X` can see its content. The
+        drop needs the fixture's path to be spelled nowhere else in that file,
+        no directory walk in it, and every call a kept-out test makes to stay
+        inside the class.
+        """
+        pre = "tests/fixtures/"
+        if not path.startswith(pre):
+            return opened
+        rel = path[len(pre):]
+        by_file: dict = {}
+        for n in opened:
+            tid = self.maps.id_of(n)
+            parts = tid.split("::") if tid else []
+            if len(parts) != 3:
+                continue
+            by_file.setdefault(parts[0], {}).setdefault(parts[1], {})[parts[2]] = n
+        drop: set = set()
+        for f, classes in by_file.items():
+            try:
+                text = (self.src / f).read_text()
+                tree = ast.parse(text)
+            except (OSError, SyntaxError, ValueError):
+                continue
+            if re.search(r"\b(glob|rglob|listdir|walk|iterdir|scandir)\s*\(", text):
+                continue
+            cdefs = {c.name: c for c in tree.body if isinstance(c, ast.ClassDef)}
+            attrs: dict = {}
+            total = 0
+            for cname in classes:
+                c = cdefs.get(cname)
+                if c is None:
+                    continue
+                for m in c.body:
+                    if isinstance(m, ast.FunctionDef) and m.name == "setUpClass":
+                        for st in ast.walk(m):
+                            if (isinstance(st, ast.Assign) and len(st.targets) == 1
+                                    and isinstance(st.targets[0], ast.Attribute)
+                                    and isinstance(st.targets[0].value, ast.Name)
+                                    and st.targets[0].value.id == "cls"
+                                    and rel in (ast.get_source_segment(text, st.value) or "")):
+                                attrs.setdefault(cname, set()).add(st.targets[0].attr)
+                                total += 1
+            if not attrs or text.count(rel) != total:
+                continue
+            for cname, names in classes.items():
+                A = attrs.get(cname)
+                if not A:
+                    continue
+                meths = {m.name: m for m in cdefs[cname].body if isinstance(m, ast.FunctionDef)}
+                memo: dict = {}
+                data = {t.attr for m in meths.values() for st in ast.walk(m) if isinstance(st, (ast.Assign, ast.AugAssign, ast.AnnAssign))
+                        for t in (st.targets if isinstance(st, ast.Assign) else [st.target])
+                        if isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name) and t.value.id in ("self", "cls")}
+
+                def reads(name, env):
+                    """(uses an attribute of A, reaches code it cannot see) for method `name` with constant args `env`."""
+                    key = (name, tuple(sorted(env.items())))
+                    if key in memo:
+                        return memo[key]
+                    memo[key] = (False, False)  # recursion: assume nothing new
+                    m = meths.get(name)
+                    if m is None:
+                        memo[key] = (False, True)
+                        return memo[key]
+                    params = [a.arg for a in m.args.args][1:]
+                    res = [False, False]
+
+                    def known(test):
+                        neg = isinstance(test, ast.UnaryOp) and isinstance(test.op, ast.Not)
+                        v = test.operand if neg else test
+                        if isinstance(v, ast.Name) and v.id in env:
+                            return (not env[v.id]) if neg else bool(env[v.id])
+                        return None
+
+                    def visit(node):
+                        if isinstance(node, (ast.If, ast.IfExp)):
+                            k = known(node.test)
+                            if k is not None:
+                                for ch in (node.body if k else node.orelse) if isinstance(node, ast.If) else [node.body if k else node.orelse]:
+                                    visit(ch)
+                                return
+                        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                                and isinstance(node.func.value, ast.Name) and node.func.value.id in ("self", "cls") \
+                                and node.func.attr in meths:
+                            callee = meths[node.func.attr]
+                            cp = [a.arg for a in callee.args.args][1:]
+                            env2 = {}
+                            for pn, a in zip(cp, node.args):
+                                if isinstance(a, ast.Constant) and isinstance(a.value, (bool, type(None))):
+                                    env2[pn] = a.value
+                                elif isinstance(a, ast.Name) and a.id in env:
+                                    env2[pn] = env[a.id]
+                            for kw in node.keywords:
+                                if kw.arg and isinstance(kw.value, ast.Constant) and isinstance(kw.value.value, (bool, type(None))):
+                                    env2[kw.arg] = kw.value.value
+                                elif kw.arg and isinstance(kw.value, ast.Name) and kw.value.id in env:
+                                    env2[kw.arg] = env[kw.value.id]
+                            u, k2 = reads(node.func.attr, env2)
+                            res[0] |= u
+                            res[1] |= k2
+                            for ch in list(node.args) + [kw.value for kw in node.keywords]:
+                                visit(ch)
+                            return
+                        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) \
+                                and node.value.id in ("self", "cls"):
+                            if node.attr in A:
+                                res[0] = True
+                            elif node.attr in meths:
+                                u, k2 = reads(node.attr, {})
+                                res[0] |= u
+                                res[1] |= k2
+                            elif not (node.attr.startswith("assert") or hasattr(unittest.TestCase, node.attr)
+                                      or node.attr in data):
+                                res[1] = True
+                            return
+                        for ch in ast.iter_child_nodes(node):
+                            visit(ch)
+
+                    for st in m.body:
+                        visit(st)
+                    memo[key] = (res[0], res[1])
+                    return memo[key]
+
+                for tname, n in names.items():
+                    uses, unknown = reads(tname, {})
+                    if not uses and not unknown:
+                        drop.add(n)
+        if drop:
+            self.log("setUpClass-only fixture opens dropped:", path, len(drop))
+        return opened - drop
+
+    def py_elsewhere(self, path: str) -> set:
+        """An existing Python file outside sqlglot/, tests/ and sqlglotc/ was edited.
+
+        Only a test that opens it or spells its module name can run it. A root
+        module or directory named like an importable module shadows it, so that
+        stays on the full suite.
+        """
+        if _shadows(path.split("/")[0][:-3] if "/" not in path else path.split("/")[0]):
+            raise NeedAll(f"py outside sqlglot/tests shadows an import: {path}")
+        stem = _base(path)[:-3]
+        out = set(self.maps.opened_by(path) or ())
+        if stem.isidentifier():
+            out |= set(self.mentioning({stem}, scoped=True))
+        return out
+
+    def _has_py(self, d: str) -> bool:
+        """The pinned tree already holds Python files under directory `d`."""
+        root = self.src / d
+        return root.is_dir() and any("__pycache__" not in x.parts for x in root.rglob("*.py"))
+
+    def _new_package(self, path: str) -> set:
+        """A new __init__.py. Only a directory that already holds Python files can change how those load."""
+        if "/" not in path:
+            raise NeedAll(f"new package: {path}")
+        d = path.rsplit("/", 1)[0]
+        if d.split("/")[0] in INERT_TOPS:
+            return set()  # no scored test imports or reads these
+        if self._has_py(d):
+            raise NeedAll(f"new package over existing modules: {path}")
+        if path.startswith("sqlglot/"):
+            if (self.src / (d + ".py")).exists():
+                raise NeedAll(f"new package shadows a module: {path}")
+            name = d.rsplit("/", 1)[-1]
+            return set(self.mentioning({name}, scoped=True)) if name.isidentifier() else set()
+        if path.startswith("sqlglotc/"):
+            return self._sqlglotc()
+        if path.startswith("tests/"):
+            return set()  # a fresh directory: nothing collected there yet
+        if _shadows(d.split("/")[0]):
             raise NeedAll(f"root directory shadows an import: {path}")
         return set()
 
