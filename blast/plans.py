@@ -55,6 +55,14 @@ _BUDGET_S = float(os.environ.get("BR_PLAN_BUDGET", "20"))
 _COMMIT_TIMEOUT_S = 25
 _MAXQ = int(os.environ.get("BR_PLAN_MAXQ", "20"))
 _PHASES = os.environ.get("BR_PLAN_PHASES", "1") != "0"  # per-phase plan + optimizer snapshots
+# First executed TPC-DS queries, only for an in-place sqlglot/planner.py edit.
+# Its window is separate, so a planner commit does not spend another check's CPU.
+_CANARY_N = int(os.environ.get("BR_PLAN_CANARY_N", "3"))
+_CANARY_QCPU = float(os.environ.get("BR_PLAN_CANARY_QCPU", "3.5"))
+# Phase rows the shared window does not reach. Small on purpose: a full second
+# pass of every phase row added ~21s on c1, and the skipped guard pass is a
+# handful of executed queries.
+_PHASE_BUDGET_S = float(os.environ.get("BR_PLAN_PHASE_BUDGET", "4"))
 
 
 def _digest_file(path: str) -> bool:
@@ -90,6 +98,54 @@ def _subset_patch(src: Path, text: str) -> dict | None:
             return None
         out[path] = new
     return out or None
+
+
+def _planner_inplace(src: Path, text: str) -> dict | None:
+    """Patched sqlglot/planner.py when that file is the only in-place edit.
+
+    A rename, a delete, or any other file the test can read returns None.
+    The short canary then does not run and cannot drop that commit.
+    """
+    try:
+        files = P.parse(text)
+    except P.PatchError:
+        return None
+    if not files:
+        return None
+    new = None
+    for fp in files:
+        if _unread(src, fp):
+            continue
+        path = str(fp.path)
+        if fp.special or fp.old_path != fp.new_path or fp.old_path is None:
+            return None
+        if path != "sqlglot/planner.py":
+            return None
+        try:
+            old = (src / path).read_text()
+            got = P.apply(old, fp)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", SyntaxWarning)
+                compile(got, path, "exec", dont_inherit=True)
+        except (P.PatchError, OSError, UnicodeError, SyntaxError, ValueError):
+            return None
+        if got == old:
+            return None
+        new = got
+    if new is None:
+        return None
+    return {"sqlglot/planner.py": new}
+
+
+def _is_phase(qs) -> bool:
+    return isinstance(qs, tuple) and bool(qs) and qs[0] == "phase"
+
+
+def _n_exec(row) -> int:
+    qs = row[4]
+    if not _is_phase(qs):
+        return 99
+    return sum(1 for e in qs[1] if e[5])
 
 
 def _cost(nums, ms) -> float:
@@ -459,6 +515,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
     ranked = []
     updates = {}
     digest_queued = 0
+    planner_cands = []
     qmap = None
     if golden_path is not None and os.environ.get("BR_PLAN_REACH", "1") != "0":
         qmap = _load_qmap(Path(golden_path).with_name("tpcds_qmap.json"))
@@ -473,6 +530,10 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         marginal = _cost(nums, ms) - _cost(nums - {number}, ms)
         if marginal < min_marginal_s:
             continue
+        if os.environ.get("BR_PLAN_CANARY", "1") != "0" and _CANARY_N > 0:
+            planner = _planner_inplace(Path(src), text)
+            if planner:
+                planner_cands.append((marginal, stem, planner, nums))
         if qmap is not None:
             plan = _reach_plan(src, text, qmap)
             queued = False
@@ -519,15 +580,29 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                 digest_queued += 1
             continue
         ranked.append((marginal, stem, patched, nums, None, False, False))
-    if not ranked:
+    ranked_stems = {r[1] for r in ranked}
+    # Planner commits the plan check already queued keep that proof. The canary
+    # is only the refused in-place planner.py edits, in their own window.
+    canaries = [
+        (m, stem, patched, nums, "canary", False, False)
+        for m, stem, patched, nums in planner_cands
+        if stem not in ranked_stems and stem not in updates
+    ]
+    if not ranked and not canaries:
         return updates
     ranked.sort(key=lambda r: r[:2], reverse=True)
+    canaries.sort(key=lambda r: r[:2], reverse=True)
     # The digest must not share the main budget: on c1 the higher-marginal
     # checks spend it, and the subset commits (the only ones that may be
     # digested) never run. A second window spends CPU only on that subset.
     # A comment in a guard file is a third window, so proving the other files
     # harmless does not push an existing drop past the main budget.
+    # Phase rows stay in that main window. The ones it never reaches get a
+    # fourth window, so a skipped helper.py pass does not take their budget.
+    # Fewest executions first, guard files before the rest. The planner canary
+    # is a fifth window: only in-place planner.py, so other commits pay nothing.
     plain = [r for r in ranked if r[4] != "digest" and not r[6]]
+    phases = [r for r in ranked if _is_phase(r[4]) and not r[6]]
     freed_rows = [r for r in ranked if r[6]]
     digests = [r for r in ranked if r[4] == "digest"]
     import resource
@@ -538,25 +613,30 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         return self_use.ru_utime + self_use.ru_stime + kids.ru_utime + kids.ru_stime
 
     digest_ran = digest_hit = 0
+    phase_ran = phase_hit = canary_ran = canary_hit = 0
+    attempted: set = set()
     rows_golden = None
-    if golden_path is not None:  # built from the pinned tree in the image (tools/plan_golden.py)
+    if ranked and golden_path is not None:  # built from the pinned tree in the image (tools/plan_golden.py)
         try:
             rows_golden = json.loads(Path(golden_path).read_text()).get("rows")
         except (OSError, ValueError):
             rows_golden = None
-    if not rows_golden:
+    if ranked and not rows_golden:
         golden = _run(Path(src), {}, None)
         rows_golden = golden.get("rows") if golden.get("ok") else None
-    if not rows_golden:
-        return updates
 
-    def _check(batch) -> None:
-        nonlocal digest_ran, digest_hit
+    def _check(batch, budget: float = budget_s) -> None:
+        nonlocal digest_ran, digest_hit, phase_ran, phase_hit, canary_ran, canary_hit
         start = cpu()
         for _marginal, stem, patched, nums, qs, guard, _freed in batch:
-            if cpu() - start >= budget_s:
+            if cpu() - start >= budget:
                 break
-            if qs == "digest":
+            attempted.add(stem)
+            if qs == "canary":
+                spec = {"canary": _CANARY_N}
+                label = "CAN%d" % _CANARY_N
+                canary_ran += 1
+            elif qs == "digest":
                 spec = {"rows": rows_golden, "digest_only": True}
                 label = "DIGEST"
                 digest_ran += 1
@@ -564,6 +644,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                 spec = {"rows": rows_golden, "plan": qs[1], "snapdir": str(Path(golden_path).parent),
                         "rules": qmap["snap_rules"]}
                 label = "PH%d/%s" % (len(qs[1]), ",".join(sorted({str(e[4]) for e in qs[1] if e[1] >= 0})))
+                phase_ran += 1
             else:
                 spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
                 label = "ALL" if qs is None else len(qs)
@@ -574,12 +655,33 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                 updates[stem] = set(nums) - {number}
                 if qs == "digest":
                     digest_hit += 1
+                elif qs == "canary":
+                    canary_hit += 1
+                elif isinstance(qs, tuple):
+                    phase_hit += 1
 
-    _check(plain)
-    _check(freed_rows)
-    _check(digests)
+    overflow = []
+    overflow_stats = (0, 0, 0)
+    if ranked and rows_golden:
+        _check(plain)
+        overflow = [r for r in phases if r[1] not in attempted and r[1] not in updates]
+        overflow.sort(key=lambda r: (0 if r[5] else 1, _n_exec(r), -r[0], r[1]))
+        phase_ran = phase_hit = 0
+        _check(overflow, _PHASE_BUDGET_S)
+        overflow_stats = (phase_hit, phase_ran, len(overflow))
+        _check(freed_rows)
+        _check(digests)
+    if canaries:
+        _check(canaries)
     if digest_queued:
         print(f"tpcds subset-digest {digest_hit}/{digest_ran} queued {digest_queued}", file=sys.stderr)
+    if overflow_stats[2]:
+        print(
+            f"tpcds phase-window {overflow_stats[0]}/{overflow_stats[1]} queued {overflow_stats[2]}",
+            file=sys.stderr,
+        )
+    if canaries:
+        print(f"tpcds planner-canary {canary_hit}/{canary_ran} queued {len(canaries)}", file=sys.stderr)
     return updates
 
 
@@ -621,6 +723,10 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from sqlglot.optimizer import optimize
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
+        if isinstance(golden, dict) and golden.get("canary"):
+            result = _child_canary(int(golden["canary"]))
+            Path(out_path).write_text(json.dumps(result))
+            return
         if isinstance(golden, dict) and golden.get("digest_only"):
             result = _child_digest(golden)
             Path(out_path).write_text(json.dumps(result))
@@ -761,7 +867,24 @@ def _child_digest(spec: dict) -> dict:
     return {"ok": True, "same": ei + 1 == len(golden) and ei >= 0, "changed": 0, "digest": True}
 
 
-def _execute_changed(sqls: list) -> bool:
+def _child_canary(n: int) -> dict:
+    """Execute the first n TPC-DS queries the test executes. A mismatch keeps it."""
+    from tests.helpers import load_sql_fixture_pairs
+
+    sqls = []
+    for meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql"):
+        if not meta.get("execute"):
+            continue
+        sqls.append(sql)
+        if len(sqls) >= n:
+            break
+    if len(sqls) < n:
+        return {"ok": False}
+    same = _execute_changed(sqls, cap=_CANARY_QCPU)
+    return {"ok": True, "same": same, "changed": 0 if same else len(sqls)}
+
+
+def _execute_changed(sqls: list, cap: float | None = None) -> bool:
     """Run each changed query the way test_execute_tpcds does, under the patched tree:
     DuckDB on the rendered SQL is the expected frame, the Python executor the actual."""
     import ast
@@ -808,7 +931,8 @@ def _execute_changed(sqls: list) -> bool:
 
     import time
 
-    cap = float(os.environ.get("BR_PLAN_QCPU", "1.7"))  # local CPU; ~3 s on the server
+    if cap is None:
+        cap = float(os.environ.get("BR_PLAN_QCPU", "1.7"))  # local CPU; ~3 s on the server
     t0 = time.process_time()
     try:
         for sql in sqls:
