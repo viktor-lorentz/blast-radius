@@ -19,6 +19,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from blast import astdiff  # noqa: E402
+from blast import canary  # noqa: E402
 from blast import patch as P  # noqa: E402
 from blast import maxnodes  # noqa: E402
 from blast import plans  # noqa: E402
@@ -1130,6 +1131,152 @@ def patched_sources(patch_text: str, numbers: set, id_of: dict) -> dict | None:
     return out
 
 
+def canary_sources(text: str) -> "dict | None":
+    """Patched contents of every edited file, fixtures included; None when the
+    patch adds, deletes or renames a file or does not apply."""
+    out = {}
+    try:
+        files = P.parse(text)
+    except Exception:
+        return None
+    for fp in files:
+        if fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
+            return None
+        if not (fp.path.startswith("sqlglot/") or fp.path.startswith("tests/")):
+            continue
+        try:
+            out[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
+        except (P.PatchError, OSError, UnicodeError):
+            return None
+    return out
+
+
+def narrow_heavy(rows, id_to_number, number_to_id, ms, maps=None):
+    """Drop a heavy test when its canaries all pass under the patched tree.
+    Biggest makespan gain first, inside a CPU budget."""
+    order = [h for h in os.environ.get("BR_CANARY_HEAVY", "tpcds").split(",") if h]
+    names = {"tpcds": "tests/test_executor.py::TestExecutor::test_execute_tpcds",
+             "maxnodes": "tests/test_parser.py::TestParser::test_max_nodes",
+             "genmem": "tests/test_generator.py::TestGenerator::test_generator_memory"}
+    heavy = {id_to_number[names[h]]: names[h] for h in order if names[h] in id_to_number}
+    ranked = []
+    for stem, text, nums in rows:
+        if len(nums) >= len(ms):  # full-suite fallback: the scorer keeps it
+            continue
+        for hn, hid in heavy.items():
+            if hn not in nums:
+                continue
+            if hid.split("::")[0] in text_paths(text):
+                continue  # the patch edits the heavy test's own file
+            gain = runner.scheduled_cost_s(nums, ms) - runner.scheduled_cost_s(nums - {hn}, ms)
+            if gain > 1.0:
+                ranked.append((gain, stem, hn))
+    ranked.sort(reverse=True)
+    if not ranked:
+        return {}
+    r = canary.Runner(SRC)
+    texts = {stem: text for stem, text, _ in rows}
+    cur = {stem: set(nums) for stem, _, nums in rows}
+    changed = set()
+    for gain, stem, hn in ranked:
+        if r.left() <= 0.5:
+            break
+        nums = cur[stem]
+        hid = number_to_id[hn]
+        can_n = canary.canaries(hid, nums, number_to_id, ms, hunk_hits(texts[stem], maps))
+        if not can_n or not canary_reaches(texts[stem], maps, hn, can_n):
+            continue
+        can = [number_to_id[n] for n in can_n]
+        patched = canary_sources(texts[stem])
+        if patched is None:
+            continue
+        ok = r.all_pass(patched, can)
+        if os.environ.get("BR_CANARY_DEBUG"):
+            log(f"canary {stem} gain {gain:.1f} n {len(can)} ok {ok} spent {r.spent:.2f}")
+        if ok:
+            nums.discard(hn)
+            changed.add(stem)
+    log(f"canary runs {r.runs} cpu {r.spent:.2f} dropped {len(changed)}")
+    return {stem: cur[stem] for stem in changed}
+
+
+def changed_regions(text: str):
+    """(path, first, last) old-side line spans that a patch changes: removed lines,
+    or the two lines around a pure insertion. Context lines are left out."""
+    out = []
+    for fp in P.parse(text):
+        path = fp.old_path or fp.new_path or ""
+        for h in fp.hunks:
+            ln = h.old_start
+            spans = []
+            for raw in h.lines:
+                tag = raw[:1]
+                if tag == "-":
+                    spans.append((ln, ln))
+                    ln += 1
+                elif tag == "+":
+                    spans.append((max(ln - 1, 1), ln))
+                elif tag == " ":
+                    ln += 1
+            out.extend((path, a, b) for a, b in spans)
+    return out
+
+
+def canary_reaches(text: str, maps, hn: int, can_nums) -> bool:
+    """True only when the pinned-commit coverage says every changed line the heavy
+    test could depend on is also executed by a canary: each changed line is mapped,
+    none runs at import time (data the maps cannot attribute), and wherever the
+    heavy test executed a change, at least one canary did too."""
+    if maps is None:
+        return False
+    can_nums = set(can_nums)
+    try:
+        regions = changed_regions(text)
+    except Exception:
+        return False
+    if not regions:
+        return False
+    for path, a, b in regions:
+        if not path.endswith(".py"):
+            return False  # fixtures and data files have no line map
+        tests, imp, hit = maps.region_tests(path, a, b)
+        if imp:
+            return False
+        if not hit:
+            if maps.cov(path) is None:
+                return False
+            continue  # lines nobody executed at the pinned commit
+        if hn in tests and not (tests & can_nums):
+            return False
+    return True
+
+
+def hunk_hits(text: str, maps) -> dict:
+    """Per test, how many patched sqlglot hunks it executed at the pinned commit.
+    Only orders the canaries (likely failures first); never decides a drop."""
+    hits: dict = {}
+    if maps is None:
+        return hits
+    try:
+        from blast import patch as _p
+        for fp in _p.parse(text):
+            path = fp.old_path or ""
+            if not (path.startswith("sqlglot/") and path.endswith(".py")):
+                continue
+            for h in fp.hunks:
+                tests, _, _ = maps.region_tests(path, h.old_start, h.old_start + max(h.old_len, 1) - 1)
+                for n in tests:
+                    hits[n] = hits.get(n, 0) + 1
+    except Exception:
+        return {}
+    return hits
+
+
+def text_paths(text: str) -> set:
+    return {ln[6:].strip() for ln in text.splitlines() if ln.startswith("+++ b/")} | \
+        {ln[6:].strip() for ln in text.splitlines() if ln.startswith("--- a/")}
+
+
 def main() -> None:
     tests = json.loads((DATA / "tests.json").read_text())["tests"]
     ms = {t["number"]: round(t["seconds"] * 1000) for t in tests}
@@ -1194,6 +1341,14 @@ def main() -> None:
                 log(f"max_nodes dropped {len(updates)}")
         except Exception as e:
             log("maxnodes skip:", repr(e))
+    if os.environ.get("BR_CANARY", "0") != "0":
+        try:
+            updates = narrow_heavy(rows, id_to_number, number_to_id, ms, maps)
+            if updates:
+                rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+        except Exception as e:
+            log("canary skip:", repr(e))
+        canary.cleanup_tmp()
     if run_tests:
         # Highest worker-fee gap first, and stop once the runs have spent 8s of CPU.
         # A later commit that would have saved time is kept static rather than risking the batch.
