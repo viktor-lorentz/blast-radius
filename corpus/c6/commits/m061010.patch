@@ -1,0 +1,22 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+index 41afa3c..e3d8e62 100644
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -615,7 +615,7 @@ class DorisGenerator(MySQLGenerator):
+         self, expression: exp.PartitionByRangePropertyDynamic
+     ) -> str:
+         # Generates: FROM ("start") TO ("end") INTERVAL N UNIT
+-        start = self.sql(expression, "start")
++        start_local = self.sql(expression, "start")
+         end = self.sql(expression, "end")
+         every = expression.args.get("every")
+ 
+@@ -625,7 +625,7 @@ class DorisGenerator(MySQLGenerator):
+         else:
+             interval = ""
+ 
+-        return f"FROM ({start}) TO ({end}) {interval}"
++        return f"FROM ({start_local}) TO ({end}) {interval}"
+ 
+     def partitionedbyproperty_sql(self, expression: exp.PartitionedByProperty) -> str:
+         this = expression.this

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/parsers/bigquery.py b/sqlglot/parsers/bigquery.py
+index 6f01aa9..7723156 100644
+--- a/sqlglot/parsers/bigquery.py
++++ b/sqlglot/parsers/bigquery.py
+@@ -123,7 +123,7 @@ def _build_parse_datetime(args: list, dialect: Dialect) -> exp.ParseDatetime:
+ 
+ 
+ def _build_regexp_extract(expr_type: type[E], default_group: exp.Expr | None = None) -> t.Callable:
+-    def _builder(args: list, dialect: Dialect) -> E:
++    def _builder(args: object, dialect: Dialect) -> E:
+         return expr_type(
+             this=seq_get(args, 0),
+             expression=seq_get(args, 1),

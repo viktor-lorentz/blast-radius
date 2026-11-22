@@ -1,0 +1,16 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anon.py
+similarity index 100%
+rename from sqlglot/anonymize.py
+rename to sqlglot/anon.py
+diff --git a/tests/test_anonymize.py b/tests/test_anonymize.py
+index 3f5e7a1..5328df2 100644
+--- a/tests/test_anonymize.py
++++ b/tests/test_anonymize.py
+@@ -1,6 +1,6 @@
+ import unittest
+ 
+-from sqlglot.anonymize import anonymize, render
++from sqlglot.anon import anonymize, render
+ from sqlglot.tokens import Tokenizer, TokenType
+ 
+ 

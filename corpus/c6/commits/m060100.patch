@@ -1,0 +1,7 @@
+diff --git a/tests/__init__.py b/tests/__init__.py
+index e69de29..2d156bd 100644
+--- a/tests/__init__.py
++++ b/tests/__init__.py
+@@ -0,0 +1,2 @@
++
++# test package

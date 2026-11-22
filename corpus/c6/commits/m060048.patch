@@ -1,0 +1,9 @@
+diff --git a/sqlglotc/MANIFEST.in b/sqlglotc/MANIFEST.in
+deleted file mode 100644
+index f91d724..0000000
+--- a/sqlglotc/MANIFEST.in
++++ /dev/null
+@@ -1,3 +0,0 @@
+-include pyproject.toml
+-include setup.py
+-recursive-include sqlglot *.py

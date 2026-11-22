@@ -1,0 +1,13 @@
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+index 7ce5673..67cf0f3 100644
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -237,7 +237,7 @@ class SQLiteParser(parser.Parser):
+             )
+         return this
+ 
+-    def _parse_hex_string(self, token: Token) -> exp.Expr:
++    def _parse_hex_string(self, token: Token) -> t.Optional[exp.Expr]:
+         if self.sql.startswith(("0x", "0X"), token.start):
+             value = int(token.text, 16)
+             # SQLite interprets hex integers as signed 64-bit two's-complement values.

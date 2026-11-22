@@ -1,0 +1,20 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+index b5f0828..f6a0507 100644
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -998,11 +998,11 @@ class TokenizerCore:
+             if self._peek in _DIGIT_CHARS:
+                 # Batch consecutive digits: scan ahead to find how many
+                 sql = self.sql
+-                end = self._current + 1
++                end_val = self._current + 1
+                 size = self.size
+-                while end < size and sql[end] in _DIGIT_CHARS:
+-                    end += 1
+-                self._advance(end - self._current)
++                while end_val < size and sql[end_val] in _DIGIT_CHARS:
++                    end_val += 1
++                self._advance(end_val - self._current)
+             elif self._peek == "." and not decimal:
+                 if (
+                     self.tokens and self.tokens[-1].token_type == TokenType.PARAMETER

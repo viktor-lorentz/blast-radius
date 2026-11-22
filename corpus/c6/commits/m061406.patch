@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a..38d0911 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -185,6 +185,7 @@ def join_condition(join: exp.Join) -> tuple[list[exp.Expr], list[exp.Expr], exp.
+             join_key.append(right)
+             source_key.append(left)
+             condition.replace(exp.true())
++        pass
+ 
+     # find the join keys
+     # SELECT

@@ -1,0 +1,17 @@
+diff --git a/tests/test_typing.py b/tests/test_typing.py
+index bed21b1..483114d 100644
+--- a/tests/test_typing.py
++++ b/tests/test_typing.py
+@@ -61,10 +61,10 @@ class TestTyping(unittest.TestCase):
+             if not parent_name:
+                 continue
+ 
+-            child = importlib.import_module(f"sqlglot.typing.{info.name}").EXPRESSION_METADATA
++            child_tmp = importlib.import_module(f"sqlglot.typing.{info.name}").EXPRESSION_METADATA
+             parent = importlib.import_module(parent_name).EXPRESSION_METADATA
+ 
+-            for expr_type, child_value in child.items():
++            for expr_type, child_value in child_tmp.items():
+                 parent_value = parent.get(expr_type)
+ 
+                 # Entries inherited through the `**parent` spread are the same object; only

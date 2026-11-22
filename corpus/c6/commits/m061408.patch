@@ -1,0 +1,15 @@
+diff --git a/sqlglot/optimizer/qualify.py b/sqlglot/optimizer/qualify.py
+index 60e2255..32c80c0 100644
+--- a/sqlglot/optimizer/qualify.py
++++ b/sqlglot/optimizer/qualify.py
+@@ -73,7 +73,9 @@ def qualify(
+         The qualified expression.
+     """
+     schema = ensure_schema(schema, dialect=dialect)
+-    dialect = Dialect.get_or_raise(dialect)
++    dialect = Dialect.get_or_raise(
++        dialect,
++    )
+ 
+     expression = normalize_identifiers(
+         expression,

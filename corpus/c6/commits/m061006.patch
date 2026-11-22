@@ -1,0 +1,22 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+index 3ba279a..b744df3 100644
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -591,7 +591,7 @@ class MySQLParser(parser.Parser):
+         full: bool | None = None,
+         global_: bool | None = None,
+     ) -> exp.Show:
+-        json = self._match_text_seq("JSON")
++        json_val = self._match_text_seq("JSON")
+ 
+         if target:
+             if isinstance(target, str):
+@@ -665,7 +665,7 @@ class MySQLParser(parser.Parser):
+                 for_user=for_user,
+                 for_role=for_role,
+                 into_outfile=into_outfile,
+-                json=json,
++                json=json_val,
+                 global_=global_,
+             )
+         )

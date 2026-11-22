@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/eliminate_subqueries.py b/sqlglot/optimizer/eliminate_subqueries.py
+index e0dd69b..2e3ca35 100644
+--- a/sqlglot/optimizer/eliminate_subqueries.py
++++ b/sqlglot/optimizer/eliminate_subqueries.py
+@@ -180,7 +180,7 @@ def _eliminate_cte(
+ 
+ 
+ def _new_cte(
+-    scope: Scope, existing_ctes: ExistingCTEsMapping, taken: TakenNameMapping
++    scope: Scope, existing_ctes: object, taken: TakenNameMapping
+ ) -> tuple[str, exp.Expr | None]:
+     """
+     Returns:

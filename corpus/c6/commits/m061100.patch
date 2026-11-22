@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+index b905a0b..2239b3b 100644
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -437,7 +437,7 @@ class TSQLGenerator(generator.Generator):
+ 
+         return self.func("DATEPART", name, expression.expression)
+ 
+-    def timefromparts_sql(self, expression: exp.TimeFromParts) -> str:
++    def timefromparts_sql(self, expression: object) -> str:
+         nano = expression.args.get("nano")
+         if nano is not None:
+             nano.pop()

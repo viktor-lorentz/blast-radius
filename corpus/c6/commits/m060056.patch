@@ -1,0 +1,4 @@
+diff --git a/tests/fixtures/partial.sql b/tests/fixtures/partial_queries.sql
+similarity index 100%
+rename from tests/fixtures/partial.sql
+rename to tests/fixtures/partial_queries.sql

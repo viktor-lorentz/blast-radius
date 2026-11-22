@@ -1,0 +1,15 @@
+diff --git a/sqlglot/optimizer/eliminate_ctes.py b/sqlglot/optimizer/remove_ctes.py
+similarity index 97%
+rename from sqlglot/optimizer/eliminate_ctes.py
+rename to sqlglot/optimizer/remove_ctes.py
+index 0cba004..dc971ba 100644
+--- a/sqlglot/optimizer/eliminate_ctes.py
++++ b/sqlglot/optimizer/remove_ctes.py
+@@ -1,5 +1,7 @@
+ from __future__ import annotations
+ 
++# Moved from sqlglot/optimizer/eliminate_ctes.py
++
+ import typing as t
+ 
+ from sqlglot.optimizer.journal import Journal, record

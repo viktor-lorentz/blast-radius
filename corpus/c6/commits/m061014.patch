@@ -1,0 +1,17 @@
+diff --git a/sqlglot/optimizer/__init__.py b/sqlglot/optimizer/__init__.py
+index 75241e4..b672aa8 100644
+--- a/sqlglot/optimizer/__init__.py
++++ b/sqlglot/optimizer/__init__.py
+@@ -51,9 +51,9 @@ def __getattr__(name: str) -> t.Any:
+     import importlib
+ 
+     with _import_lock:
+-        target = _LAZY_ATTRS.get(name)
+-        if target is not None:
+-            module_name, attr = target
++        target_val = _LAZY_ATTRS.get(name)
++        if target_val is not None:
++            module_name, attr = target_val
+             value = getattr(importlib.import_module(module_name), attr)
+         else:
+             # Submodule fallback so `from sqlglot.optimizer import qualify` works.

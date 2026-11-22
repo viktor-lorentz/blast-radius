@@ -1,0 +1,25 @@
+diff --git a/sqlglot/trie.py b/sqlglot/trie.py
+index 3b99d14..ccd25d3 100644
+--- a/sqlglot/trie.py
++++ b/sqlglot/trie.py
+@@ -70,13 +70,13 @@ def in_trie(trie: dict, key: key) -> tuple[TrieResult, dict]:
+     if not key:
+         return (TrieResult.FAILED, trie)
+ 
+-    current = trie
++    current_val = trie
+     for char in key:
+-        if char not in current:
+-            return (TrieResult.FAILED, current)
+-        current = current[char]
++        if char not in current_val:
++            return (TrieResult.FAILED, current_val)
++        current_val = current_val[char]
+ 
+-    if 0 in current:
+-        return (TrieResult.EXISTS, current)
++    if 0 in current_val:
++        return (TrieResult.EXISTS, current_val)
+ 
+-    return (TrieResult.PREFIX, current)
++    return (TrieResult.PREFIX, current_val)

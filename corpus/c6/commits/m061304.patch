@@ -1,0 +1,14 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+index a53f1bf..bd75e70 100644
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -3,8 +3,8 @@ from __future__ import annotations
+ import argparse
+ import sys
+ 
+-import sqlglot
+ from sqlglot.helper import to_bool
++import sqlglot
+ 
+ parser = argparse.ArgumentParser(description="Transpile SQL")
+ parser.add_argument(

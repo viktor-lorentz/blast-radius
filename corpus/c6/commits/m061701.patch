@@ -1,0 +1,16 @@
+diff --git a/tests/test_executor.py b/tests/test_executor.py
+index 7b8a204..fb95471 100644
+--- a/tests/test_executor.py
++++ b/tests/test_executor.py
+@@ -759,7 +759,10 @@ class TestExecutor(unittest.TestCase):
+             ],
+         )
+ 
+-        table1_view = exp.Select().select("id", "sub_type").from_("table1").subquery()
++        table1_view = exp.Select().select(
++            "id",
++            "sub_type",
++        ).from_("table1").subquery()
+         select_from_sub_query = exp.Select().select("id AS id_alias", "sub_type").from_(table1_view)
+         expression = exp.Select().select("*").from_("cte1").with_("cte1", as_=select_from_sub_query)
+ 

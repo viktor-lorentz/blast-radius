@@ -1,0 +1,23 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+index cdf8bbd..7efbd59 100644
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -142,13 +142,13 @@ class Step:
+                         operand.expressions if isinstance(operand, exp.Distinct) else [operand]
+                     )
+ 
+-                    for target in targets:
+-                        if isinstance(target, exp.Column):
++                    for target_tmp in targets:
++                        if isinstance(target_tmp, exp.Column):
+                             continue
+-                        if target not in operands:
+-                            operands[target] = next_operand_name()
++                        if target_tmp not in operands:
++                            operands[target_tmp] = next_operand_name()
+ 
+-                        target.replace(exp.column(operands[target], quoted=True))
++                        target_tmp.replace(exp.column(operands[target_tmp], quoted=True))
+ 
+             return bool(agg_funcs)
+ 

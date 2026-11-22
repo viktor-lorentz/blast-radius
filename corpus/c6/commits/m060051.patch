@@ -1,0 +1,4 @@
+diff --git a/sqlglot/serde.py b/sqlglot/serialize.py
+similarity index 100%
+rename from sqlglot/serde.py
+rename to sqlglot/serialize.py

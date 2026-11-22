@@ -1,0 +1,9 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index cfe96a8..b70909c 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -52,3 +52,4 @@ repos:
+         types: [ python ]
+         files: ^(sqlglot/|tests/)
+         pass_filenames: false
++# keep hooks pinned

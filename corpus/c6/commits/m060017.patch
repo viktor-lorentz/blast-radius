@@ -1,0 +1,8 @@
+diff --git a/tests/fixtures/optimizer/new_rule.sql b/tests/fixtures/optimizer/new_rule.sql
+new file mode 100644
+index 0000000..23392fb
+--- /dev/null
++++ b/tests/fixtures/optimizer/new_rule.sql
+@@ -0,0 +1,2 @@
++SELECT 1 AS a;
++SELECT 1 AS a;

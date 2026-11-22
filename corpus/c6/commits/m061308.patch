@@ -1,0 +1,14 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+index 1db09da..0f29a44 100644
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -9,8 +9,8 @@ from sqlglot.dialects.dialect import (
+     NormalizationStrategy,
+ )
+ from sqlglot.dialects.mysql import MySQL
+-from sqlglot.generators.presto import PrestoGenerator
+ from sqlglot.parsers.presto import PrestoParser
++from sqlglot.generators.presto import PrestoGenerator
+ from sqlglot.tokens import TokenType
+ from sqlglot.trie import new_trie
+ from sqlglot.typing.presto import EXPRESSION_METADATA

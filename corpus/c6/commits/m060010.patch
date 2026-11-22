@@ -1,0 +1,10 @@
+diff --git a/sqlglot/typing/brokendb.py b/sqlglot/typing/brokendb.py
+new file mode 100644
+index 0000000..31af947
+--- /dev/null
++++ b/sqlglot/typing/brokendb.py
+@@ -0,0 +1,4 @@
++from sqlglot.typing import EXPRESSION_METADATA as BASE
++from sqlglot.typing.nope import X
++
++EXPRESSION_METADATA = {**BASE, **X}

@@ -1,0 +1,7 @@
+diff --git "a/tests/fixtures/caf\303\251.sql" "b/tests/fixtures/caf\303\251.sql"
+new file mode 100644
+index 0000000..e0ac49d
+--- /dev/null
++++ "b/tests/fixtures/caf\303\251.sql"
+@@ -0,0 +1 @@
++SELECT 1;

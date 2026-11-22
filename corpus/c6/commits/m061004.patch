@@ -1,0 +1,17 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+index 88a17c4..97fd248 100644
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -22,9 +22,9 @@ from collections.abc import Collection
+ def _build_list_sort(name: str, desc: bool = False) -> t.Callable[[list], exp.Expr]:
+     # Orders are case-insensitive strings, e.g. LIST_SORT(x, 'desc', 'nulls first'), and NULLs default to last
+     def _builder(args: list) -> exp.Expr:
+-        orders = [exp.Literal.string("DESC"), *args[1:]] if desc else args[1:]
+-        order_name = _list_sort_order_name(seq_get(orders, 0), "ASC")
+-        null_order_name = _list_sort_order_name(seq_get(orders, 1), "NULLS LAST")
++        orders_tmp = [exp.Literal.string("DESC"), *args[1:]] if desc else args[1:]
++        order_name = _list_sort_order_name(seq_get(orders_tmp, 0), "ASC")
++        null_order_name = _list_sort_order_name(seq_get(orders_tmp, 1), "NULLS LAST")
+         valid = order_name in ("ASC", "DESC") and null_order_name in ("NULLS FIRST", "NULLS LAST")
+         if not valid:
+             return exp.Anonymous(this=name, expressions=args)

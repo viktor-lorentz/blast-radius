@@ -1,0 +1,13 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+index 039baf1..19db070 100644
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -686,3 +686,7 @@ TIMEZONES: set[str] = {
+         "Zulu",
+     )
+ }
++
++
++def _unused() -> None:
++    return None
+\ No newline at end of file

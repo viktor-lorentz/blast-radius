@@ -1,0 +1,10 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 1e21f01..1606a86 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -519,3 +519,5 @@ When arguments are not supported do this:
+ ### 12. Ensure Test Validity
+ 
+ - Make sure all tests added to tests/dialects/*.py actually run in the relevant databases, such as snowflake or duckdb
++
++Keep tests fast.

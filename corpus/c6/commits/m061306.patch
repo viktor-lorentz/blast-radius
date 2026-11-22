@@ -1,0 +1,14 @@
+diff --git a/sqlglot/executor/python.py b/sqlglot/executor/python.py
+index f5db5a9..1bbc572 100644
+--- a/sqlglot/executor/python.py
++++ b/sqlglot/executor/python.py
+@@ -5,8 +5,8 @@ import math
+ from sqlglot import exp, planner, tokens
+ from sqlglot.dialects.dialect import Dialect
+ from sqlglot.errors import ExecuteError
+-from sqlglot.executor.context import Context
+ from sqlglot.executor.env import ENV
++from sqlglot.executor.context import Context
+ from sqlglot.executor.table import RowReader, Table
+ from sqlglot.generators.python import PythonGenerator
+ from sqlglot.optimizer.scope import build_scope

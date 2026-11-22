@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 49649df..e3ef437 100644
+--- a/setup.py
++++ b/setup.py
+@@ -6,7 +6,7 @@ version = get_version(local_scheme="no-local-version")
+ setup(
+     extras_require={
+         "dev": [
+-            "duckdb>=0.6",
++            "duckdb>=1.0",
+             # mypy 2.4+ is the build dep for sqlglotc and only ships
+             # for py3.10+; on py3.9 just use upstream mypy for type checking.
+             "mypy >= 2.4.0; python_version >= '3.10'",
