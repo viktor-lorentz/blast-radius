@@ -41,6 +41,8 @@ _GUARD_PREFIXES = ("sqlglot/executor/", "sqlglot/expressions/")
 _MIN_MARGINAL_S = 4.0
 _BUDGET_S = float(os.environ.get("BR_PLAN_BUDGET", "20"))
 _COMMIT_TIMEOUT_S = 25
+_MAXQ = int(os.environ.get("BR_PLAN_MAXQ", "20"))
+_PHASES = os.environ.get("BR_PLAN_PHASES", "1") != "0"  # per-phase plan + optimizer snapshots
 
 
 def _cost(nums, ms) -> float:
@@ -141,7 +143,145 @@ def _loads(src: Path, fp) -> bool:
         return False
 
 
-def _run(src: Path, patched: dict, golden: list | None, only: set | None = None) -> dict:
+# Per-query reach (tools/plan_qmap.py, built from the pinned tree in the image): for
+# each sqlglot function, the TPC-DS queries whose part of the test entered it. A patch
+# whose hunks sit only inside functions reaches just the union of their queries; any
+# hunk at module or class level, in an import-time function, or in setUpClass reaches
+# every query. Files the test never imports at the pinned commit are not loaded.
+_EMPTY = os.environ.get("BR_PLAN_EMPTY", "digest")  # digest | drop: reach is empty
+
+
+def _load_qmap(path) -> dict | None:
+    try:
+        q = json.loads(Path(path).read_text())
+        q["boot"] = set(q["boot"])
+        q["tags"] = {k: set(v) for k, v in q["funcs"].items()}
+        q["funcs"] = {k: {t if t == "S" else int(t.lstrip("PROpreUX").rpartition("_")[2]) for t in v}
+                      for k, v in q["funcs"].items()}
+        q["loaded"] = {k.rsplit(":", 1)[0] for k in q["boot"] | set(q["funcs"])}
+        q["exec"] = set(q["exec"])
+        q["_scopes"] = {}
+        return q
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _key_of(scopes: list, rel: str, line: int):
+    best = None
+    for b0, end, first, defl in scopes:
+        if b0 <= line <= end and line > defl and (best is None or b0 >= best[0]):
+            best = (b0, first)
+    return None if best is None else f"{rel}:{best[1]}"
+
+
+def _reach(src: Path, rel: str, fp, qmap: dict):
+    """Queries this file edit can reach, or None for every query."""
+    import ast
+    scopes = qmap["_scopes"].get(rel)
+    if scopes is None:
+        scopes = []
+        for n in ast.walk(ast.parse((src / rel).read_text())):
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                first = min([n.lineno] + [d.lineno for d in n.decorator_list])
+                scopes.append((n.body[0].lineno, n.end_lineno, first, n.lineno))
+        qmap["_scopes"][rel] = scopes
+    keys = set()
+    for h in fp.hunks:
+        old = h.old_start
+        run_del = ins = False
+        for ln in list(h.lines) + [" "]:
+            t = ln[:1]
+            if t == "-":
+                keys.add(_key_of(scopes, rel, old))
+                old += 1
+                run_del = True
+            elif t == "+":
+                ins = True
+            else:
+                if ins and not run_del:  # pure insertion between lines old-1 and old
+                    a, b = _key_of(scopes, rel, old - 1), _key_of(scopes, rel, old)
+                    keys.add(a if a == b else None)
+                ins = run_del = False
+                old += 1
+    if None in keys or keys & qmap["boot"]:
+        return None
+    qs, tags, xonly = set(), set(), set()
+    for k in keys:
+        qs.update(qmap["funcs"].get(k, ()))
+        kt = qmap["tags"].get(k, set())
+        tags |= kt
+        for t in kt:  # entered only while executing query q, not in its parse/render/optimize
+            if t.startswith("X"):
+                q = t[1:]
+                if not any(u[1:] == q or u.endswith("_" + q) or u == "Opre" + q for u in kt if u[0] != "X"):
+                    xonly.add(int(q))
+    return None if "S" in qs else (qs, tags, xonly)
+
+
+def _reach_plan(src: Path, text: str, qmap: dict):
+    """(patched, queries, guard) for the plan check; queries None = every query.
+    None when the patch cannot be checked soundly (keep the test)."""
+    try:
+        files = P.parse(text)
+    except P.PatchError:
+        return None
+    if not files:
+        return None
+    out, qs, guard, every = {}, set(), False, False
+    tags, xonly = set(), set()
+    for fp in files:
+        path = str(fp.path)
+        if _unread(src, fp):
+            continue
+        if fp.special or fp.old_path != fp.new_path or not path.endswith(".py"):
+            return None
+        if not path.startswith("sqlglot/"):
+            return None
+        if path not in qmap["loaded"]:
+            continue  # never imported by the test at the pinned commit
+        try:
+            new = P.apply((src / path).read_text(), fp)
+            compile(new, path, "exec", dont_inherit=True)
+            r = _reach(src, path, fp, qmap)
+        except Exception:  # unparsable patch or source, syntax error: keep
+            return None
+        out[path] = new
+        guard = guard or path in _GUARD_EXACT or path.startswith(_GUARD_PREFIXES)
+        if r is None:
+            every = True
+        else:
+            qs |= r[0]
+            tags |= r[1]
+            xonly |= r[2]
+    if every:
+        return None if guard else (out, None, False, None)
+    return out, qs, guard, (tags, xonly)
+
+
+def _phase_plan(qs: set, phase, qmap: dict, guard: bool) -> list:
+    """Per reached query [qi, exec index or -1, parse?, render?, first optimizer rule
+    to rerun (0 = all, None = none), execute?]. A query whose parse, optimize()
+    prologue/loop or snapshot unpickling enters an edited function reruns optimize
+    from the raw parse; otherwise from the snapshot before the first edited rule."""
+    tags, xonly = phase
+    eidx = {q: i for i, q in enumerate(qmap["exec_order"])}
+    nrules = len(qmap.get("rules", ()))
+    plan = []
+    for q in sorted(qs):
+        parse = f"P{q}" in tags
+        if q not in eidx:
+            plan.append([q, -1, parse, False, None, False])
+            continue
+        if parse or f"Opre{q}" in tags or f"U{q}" in tags:
+            start = 0
+        else:
+            hit = [r for r in range(nrules) if f"O{r}_{q}" in tags]
+            start = min(hit) if hit else None
+        plan.append([q, eidx[q], parse, parse or f"R{q}" in tags, start, guard or q in xonly])
+    return plan
+
+
+def _run(src: Path, patched: dict, golden) -> dict:
     src = Path(src).resolve()
     tmp = os.environ.get("TMPDIR", "/tmp")
     paths = []
@@ -157,9 +297,6 @@ def _run(src: Path, patched: dict, golden: list | None, only: set | None = None)
         repo = str(Path(__file__).resolve().parents[1])
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0")
         env["PYTHONPATH"] = repo + os.pathsep + env.get("PYTHONPATH", "")
-        env.pop("BR_PLAN_ONLY", None)
-        if only is not None:
-            env["BR_PLAN_ONLY"] = ",".join(str(i) for i in sorted(only))
         proc = subprocess.run(
             [sys.executable, "-m", "blast.plans", "--child", str(src), paths[0], paths[1], outp],
             env=env,
@@ -195,12 +332,11 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         return {}
     ranked = []
     updates = {}
-    cover = None
-    if golden_path is not None and os.environ.get("BR_PLAN_COVER", "1") != "0":
-        try:
-            cover = load_cover(Path(golden_path).with_name("tpcds_cover.json"))
-        except (OSError, ValueError, KeyError, TypeError, AttributeError):
-            cover = None
+    qmap = None
+    if golden_path is not None and os.environ.get("BR_PLAN_REACH", "1") != "0":
+        qmap = _load_qmap(Path(golden_path).with_name("tpcds_qmap.json"))
+        if qmap is not None:
+            qmap["exec_order"] = sorted(qmap["exec"])
     for stem, text, nums in rows:
         if number not in nums:
             continue
@@ -210,16 +346,40 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         marginal = _cost(nums, ms) - _cost(nums - {number}, ms)
         if marginal < min_marginal_s:
             continue
+        if qmap is not None:
+            plan = _reach_plan(src, text, qmap)
+            if plan is None:
+                continue
+            patched, qs, guard, phase = plan
+            if qs is not None and not qs and _EMPTY == "drop":
+                updates[stem] = set(nums) - {number}  # no query reaches an edited function
+                continue
+            if qs is not None and not qs:  # BR_PLAN_EMPTY=digest: verify the plans anyway
+                if guard:
+                    continue
+                qs = None
+            phased = qs is not None and _PHASES and "snap_rules" in qmap
+            if phased:
+                plan_q = _phase_plan(qs, phase, qmap, guard)
+                if sum(1 for e in plan_q if e[5]) > _MAXQ:
+                    continue  # too many queries to execute: keep
+                qs = ("phase", plan_q)
+            elif qs is not None and len(qs) > _MAXQ:
+                if guard:
+                    continue
+                qs = None
+            if not patched:
+                updates[stem] = set(nums) - {number}  # only files the test never loads
+                continue
+            ranked.append((marginal, stem, patched, nums, qs, guard))
+            continue
         patched = _safe_patch(Path(src), text)
         if patched is None:
             continue
-        only = _affected(Path(src), text, cover) if cover is not None else None
-        if only is not None and not only:
-            updates[stem] = set(nums) - {number}
-            continue
-        ranked.append((marginal, stem, patched, nums, only))
+        ranked.append((marginal, stem, patched, nums, None, False))
     if not ranked:
         return updates
+    ranked.sort(key=lambda r: r[:2], reverse=True)
     import resource
 
     def cpu() -> float:
@@ -239,227 +399,22 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         rows_golden = golden.get("rows") if golden.get("ok") else None
     if not rows_golden:
         return updates
-    ranked.sort(key=lambda r: r[:2], reverse=True)
-    for _marginal, stem, patched, nums, only in ranked:
+    for _marginal, stem, patched, nums, qs, guard in ranked:
         if cpu() - start >= budget_s:
             break
-        got = _run(Path(src), patched, rows_golden, only)
+        if isinstance(qs, tuple):
+            spec = {"rows": rows_golden, "plan": qs[1], "snapdir": str(Path(golden_path).parent),
+                    "rules": qmap["snap_rules"]}
+            label = "PH%d/%s" % (len(qs[1]), ",".join(sorted({str(e[4]) for e in qs[1] if e[1] >= 0})))
+        else:
+            spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
+            label = "ALL" if qs is None else len(qs)
+        got = _run(Path(src), patched, spec)
+        if os.environ.get("BR_PLAN_DEBUG"):
+            print(f"plan {stem} q={label} guard={guard} -> {got}", file=sys.stderr)
         if got.get("ok") and got.get("same"):
             updates[stem] = set(nums) - {number}
     return updates
-
-
-def _changed_lines(fp, n_old: int) -> tuple:
-    """(old lines a patch touches: deleted lines and both neighbours of an insertion,
-    new lines it adds), 1-based."""
-    old_out, new_out = set(), set()
-    for h in fp.hunks:
-        line = h.old_start if h.old_len else h.old_start + 1  # next old line
-        nline = h.new_start if h.new_len else h.new_start + 1  # next new line
-        for raw in h.lines:
-            tag = raw[:1]
-            if tag == "-":
-                old_out.add(line)
-                line += 1
-            elif tag == "+":
-                old_out.update((line - 1, line))
-                new_out.add(nline)
-                nline += 1
-            else:
-                line += 1
-                nline += 1
-    return {n for n in old_out if 1 <= n <= max(n_old, 1)} or {1}, new_out
-
-
-def _owners(tree) -> list:
-    """(body first line, body last line, code first line, qualified name) of every def."""
-    import ast
-    out = []
-
-    def walk(node, prefix):
-        for child in ast.iter_child_nodes(node):
-            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                name = prefix + (child.name,)
-                if not isinstance(child, ast.ClassDef) and child.body:
-                    first = min([child.lineno] + [d.lineno for d in child.decorator_list])
-                    out.append((max(child.lineno + 1, child.body[0].lineno), child.end_lineno, first, name))
-                walk(child, name)
-            else:
-                walk(child, prefix)
-
-    walk(tree, ())
-    return out
-
-
-def _owner(owners, line):
-    inner = [o for o in owners if o[0] <= line <= o[1]]
-    return max(inner, key=lambda o: o[2]) if inner else None
-
-
-def _edit_keys(src: Path, text: str, imported=None):
-    """{module: first lines of the functions whose bodies the patch edits}, or None
-    when an edit touches a module, class or def-header line, a renamed or ambiguous
-    function, or the patched module no longer compiles."""
-    import ast
-    import warnings
-    try:
-        files = P.parse(text)
-    except P.PatchError:
-        return None
-    out: dict = {}
-    for fp in files:
-        if _unread(src, fp):
-            continue
-        path = str(fp.path)
-        try:
-            old = (src / path).read_text()
-            new = P.apply(old, fp)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                old_owners = _owners(ast.parse(old))
-                new_owners = _owners(compile(new, path, "exec", ast.PyCF_ONLY_AST))
-                compile(new, path, "exec")  # symbol-table errors only show here
-        except (OSError, UnicodeError, SyntaxError, ValueError, P.PatchError):
-            return None
-        keys = out.setdefault(path, set())
-        if imported is not None and path not in imported:
-            # Never imported by the recording or the digest child, and nothing the
-            # patch leaves untouched imports it: any edit, module or class level
-            # included, cannot reach a query. It still has to compile (above).
-            continue
-        by_name: dict = {}
-        for o in old_owners:
-            by_name.setdefault(o[3], []).append(o[2])
-        old_lines, new_lines = _changed_lines(fp, old.count("\n") + 1)
-        for line in old_lines:
-            o = _owner(old_owners, line)
-            if o is None:
-                return None
-            keys.add(o[2])
-        for line in new_lines:
-            o = _owner(new_owners, line)
-            if o is None or o[3] not in by_name:
-                return None
-            keys.update(by_name[o[3]])
-    return out or None
-
-
-def _affected(src: Path, text: str, cover):
-    """TPC-DS query indices whose run in the pristine tree called a function the patch
-    edits, or None when the edit may reach every query (import-time code, a function
-    whose callers depend on query order, i.e. caches). An empty set means the patch cannot change any plan or executor run."""
-    modules, eager, per_query = cover
-    keys = _edit_keys(src, text, modules)
-    if keys is None:
-        return None
-    out: set = set()
-    for path, lines in keys.items():
-        if path not in modules:
-            # Neither the recording nor the digest child ever imports it, and nothing
-            # the patch leaves untouched can import it: the full check would only
-            # confirm "same". Its own compile was checked above.
-            continue
-        hit = per_query.get(path, {})
-        for line in lines:
-            if line in eager.get(path, ()):
-                return None
-            out.update(hit.get(line, ()))
-    return out
-
-
-def _uncovered(src: Path, text: str, cover) -> bool:
-    return _affected(src, text, cover) == set()
-
-
-def _cover_child(src: str, out_path: str, order: str) -> None:
-    """Build time: which sqlglot functions run on import, and on each TPC-DS query's
-    plans and executor run over empty tables, in the pristine tree."""
-    sys.path.insert(0, src)
-    os.chdir(src)
-    root = os.path.realpath(src) + os.sep
-    seen: dict = {}  # path -> {(first line, name): set of query indices, -1 = import}
-    state = {"q": -1}
-
-    def start(code, _offset):
-        name = os.path.realpath(code.co_filename)
-        if name.startswith(root):
-            seen.setdefault(name[len(root):], {}).setdefault(
-                (code.co_firstlineno, code.co_name), set()).add(state["q"])
-        return sys.monitoring.DISABLE
-
-    mon = sys.monitoring
-    mon.use_tool_id(mon.PROFILER_ID, "brcover")
-    mon.register_callback(mon.PROFILER_ID, mon.events.PY_START, start)
-    mon.set_events(mon.PROFILER_ID, mon.events.PY_START)
-    ok = False
-    try:
-        import sqlglot  # noqa: F401
-        from sqlglot import parse_one, transpile
-        from sqlglot.executor import execute
-        from sqlglot.executor.table import Table
-        from sqlglot.optimizer import optimize
-        from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
-        try:
-            import tests.test_executor  # noqa: F401
-        except Exception:
-            pass
-        empty = {t: Table(columns=tuple(cols)) for t, cols in TPCDS_SCHEMA.items()}
-        queries = [sql for meta, sql, _e in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")
-                   if meta.get("execute")]
-        order_ix = list(range(len(queries)))
-        if order == "rev":
-            order_ix.reverse()
-        for i in order_ix:
-            mon.restart_events()
-            state["q"] = i
-            sql = queries[i]
-            transpile(sql, write="duckdb")
-            optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
-            try:
-                execute(parse_one(sql), schema=TPCDS_SCHEMA, tables=empty)
-            except Exception:
-                pass
-        ok = True
-    finally:
-        mon.set_events(mon.PROFILER_ID, 0)
-        mon.free_tool_id(mon.PROFILER_ID)
-    if ok:
-        Path(out_path).write_text(json.dumps({
-            path: [[line, name, sorted(qs)] for (line, name), qs in codes.items()]
-            for path, codes in seen.items()
-        }))
-
-
-def merge_cover(fwd: dict, rev: dict) -> dict:
-    """tpcds_cover.json from the forward and reverse recordings. A function whose set
-    of calling queries depends on the order (a cache, a lazy table) or that runs on
-    import counts as eager: an edit to it reaches every query."""
-    modules, eager, per_query = set(), {}, {}
-    for path in set(fwd) | set(rev):
-        f = {(l, n): set(q) for l, n, q in fwd.get(path, [])}
-        r = {(l, n): set(q) for l, n, q in rev.get(path, [])}
-        for key in set(f) | set(r):
-            line, name = key
-            qf, qr = f.get(key, set()), r.get(key, set())
-            if name == "<module>":
-                modules.add(path)
-            if -1 in qf or -1 in qr or qf != qr:
-                eager.setdefault(path, set()).add(line)
-            else:
-                per_query.setdefault(path, {}).setdefault(line, set()).update(qf)
-    for path, lines in eager.items():  # same first line, two code objects: be safe
-        for line in lines:
-            per_query.get(path, {}).pop(line, None)
-    return {"modules": sorted(modules),
-            "eager": {p: sorted(v) for p, v in eager.items()},
-            "per_query": {p: {str(l): sorted(q) for l, q in v.items()} for p, v in per_query.items()}}
-
-
-def load_cover(path: Path):
-    raw = json.loads(Path(path).read_text())
-    return (frozenset(raw["modules"]),
-            {p: frozenset(v) for p, v in raw["eager"].items()},
-            {p: {int(l): frozenset(q) for l, q in v.items()} for p, v in raw["per_query"].items()})
 
 
 def _digest(expr) -> str:
@@ -500,19 +455,17 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from sqlglot.optimizer import optimize
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
+        if isinstance(golden, dict) and "plan" in golden:  # phase mode
+            Path(out_path).write_text(json.dumps(_child_phase(golden)))
+            return
+        if isinstance(golden, dict):  # reach mode: only the queries the patch can reach
+            Path(out_path).write_text(json.dumps(_child_only(golden)))
+            return
         max_q = int(os.environ.get("BR_PLAN_MAXQ", "20")) if golden else 0
-        raw_only = os.environ.get("BR_PLAN_ONLY") if golden else None
-        only = {int(i) for i in raw_only.split(",") if i} if raw_only is not None else None
         rows, changed = [], []
         for meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql"):
             if not meta.get("execute"):
-                if only is None:
-                    parse_one(sql)
-                continue
-            if only is not None and len(rows) not in only:
-                if len(rows) >= len(golden):
-                    changed.append(sql)
-                rows.append(golden[len(rows)] if len(rows) < len(golden) else None)
+                parse_one(sql)
                 continue
             rendered = transpile(sql, write="duckdb")
             tree = optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
@@ -536,11 +489,89 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
     Path(out_path).write_text(json.dumps(result))
 
 
+def _child_only(spec: dict) -> dict:
+    """Parse and pickle every reached query; execute the reached executed ones whose
+    DuckDB render or optimized tree differs (all of them when the patch touches the
+    executor side, spec["all"])."""
+    import pickle
+
+    from sqlglot import parse_one, transpile
+    from sqlglot.optimizer import optimize
+    from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+
+    only, golden, run_all = set(spec["only"]), spec["rows"], spec["all"]
+    run, ei = [], -1
+    for qi, (meta, sql, _expected) in enumerate(load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")):
+        if meta.get("execute"):
+            ei += 1
+        if qi not in only:
+            continue
+        pickle.loads(pickle.dumps(parse_one(sql)))
+        if not meta.get("execute"):
+            continue
+        if run_all:
+            run.append(sql)
+            continue
+        rendered = transpile(sql, write="duckdb")
+        tree = optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
+        row = [hashlib.blake2b("|".join(rendered).encode(), digest_size=8).hexdigest(), _digest(tree)]
+        if ei >= len(golden) or row != golden[ei]:
+            run.append(sql)
+    same = _execute_changed(run) if run else True
+    return {"ok": True, "same": same, "changed": len(run)}
+
+
+def _child_phase(spec: dict) -> dict:
+    """Run only the phases each reached query needs (see _phase_plan); execute the
+    ones whose DuckDB render or optimized tree differs, or that the plan marks."""
+    import pickle
+
+    from sqlglot import parse_one, transpile
+    from sqlglot.optimizer import optimize
+    from sqlglot.optimizer.optimizer import RULES
+    from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+
+    golden, rules = spec["rows"], spec["rules"]
+    sqls = [sql for _meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql")]
+    snaps: dict = {}
+
+    def snap(r: int):
+        if r not in snaps:
+            with open(os.path.join(spec["snapdir"], "tpcds_snap_%d.pkl" % r), "rb") as handle:
+                snaps[r] = pickle.load(handle)
+        return snaps[r]
+
+    run = []
+    for qi, ei, parse, render, start, execute in spec["plan"]:
+        sql = sqls[qi]
+        if parse:
+            pickle.loads(pickle.dumps(parse_one(sql)))
+        if ei < 0:
+            continue
+        if execute:
+            run.append(sql)
+            continue
+        row = list(golden[ei])
+        if render:
+            row[0] = hashlib.blake2b("|".join(transpile(sql, write="duckdb")).encode(), digest_size=8).hexdigest()
+        if start is not None:
+            base = max((r for r in rules if r <= start and snap(r)[ei] is not None), default=0)
+            tree = pickle.loads(snap(base)[ei]) if base else parse_one(sql)
+            row[1] = _digest(optimize(tree, TPCDS_SCHEMA, rules=RULES[base:], leave_tables_isolated=True))
+        if row != golden[ei]:
+            run.append(sql)
+    if len(run) > _MAXQ:
+        return {"ok": True, "same": False, "changed": len(run)}
+    same = _execute_changed(run) if run else True
+    return {"ok": True, "same": same, "changed": len(run)}
+
+
 def _execute_changed(sqls: list) -> bool:
     """Run each changed query the way test_execute_tpcds does, under the patched tree:
     DuckDB on the rendered SQL is the expected frame, the Python executor the actual."""
     import ast
     import csv
+    import pickle
 
     import duckdb
     import numpy as np
@@ -588,12 +619,13 @@ def _execute_changed(sqls: list) -> bool:
         for sql in sqls:
             if time.process_time() - t0 > cap:
                 return False  # out of per-commit CPU: keep the test
-            expression = parse_one(sql)
+            expression = pickle.loads(pickle.dumps(parse_one(sql)))  # to the pool and back
             needed = {t.name: None for t in find_tables(expression)}
             for name in needed:
                 if name not in tables:
                     setup(name)
             table = execute(expression, schema=TPCDS_SCHEMA, tables={n: tables[n] for n in needed})
+            table = pickle.loads(pickle.dumps(table))
             a = conn.execute(transpile(sql, write="duckdb")[0]).fetchdf()
             b = pd.DataFrame(((np.nan if c is None else c for c in r) for r in table.rows), columns=table.columns)
             assert_frame_equal(a, b, check_dtype=False, check_index_type=False)
@@ -608,9 +640,6 @@ def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1] == "--child":
         _, _, src, patched_path, golden_path, out_path = sys.argv
         _child(src, patched_path, golden_path, out_path)
-        return
-    if len(sys.argv) > 1 and sys.argv[1] == "--cover":
-        _cover_child(sys.argv[2], sys.argv[3], sys.argv[4])
         return
     raise SystemExit("run via blast.plans.narrow_tpcds")
 
