@@ -1010,7 +1010,8 @@ def _a3_narrow(files, reason, maps):
     full suite. A sqlglot module whose importer set is unknown keeps it too.
     """
     msg = str(reason)
-    if maps is None or msg.startswith("semantic:") or "no semantic diff" in msg or msg == "empty patch":
+    if (maps is None or msg.startswith("semantic:") or "no semantic diff" in msg or msg == "empty patch"
+            or "side-effecting" in msg):
         return None
     out: set = set()
     for fp in files:
