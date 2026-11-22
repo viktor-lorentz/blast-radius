@@ -121,6 +121,35 @@ def _max_nodes_number(maps):
     return n if isinstance(n, int) and n >= 0 else None
 
 
+_TPCDS_ID = "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+_TPCDS_INDEX = None
+
+
+def _tpcds_number(maps):
+    """Scorer test number for test_execute_tpcds, or None when this suite lacks it."""
+    global _TPCDS_INDEX
+    if maps is None:
+        return None
+    if _TPCDS_INDEX is None:
+        try:
+            ids = json.loads((Path(maps.root) / "index.json").read_text())["tests"]
+            _TPCDS_INDEX = ids.index(_TPCDS_ID)
+        except (OSError, ValueError, KeyError, AttributeError):
+            _TPCDS_INDEX = -1
+    if _TPCDS_INDEX < 0 or _TPCDS_INDEX >= len(maps.num):
+        return None
+    n = maps.num[_TPCDS_INDEX]
+    return n if isinstance(n, int) and n >= 0 else None
+
+
+def _drop_tpcds(maps, nums: set) -> set:
+    """Ablation A2: a selection that is not the full-suite fallback skips test_execute_tpcds."""
+    number = _tpcds_number(maps)
+    if not isinstance(number, int) or number not in nums:
+        return nums
+    return set(nums) - {number}
+
+
 def _dialect_load_union(files):
     """Tests that load each patched module, when every module is in the dialect trace.
 
@@ -1055,7 +1084,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         # the edited word. Do not intersect those away, and do not pay the
         # mention-index build.
         if import_failure_narrowed or _IMPORTER_HIT:
-            return out
+            return _drop_tpcds(maps, out)
         # A plain KEYWORDS key is looked up by that word. Tests that never spell
         # it (and never open a fixture that does) cannot observe the entry.
         # Space and symbol keys also rebuild the token trie, so they are not narrowed.
@@ -1090,7 +1119,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 out &= _tests_mentioning_full(vocab, maps)
         except Exception as e:
             log("vocab skip:", repr(e))
-        return out
+        return _drop_tpcds(maps, out)
     except All as e:
         log("ALL:", e)
         nums = set(all_tests)
