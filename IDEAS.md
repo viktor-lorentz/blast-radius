@@ -1,5 +1,12 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## VERDICTS (Phase 1 ablations)
+- A2 (cbc7b7e, BB-87155FD8, 415.3): dropping test_execute_tpcds outside ALL cuts hidden sim 167.914 -> 111.101 (-56.8s) but misses 1 hidden commit. tpcds IS the hidden waste; ship it only behind a canary (HEAVY). Sample also misses 2jrq/3utz, where tpcds co-fails with 7 and 36 other selected tests.
+- A1 (78c092f, BB-74C1E36C, 172.0): dropping test_max_nodes outside ALL leaves hidden sim at 167.914, 0 misses. No hidden waste there. Auto-entered in the final but has local corpus misses (c3 18), so Phase 3 must Pick over it.
+
+## STATE (2026-11-21 ~18:05 PST) — A1 and A2 scored, both slots used
+Both ablations went in at 17:30 and 17:38 PST, before this LEAD session. The page shows 0 of 2 left; the next slot frees at 18:30 PST. Next: A3 (narrow ALL fallbacks) and a canary-guarded tpcds drop (A2-safe). A4 as defined (combine the ablations that cut sim without a miss) has nothing to combine, because A1 cut nothing and A2 missed.
+
 ## STATE (2026-11-21 ~17:40 PST) — A1 is the practice best at 172.0; A2 is scoring
 A1 78c092f scored as BB-74C1E36C. Runs: 167.914 sim / 4.96 CPU / 0 miss, 167.914 / 4.10 / 0, 167.914 / 4.13 / 0. Middle total 172.0. Simulated seconds stayed 167.914. The page says "Entered in the final (your best score)". Do not click Pick. Do not resubmit 78c092f. Local, dropping test_max_nodes on every non-full-suite selection was sample 0 miss, c1 1, c2 0, c3 18, c4 2, c5 0 (saves 0 / 49.7 / 33.6 / 208.6 / 47.9 / 0). That corpus miss rate is too high for the Phase 3 pick. The robust candidate remains 37977a1 at 172.4 until a later commit is 0 practice misses and at most 1 corpus miss per 400 commits.
 
