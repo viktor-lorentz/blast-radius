@@ -15,6 +15,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import warnings
 from pathlib import Path
 
 from blast import patch as P
@@ -37,12 +38,58 @@ _GUARD_EXACT = frozenset({
 })
 _GUARD_PREFIXES = ("sqlglot/executor/", "sqlglot/expressions/")
 
+# A matching plan digest is enough to drop the test only for this subset.
+# executor/, planner.py, schema.py, serde.py, helper.py and generators/python.py
+# fail with an identical digest, so the digest child does not run for them.
+_DIGEST_EXACT = frozenset({
+    "sqlglot/optimizer/scope.py",
+    "sqlglot/optimizer/eliminate_joins.py",
+    "sqlglot/dialects/dialect.py",
+    "sqlglot/tokens.py",
+})
+_DIGEST_PREFIXES = ("sqlglot/expressions/",)
+
 # Probing a commit whose makespan barely moves is not worth the CPU.
 _MIN_MARGINAL_S = 4.0
 _BUDGET_S = float(os.environ.get("BR_PLAN_BUDGET", "20"))
 _COMMIT_TIMEOUT_S = 25
 _MAXQ = int(os.environ.get("BR_PLAN_MAXQ", "20"))
 _PHASES = os.environ.get("BR_PLAN_PHASES", "1") != "0"  # per-phase plan + optimizer snapshots
+
+
+def _digest_file(path: str) -> bool:
+    return path in _DIGEST_EXACT or path.startswith(_DIGEST_PREFIXES)
+
+
+def _subset_patch(src: Path, text: str) -> dict | None:
+    """Patched sources when every file the test can read is in the digest subset.
+
+    None if any other file is edited, so the digest is not paid on those commits.
+    """
+    try:
+        files = P.parse(text)
+    except P.PatchError:
+        return None
+    if not files:
+        return None
+    out = {}
+    for fp in files:
+        path = str(fp.path)
+        if _unread(src, fp):
+            continue
+        if fp.special or fp.old_path != fp.new_path or not path.endswith(".py"):
+            return None
+        if not _digest_file(path):
+            return None
+        try:
+            new = P.apply((src / path).read_text(), fp)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", SyntaxWarning)
+                compile(new, path, "exec", dont_inherit=True)
+        except (P.PatchError, OSError, UnicodeError, SyntaxError, ValueError):
+            return None
+        out[path] = new
+    return out or None
 
 
 def _cost(nums, ms) -> float:
@@ -391,6 +438,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         return {}
     ranked = []
     updates = {}
+    digest_queued = 0
     qmap = None
     if golden_path is not None and os.environ.get("BR_PLAN_REACH", "1") != "0":
         qmap = _load_qmap(Path(golden_path).with_name("tpcds_qmap.json"))
@@ -407,38 +455,58 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
             continue
         if qmap is not None:
             plan = _reach_plan(src, text, qmap)
-            if plan is None:
-                continue
-            patched, qs, guard, phase = plan
-            if qs is not None and not qs and _EMPTY == "drop":
-                updates[stem] = set(nums) - {number}  # no query reaches an edited function
-                continue
-            if qs is not None and not qs:  # BR_PLAN_EMPTY=digest: verify the plans anyway
-                if guard:
+            queued = False
+            if plan is not None:
+                patched, qs, guard, phase = plan
+                if qs is not None and not qs and _EMPTY == "drop":
+                    updates[stem] = set(nums) - {number}  # no query reaches an edited function
                     continue
-                qs = None
-            phased = qs is not None and _PHASES and "snap_rules" in qmap
-            if phased:
-                plan_q = _phase_plan(qs, phase, qmap, guard)
-                if sum(1 for e in plan_q if e[5]) > _MAXQ:
-                    continue  # too many queries to execute: keep
-                qs = ("phase", plan_q)
-            elif qs is not None and len(qs) > _MAXQ:
-                if guard:
-                    continue
-                qs = None
-            if not patched:
-                updates[stem] = set(nums) - {number}  # only files the test never loads
-                continue
-            ranked.append((marginal, stem, patched, nums, qs, guard))
+                if qs is not None and not qs:  # BR_PLAN_EMPTY=digest: verify the plans anyway
+                    if guard:
+                        plan = None  # subset digest below, when every file qualifies
+                    else:
+                        qs = None
+                if plan is not None:
+                    phased = qs is not None and _PHASES and "snap_rules" in qmap
+                    if phased:
+                        plan_q = _phase_plan(qs, phase, qmap, guard)
+                        if sum(1 for e in plan_q if e[5]) > _MAXQ:
+                            plan = None  # too many to execute: subset digest, or keep
+                        else:
+                            qs = ("phase", plan_q)
+                    elif qs is not None and len(qs) > _MAXQ:
+                        if guard:
+                            plan = None
+                        else:
+                            qs = None
+                if plan is not None:
+                    if not patched:
+                        updates[stem] = set(nums) - {number}  # only files the test never loads
+                        continue
+                    ranked.append((marginal, stem, patched, nums, qs, guard))
+                    queued = True
+            if not queued:
+                sub = _subset_patch(Path(src), text)
+                if sub:
+                    ranked.append((marginal, stem, sub, nums, "digest", False))
+                    digest_queued += 1
             continue
         patched = _safe_patch(Path(src), text)
         if patched is None:
+            sub = _subset_patch(Path(src), text)
+            if sub:
+                ranked.append((marginal, stem, sub, nums, "digest", False))
+                digest_queued += 1
             continue
         ranked.append((marginal, stem, patched, nums, None, False))
     if not ranked:
         return updates
     ranked.sort(key=lambda r: r[:2], reverse=True)
+    # The digest must not share the main budget: on c1 the higher-marginal
+    # checks spend it, and the subset commits (the only ones that may be
+    # digested) never run. A second window spends CPU only on that subset.
+    plain = [r for r in ranked if r[4] != "digest"]
+    digests = [r for r in ranked if r[4] == "digest"]
     import resource
 
     def cpu() -> float:
@@ -446,7 +514,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         kids = resource.getrusage(resource.RUSAGE_CHILDREN)
         return self_use.ru_utime + self_use.ru_stime + kids.ru_utime + kids.ru_stime
 
-    start = cpu()
+    digest_ran = digest_hit = 0
     rows_golden = None
     if golden_path is not None:  # built from the pinned tree in the image (tools/plan_golden.py)
         try:
@@ -458,21 +526,36 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
         rows_golden = golden.get("rows") if golden.get("ok") else None
     if not rows_golden:
         return updates
-    for _marginal, stem, patched, nums, qs, guard in ranked:
-        if cpu() - start >= budget_s:
-            break
-        if isinstance(qs, tuple):
-            spec = {"rows": rows_golden, "plan": qs[1], "snapdir": str(Path(golden_path).parent),
-                    "rules": qmap["snap_rules"]}
-            label = "PH%d/%s" % (len(qs[1]), ",".join(sorted({str(e[4]) for e in qs[1] if e[1] >= 0})))
-        else:
-            spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
-            label = "ALL" if qs is None else len(qs)
-        got = _run(Path(src), patched, spec)
-        if os.environ.get("BR_PLAN_DEBUG"):
-            print(f"plan {stem} q={label} guard={guard} -> {got}", file=sys.stderr)
-        if got.get("ok") and got.get("same"):
-            updates[stem] = set(nums) - {number}
+
+    def _check(batch) -> None:
+        nonlocal digest_ran, digest_hit
+        start = cpu()
+        for _marginal, stem, patched, nums, qs, guard in batch:
+            if cpu() - start >= budget_s:
+                break
+            if qs == "digest":
+                spec = {"rows": rows_golden, "digest_only": True}
+                label = "DIGEST"
+                digest_ran += 1
+            elif isinstance(qs, tuple):
+                spec = {"rows": rows_golden, "plan": qs[1], "snapdir": str(Path(golden_path).parent),
+                        "rules": qmap["snap_rules"]}
+                label = "PH%d/%s" % (len(qs[1]), ",".join(sorted({str(e[4]) for e in qs[1] if e[1] >= 0})))
+            else:
+                spec = rows_golden if qs is None else {"rows": rows_golden, "only": sorted(qs), "all": guard}
+                label = "ALL" if qs is None else len(qs)
+            got = _run(Path(src), patched, spec)
+            if os.environ.get("BR_PLAN_DEBUG"):
+                print(f"plan {stem} q={label} guard={guard} -> {got}", file=sys.stderr)
+            if got.get("ok") and got.get("same"):
+                updates[stem] = set(nums) - {number}
+                if qs == "digest":
+                    digest_hit += 1
+
+    _check(plain)
+    _check(digests)
+    if digest_queued:
+        print(f"tpcds subset-digest {digest_hit}/{digest_ran} queued {digest_queued}", file=sys.stderr)
     return updates
 
 
@@ -514,6 +597,10 @@ def _child(src: str, patched_path: str, golden_path: str, out_path: str) -> None
         from sqlglot.optimizer import optimize
         from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
 
+        if isinstance(golden, dict) and golden.get("digest_only"):
+            result = _child_digest(golden)
+            Path(out_path).write_text(json.dumps(result))
+            return
         if isinstance(golden, dict) and "plan" in golden:  # phase mode
             Path(out_path).write_text(json.dumps(_child_phase(golden)))
             return
@@ -623,6 +710,31 @@ def _child_phase(spec: dict) -> dict:
         return {"ok": True, "same": False, "changed": len(run)}
     same = _execute_changed(run) if run else True
     return {"ok": True, "same": same, "changed": len(run)}
+
+
+def _child_digest(spec: dict) -> dict:
+    """Compare every TPC-DS query's DuckDB SQL and optimized tree. Do not execute.
+
+    The parent calls this only for the proved file subset. The first mismatch
+    keeps the test, so a differing plan pays less than a full run.
+    """
+    from sqlglot import parse_one, transpile
+    from sqlglot.optimizer import optimize
+    from tests.helpers import TPCDS_SCHEMA, load_sql_fixture_pairs
+
+    golden = spec["rows"]
+    ei = -1
+    for meta, sql, _expected in load_sql_fixture_pairs("optimizer/tpc-ds/tpc-ds.sql"):
+        if not meta.get("execute"):
+            parse_one(sql)
+            continue
+        ei += 1
+        rendered = transpile(sql, write="duckdb")
+        tree = optimize(parse_one(sql), TPCDS_SCHEMA, leave_tables_isolated=True)
+        row = [hashlib.blake2b("|".join(rendered).encode(), digest_size=8).hexdigest(), _digest(tree)]
+        if ei >= len(golden) or row != golden[ei]:
+            return {"ok": True, "same": False, "changed": 1, "digest": True}
+    return {"ok": True, "same": ei + 1 == len(golden) and ei >= 0, "changed": 0, "digest": True}
 
 
 def _execute_changed(sqls: list) -> bool:
