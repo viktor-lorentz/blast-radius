@@ -110,6 +110,26 @@ def _importers_of(path: str, maps):
         return None
 
 
+def _unrun_main(path: str) -> bool:
+    """True for a package's __main__.py that no test can run.
+
+    Python runs __main__.py only for ``python -m pkg`` or runpy. When no test
+    file spells -m, run_module or the __main__.py path, nothing executes it.
+    """
+    if not path.endswith("/__main__.py"):
+        return False
+    import re
+    pkg = re.escape(_module_name(path[: -len("/__main__.py")] + ".py"))
+    pat = re.compile(r"run_module|[\"']-m[\"']|-m\s+" + pkg + r"\b|__main__\.py")
+    try:
+        for f in (SRC / "tests").rglob("*.py"):
+            if pat.search(f.read_text(errors="replace")):
+                return False
+    except OSError:
+        return False
+    return True
+
+
 _MAX_NODES_ID = "tests/test_parser.py::TestParser::test_max_nodes"
 _MAX_NODES_LOADS = None
 _MAX_NODES_INDEX = None
@@ -514,6 +534,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             global _IMPORTER_HIT
             _IMPORTER_HIT = True
             return loaded
+        if _unrun_main(path):
+            return set()
         raise All(f"unparsable: {path}")
     out: set = set()
     for r in regions:
@@ -529,6 +551,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             if loaded:
                 _IMPORTER_HIT = True
                 return loaded
+            if _unrun_main(path):
+                continue
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
         if is_tests and _SIDE_EFFECTS.search(old) and _region_leaks(path, old, new, r.start, r.end):
