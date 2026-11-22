@@ -79,7 +79,64 @@ def _safe_patch(src: Path, text: str) -> dict | None:
 
 
 _TPCDS_INPUTS = "tests/fixtures/optimizer/tpc-ds/"
+_TPCDS_SQL = "tests/fixtures/optimizer/tpc-ds/tpc-ds.sql"
 _TPCH_SQL = "tests/fixtures/optimizer/tpc-h/tpc-h.sql"
+# Line numbers of the expected (optimized) statement in each pair. The executor
+# test parses the source statement only; this half is the optimizer's golden text.
+_EXPECTED_LINES: set | None = None
+
+
+def _expected_lines(src: Path) -> set:
+    global _EXPECTED_LINES
+    if _EXPECTED_LINES is not None:
+        return _EXPECTED_LINES
+    text = (src / _TPCDS_SQL).read_text(encoding="utf-8", errors="replace")
+    stmts = []
+    start = 1
+    for i, raw in enumerate(text.splitlines(), 1):
+        if ";" in raw:
+            stmts.append((start, i))
+            start = i + 1
+    expected: set = set()
+    for qi, (a, b) in enumerate(stmts):
+        if qi % 2 == 1:
+            expected.update(range(a, b + 1))
+    _EXPECTED_LINES = expected
+    return expected
+
+
+def _expected_sql_only(src: Path, fp) -> bool:
+    """True when a tpc-ds.sql edit cannot reach test_execute_tpcds.
+
+    The test parses and runs the source statement of each pair. The following
+    statement is the optimizer golden text, which that test never reads. A
+    semicolon would re-pair the statements, so those hunks stay visible.
+    """
+    if fp.special or fp.old_path != fp.new_path or fp.old_path is None:
+        return False
+    try:
+        expected = _expected_lines(src)
+    except OSError:
+        return False
+    if not fp.hunks:
+        return False
+    for h in fp.hunks:
+        old = h.old_start
+        for raw in h.lines:
+            tag = raw[:1]
+            body = raw[1:]
+            if tag == "-":
+                if ";" in body or old not in expected:
+                    return False
+                old += 1
+            elif tag == "+":
+                if ";" in body or old not in expected:
+                    return False
+            elif tag == "\\":
+                return False
+            else:
+                old += 1
+    return True
 
 
 def _inputs_unchanged(src: Path, text: str) -> bool:
@@ -110,6 +167,8 @@ def _unread(src: Path, fp) -> bool:
         name = path.rsplit("/", 1)[-1]
         if not path.startswith("tests/") or path in _TEST_READS:
             return False
+        if path == _TPCDS_SQL and _expected_sql_only(src, fp):
+            return True  # golden SQL only: test_execute_tpcds reads the source half
         if name in ("__init__.py", "conftest.py") or path.startswith(_TPCDS_INPUTS):
             return False
         if path.startswith("tests/fixtures/"):
