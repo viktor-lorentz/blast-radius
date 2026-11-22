@@ -324,6 +324,16 @@ def _reach(src: Path, rel: str, fp, qmap: dict):
     return None if "S" in qs else (qs, tags, xonly)
 
 
+def _ast_same(old: str, new: str) -> bool:
+    """True when the edit is comments or formatting only. Not local renames:
+    code_norm is off, so a renamed local stays visible and the test is kept."""
+    from blast import astdiff
+    try:
+        return astdiff.diff(old, new, code_norm=False) == []
+    except Exception:
+        return False
+
+
 def _reach_plan(src: Path, text: str, qmap: dict):
     """(patched, queries, guard) for the plan check; queries None = every query.
     None when the patch cannot be checked soundly (keep the test)."""
@@ -333,7 +343,7 @@ def _reach_plan(src: Path, text: str, qmap: dict):
         return None
     if not files:
         return None
-    out, qs, guard, every = {}, set(), False, False
+    out, qs, guard, every, freed = {}, set(), False, False, False
     tags, xonly = set(), set()
     for fp in files:
         path = str(fp.path)
@@ -346,10 +356,20 @@ def _reach_plan(src: Path, text: str, qmap: dict):
         if path not in qmap["loaded"]:
             continue  # never imported by the test at the pinned commit
         try:
-            new = P.apply((src / path).read_text(), fp)
+            old = (src / path).read_text()
+            new = P.apply(old, fp)
             compile(new, path, "exec", dont_inherit=True)
-            r = _reach(src, path, fp, qmap)
         except Exception:  # unparsable patch or source, syntax error: keep
+            return None
+        # A guard file whose AST did not change cannot fail the test, and must
+        # not refuse the rest of the patch. The known identical-plan misses
+        # (context.py, table.py, generators/python.py) all change the AST.
+        if (path in _GUARD_EXACT or path.startswith(_GUARD_PREFIXES)) and _ast_same(old, new):
+            freed = True  # do not let a comment refuse the rest of the patch
+            continue
+        try:
+            r = _reach(src, path, fp, qmap)
+        except Exception:
             return None
         out[path] = new
         guard = guard or path in _GUARD_EXACT or path.startswith(_GUARD_PREFIXES)
@@ -360,8 +380,8 @@ def _reach_plan(src: Path, text: str, qmap: dict):
             tags |= r[1]
             xonly |= r[2]
     if every:
-        return None if guard else (out, None, False, None)
-    return out, qs, guard, (tags, xonly)
+        return None if guard else (out, None, False, None, freed)
+    return out, qs, guard, (tags, xonly), freed
 
 
 def _phase_plan(qs: set, phase, qmap: dict, guard: bool) -> list:
@@ -457,7 +477,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
             plan = _reach_plan(src, text, qmap)
             queued = False
             if plan is not None:
-                patched, qs, guard, phase = plan
+                patched, qs, guard, phase, freed = plan
                 if qs is not None and not qs and _EMPTY == "drop":
                     updates[stem] = set(nums) - {number}  # no query reaches an edited function
                     continue
@@ -483,29 +503,32 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                     if not patched:
                         updates[stem] = set(nums) - {number}  # only files the test never loads
                         continue
-                    ranked.append((marginal, stem, patched, nums, qs, guard))
+                    ranked.append((marginal, stem, patched, nums, qs, guard, freed))
                     queued = True
             if not queued:
                 sub = _subset_patch(Path(src), text)
                 if sub:
-                    ranked.append((marginal, stem, sub, nums, "digest", False))
+                    ranked.append((marginal, stem, sub, nums, "digest", False, False))
                     digest_queued += 1
             continue
         patched = _safe_patch(Path(src), text)
         if patched is None:
             sub = _subset_patch(Path(src), text)
             if sub:
-                ranked.append((marginal, stem, sub, nums, "digest", False))
+                ranked.append((marginal, stem, sub, nums, "digest", False, False))
                 digest_queued += 1
             continue
-        ranked.append((marginal, stem, patched, nums, None, False))
+        ranked.append((marginal, stem, patched, nums, None, False, False))
     if not ranked:
         return updates
     ranked.sort(key=lambda r: r[:2], reverse=True)
     # The digest must not share the main budget: on c1 the higher-marginal
     # checks spend it, and the subset commits (the only ones that may be
     # digested) never run. A second window spends CPU only on that subset.
-    plain = [r for r in ranked if r[4] != "digest"]
+    # A comment in a guard file is a third window, so proving the other files
+    # harmless does not push an existing drop past the main budget.
+    plain = [r for r in ranked if r[4] != "digest" and not r[6]]
+    freed_rows = [r for r in ranked if r[6]]
     digests = [r for r in ranked if r[4] == "digest"]
     import resource
 
@@ -530,7 +553,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
     def _check(batch) -> None:
         nonlocal digest_ran, digest_hit
         start = cpu()
-        for _marginal, stem, patched, nums, qs, guard in batch:
+        for _marginal, stem, patched, nums, qs, guard, _freed in batch:
             if cpu() - start >= budget_s:
                 break
             if qs == "digest":
@@ -553,6 +576,7 @@ def narrow_tpcds(src: Path, rows: list, id_to_number: dict, ms: dict,
                     digest_hit += 1
 
     _check(plain)
+    _check(freed_rows)
     _check(digests)
     if digest_queued:
         print(f"tpcds subset-digest {digest_hit}/{digest_ran} queued {digest_queued}", file=sys.stderr)
