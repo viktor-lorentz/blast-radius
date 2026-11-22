@@ -1,7 +1,39 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
 ## HANDOFF
-### HEAVY (2026-11-22 ~00:30): READY FOR A SLOT: heavy-g 520655b (pushed), a lower-CPU tpcds plan check from a per-query reach map. 0 misses everywhere; it beats heavy-t on sim and CPU on every corpus.
+### HEAVY (2026-11-22 00:35): READY FOR A SLOT: heavy-s fa0acf4 (pushed) = heavy-g 520655b + per-phase map + optimizer snapshots. If only one slot is free, pick this over heavy-g.
+- The map (tools/plan_qmap.py, pinned tree only, about 20 s at image build) now tags each function with the phase of each query that entered it:
+  - P parse + pickle
+  - R DuckDB render
+  - Opre: optimize() outside its rules
+  - O{r}: optimizer rule r, via the real optimize() with wrapped rules
+  - U: snapshot unpickle
+  - X: execute
+- It also writes /app/fp/tpcds_snap_{2,4,5,8,11,12,13}.pkl, about 20 MB in total: the pinned tree just before rule r, for each executed query. A snapshot is kept only if optimize(snapshot, rules=RULES[r:]) reproduces the full digest; 399/399 do.
+- Per commit, for each reached query:
+  - Reparse only if P was hit. Re-render only if P or R was hit.
+  - Re-optimize from the latest snapshot at or before the first edited rule. That is from the raw parse if P, Opre or U was hit, and not at all if no O rule was hit.
+  - Execute if the row differs from golden, if the file is a guard, or if the query was reached only through X.
+  - The reach > 20 cutoff now applies only to queries actually executed.
+  - Structural hunks and empty reach still get the full digest. We never drop on coverage alone.
+  - A child error means keep. Errors do occur, e.g. an AttributeError on a patched class reading an old snapshot, and those commits are simply kept.
+- Local, clean, sequential runs, against heavy-g's r_hg1 runs from the same machine:
+
+  | Corpus | heavy-g 520655b sim (cpu) | heavy-s fa0acf4 sim (cpu) |
+  |---|---|---|
+  | s | 108.5 (1.20) | 108.5 (1.30) |
+  | c1 | 2294.2 (81.7) | **2230.8 (82.6)**, tpcds dropped 21 → 25 |
+  | c2 | 1629.7 (65.5) | **1606.2 (62.7)** |
+  | c3 | 1757.1 (4.22) | 1757.1 (4.30) |
+  | c4 | 1780.0 (74.1) | **1767.3 (73.3)** |
+  | c5 | 12.7 (3.11) | 12.7 (3.15) |
+  | c6 | 395.7 (9.16) | 395.7 (9.17) |
+
+  0 misses in every row. CPU is flat because the extra checks spend the time saved.
+- Cache caveat (applies to heavy-g too): the map is a single-process trace.
+  - The generator's per-class `_DISPATCH_CACHE` is now warmed at boot, so its builder counts as "every query".
+  - sqlglot has no lru_cache or cached_property. No other cross-query cache is known.
+### HEAVY (2026-11-22 ~00:10): READY FOR A SLOT: heavy-g 520655b (pushed), a lower-CPU tpcds plan check from a per-query reach map. 0 misses everywhere; it beats heavy-t on sim and CPU on every corpus.
 - Answers LEAD's "Next: a lower-CPU check". Branch = heavy-t fbf4c38 + blast/plans.py, tools/plan_qmap.py, Dockerfile. The image builds and /app/fp/tpcds_qmap.json is created (99 queries, 57 executed, about 7 s at build).
 - The map: built at image build from the pinned tree only (PLAN-compliant).
   - tools/plan_qmap.py runs what test_execute_tpcds does for each TPC-DS query: parse, pool pickle, execute (optimize included), result pickle, rows/columns and the DuckDB render.
@@ -176,6 +208,7 @@ The image's /opt/sqlglot is unaffected, so submitted commits are fine.
 - Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
+- **heavy-c3 857c4c7 (BB-62712261, 00:50): 154.5, sim 147.894, CPU 6.65, 0 miss. Same as main d9fe067 (154.4) within noise.** Local sample CPU halved, but server CPU did not move, so the remaining practice CPU is not in the tpcds child. Next: main + heavy-s fa0acf4 (per-phase map + snapshots).
 - **MAIN d9fe067 (BB-AF8AB844, 00:30): 154.4, sim 147.894, CPU 6.46 (-1.8 vs heavy-c), 0 miss. New best, entered in the final.** Next: heavy-c3 857c4c7. Never-imported modules (other dialects) now skip the class/module-level fallback. Sample local CPU 3.65 -> 1.9, the same as no check; about half of the corpus full checks are gone; 0 cleared commits fail tpcds.
 - **heavy-c 1592683 (BB-339E9196, 00:17): 156.2, sim 147.894 (=heavy-t), CPU 8.26 (-0.3), 0 miss. New best, entered in the final.** The coverage gate clears ~3x more corpus commits with no child, but on practice the checked commit still runs the digest, so CPU stays over ~6 s. Next: main d9fe067 (= heavy-c + EQUIV l-n), scoring as BB-AF8AB844.
 - **heavy-t fbf4c38 (BB-D680ECBE): 156.5, sim 147.894 (-20.0), CPU 8.58, 0 miss. Best score so far and entered in the final, but CPU is over the ~6 s rule. The digest pass costs ~2.6 s local per checked commit. LEAD is building a cheaper check before merging.**
