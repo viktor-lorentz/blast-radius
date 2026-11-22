@@ -61,6 +61,8 @@ def _safe_patch(src: Path, text: str) -> dict | None:
     out = {}
     for fp in files:
         path = str(fp.path)
+        if _unread(src, fp):  # a test-side file test_execute_tpcds never reads
+            continue
         if fp.special or fp.old_path != fp.new_path or not path.endswith(".py"):
             return None
         if not path.startswith("sqlglot/"):
@@ -88,13 +90,34 @@ def _inputs_unchanged(src: Path, text: str) -> bool:
         return False
     if not files:
         return False
-    for fp in files:
-        path = str(fp.path)
-        if fp.special or fp.old_path != fp.new_path or fp.old_path is None:
+    return all(_unread(src, fp) for fp in files)
+
+
+# What test_execute_tpcds reads under tests/: its own module, helpers.py, package
+# and pytest hooks, and the TPC fixtures. Other test modules are never imported.
+_TEST_READS = frozenset({"tests/test_executor.py", "tests/helpers.py"})
+
+
+def _unread(src: Path, fp) -> bool:
+    """True when this one file edit cannot reach test_execute_tpcds: a fixture
+    outside tpc-ds/ (tpc-h.sql only in a form setUpClass still loads), or another
+    test module. Both sides of a rename must qualify."""
+    if fp.special:
+        return False
+    for path in {str(fp.old_path or ""), str(fp.new_path or "")} - {""}:
+        name = path.rsplit("/", 1)[-1]
+        if not path.startswith("tests/") or path in _TEST_READS:
             return False
-        if not path.startswith("tests/fixtures/") or path.startswith(_TPCDS_INPUTS):
+        if name in ("__init__.py", "conftest.py") or path.startswith(_TPCDS_INPUTS):
             return False
-        if path == _TPCH_SQL and not _loads(src, fp):
+        if path.startswith("tests/fixtures/"):
+            if fp.old_path != fp.new_path or fp.old_path is None:
+                return False
+            if path == _TPCH_SQL and not _loads(src, fp):
+                return False
+            if path.startswith("tests/fixtures/optimizer/tpc-h/") and path != _TPCH_SQL:
+                return False
+        elif not path.endswith(".py"):
             return False
     return True
 
