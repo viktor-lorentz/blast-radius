@@ -92,12 +92,18 @@ class Semantic:
             raise NeedAll(f"cannot map patched lines {rel}:{a}-{b}")
         return min(olds), max(olds)
 
-    def tests_for(self, patched: Dict[str, str]) -> Set[int]:
+    def tests_for(self, patched: Dict[str, str], failed_tests=None) -> Set[int]:
+        """`failed_tests(mods)` gives the tests that import the modules that no
+        longer import, or None when that set is unknown."""
         new = self.run_patched(patched)
         if not new.get("ok"):
             raise NeedAll(f"patched import failed: {new.get('error')}")
+        lost: Set[int] = set()
         if new.get("newly_failed"):
-            raise NeedAll(f"modules fail to import: {new['newly_failed'][:3]}")
+            got = failed_tests(new["newly_failed"]) if failed_tests else None
+            if not got:
+                raise NeedAll(f"modules fail to import: {new['newly_failed'][:3]}")
+            lost = set(got)
         changed = new["changed"]
         bfn, nfn = new.get("bfn", {}), new.get("nfn", {})
         out: Set[int] = set()
@@ -143,4 +149,4 @@ class Semantic:
                 out |= m.name_tests(k.rsplit("|", 1)[1])
             else:
                 raise NeedAll(f"unknown key {k}")
-        return out
+        return out | lost

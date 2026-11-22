@@ -55,6 +55,33 @@ def load_dialect_tests(id_to_number: dict) -> None:
         got = {nums[i] for i in idxs if 0 <= i < len(nums) and nums[i] >= 0}
         if got:
             DIALECT_TESTS[mod] = got
+    global _HELPER_IDS
+    _HELPER_IDS = id_to_number
+
+
+_HELPER_IDS = None
+
+
+def _with_helper_dialects() -> dict:
+    """DIALECT_TESTS plus the tests that name each dialect through a helper of their file.
+
+    The load trace misses a test that reaches a dialect only inside a helper (the optimizer
+    fixture runner executes queries via .sql(dialect="duckdb")). Built once, on first use.
+    """
+    global _HELPER_IDS
+    if _HELPER_IDS is None:
+        return DIALECT_TESTS
+    ids, _HELPER_IDS = _HELPER_IDS, None
+    try:
+        from blast.helper_dialects import build
+        named = build(SRC)
+    except Exception as e:
+        log("helper dialects skip:", repr(e))
+        return DIALECT_TESTS
+    for mod, got in DIALECT_TESTS.items():
+        extra = {ids[t] for t in named.get(mod.rsplit(".", 1)[-1], ()) if t in ids}
+        got |= extra
+    return DIALECT_TESTS
 
 
 def _module_name(path: str) -> str:
@@ -72,7 +99,7 @@ def _importers_of(path: str, maps):
     """
     if not path.startswith("sqlglot/"):
         return None
-    dial = DIALECT_TESTS.get(_module_name(path))
+    dial = _with_helper_dialects().get(_module_name(path))
     if dial:
         return set(dial)
     try:
@@ -81,6 +108,44 @@ def _importers_of(path: str, maps):
     except Exception as e:
         log("importers skip:", repr(e))
         return None
+
+
+def _failed_importers(mods, maps):
+    """Tests that import every module that stopped importing, or None if any is unknown.
+
+    A module that raises at import fails every test that imports it, and only
+    those; the static import closure names them.
+    """
+    acc: set = set()
+    for mod in mods:
+        got = _importers_of(mod.replace(".", "/") + ".py", maps)
+        if not got:
+            got = _importers_of(mod.replace(".", "/") + "/__init__.py", maps)
+        if not got:
+            return None
+        acc |= got
+    log("import failure narrowed:", list(mods)[:3], len(acc))
+    return acc
+
+
+def _unrun_main(path: str) -> bool:
+    """True for a package's __main__.py that no test can run.
+
+    Python runs __main__.py only for ``python -m pkg`` or runpy. When no test
+    file spells -m, run_module or the __main__.py path, nothing executes it.
+    """
+    if not path.endswith("/__main__.py"):
+        return False
+    import re
+    pkg = re.escape(_module_name(path[: -len("/__main__.py")] + ".py"))
+    pat = re.compile(r"run_module|[\"']-m[\"']|-m\s+" + pkg + r"\b|__main__\.py")
+    try:
+        for f in (SRC / "tests").rglob("*.py"):
+            if pat.search(f.read_text(errors="replace")):
+                return False
+    except OSError:
+        return False
+    return True
 
 
 _MAX_NODES_ID = "tests/test_parser.py::TestParser::test_max_nodes"
@@ -137,7 +202,7 @@ def _dialect_load_union(files):
             return None
         if not path.startswith("sqlglot/"):
             return None
-        dial = DIALECT_TESTS.get(_module_name(path))
+        dial = _with_helper_dialects().get(_module_name(path))
         if not dial:
             return None
         acc |= set(dial)
@@ -487,6 +552,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             global _IMPORTER_HIT
             _IMPORTER_HIT = True
             return loaded
+        if _unrun_main(path):
+            return set()
         raise All(f"unparsable: {path}")
     out: set = set()
     for r in regions:
@@ -502,6 +569,8 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
             if loaded:
                 _IMPORTER_HIT = True
                 return loaded
+            if _unrun_main(path):
+                continue
             raise All(f"module-level structural change: {path}")
         tests, imp, hit = maps.region_tests(path, r.start, r.end)
         if is_tests and _SIDE_EFFECTS.search(old) and _region_leaks(path, old, new, r.start, r.end):
@@ -1208,7 +1277,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                         and fp.old_path == fp.new_path and not fp.binary):
                     patched[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
             try:
-                out |= sem.tests_for(patched)
+                out |= sem.tests_for(patched, lambda mods: _failed_importers(mods, maps))
             except (NeedAll, RuntimeError, ValueError, OSError) as e:
                 # An import failure is observed by the tests that load the module.
                 # The dialect trace is that set for a leaf dialect module. A core
