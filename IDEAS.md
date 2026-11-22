@@ -1,5 +1,16 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+## STATE (2026-11-21 ~16:38 PST) — slot left open
+No new submission. /tmp/blast-ready is no and /tmp/blast-next-sha is empty. At 16:27 PST the page showed 2 of 2 left and "None used in the last hour". BB-D4A7EF6F remains 172.4, entered in the final. Do not click Pick. Do not resubmit 37977a1. Practice board unchanged: 1212 114.6, RoboM 116.7, Steve WK 120.2, team 67 124.8, Aqua 126.1, Overcooked 172.4. Signed in; not an email-code page.
+
+Checked two schedule ideas. Neither should be submitted.
+
+Widening the TPC-DS plan check to `sqlglot/expressions/` had no false "same" on 16 failing expression-only commits (c1 5, c2 3, c4 1, c3 7: ParseError, SyntaxError, TypeError, or a real plan diff). Passing expression-only commits are 1/2/1/0 on c1/c2/c4/c3. Too rare to move a hidden sim that already ignored the much larger open-guard drop. Do not relax the executor, tokens, dialect, or non-sqlglot guards.
+
+A dead attribute store (the method writes `self.attr = <const>`, never reads it, and every call site overwrites `self.attr` before any call) is 0 misses, but on commits that already cost more than 2s it matches only c4 m040039 (36.8 → 0, a comment plus `Tokenizer.reset` setting `size` before `tokenize` overwrites it). c1, c2, and the sample match nothing. The same proof on every commit, including the ones already at cost 0, is 64 hits and 0 misses and 0s of new save. Shipping it would be a sample-identical schedule plus extra AST work. Do not spend a slot on it.
+
+Corpus waste with the plan checks off is still the same schedule as 37977a1: sample 108.5, c1 2709.5, c2 1972.0, c3 1833.1, c4 2066.7, c5 12.7, all 0 misses. Passing `test_execute_tpcds` is the bulk of the marginal (c1 706s / 49 commits, c2 421 / 32, c4 360 / 30). The shipped plan check already takes the open-guard part of that and did not move hidden sim (stuck at 167.914). Full-suite makespan is `test_max_nodes` at 28.8s, so narrowing `tests/helpers.py` to its importers does not cut the cost while that test stays selected. `test_generator_memory` marginal is small (c1 33s) and it fails more often than it passes.
+
 ## STATE (2026-11-21 ~15:35 PST) — slot left open
 No new submission. /tmp/blast-ready is no and /tmp/blast-next-sha is empty. The page still shows 1 of 2 left (next frees 3:40 PM PST) and BB-D4A7EF6F at 172.4 entered in the final. Do not click Pick. Do not resubmit 37977a1. Signed in; not an email-code page.
 
