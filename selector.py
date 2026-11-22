@@ -144,6 +144,14 @@ def _dialect_load_union(files):
     return acc or None
 
 
+def _drop_max_nodes(maps, nums: set) -> set:
+    """Ablation A1: a selection that is not the full-suite fallback skips test_max_nodes."""
+    number = _max_nodes_number(maps)
+    if not isinstance(number, int) or number not in nums:
+        return nums
+    return set(nums) - {number}
+
+
 def _without_unloaded_max_nodes(files, reason, maps, nums: set) -> set:
     """Drop test_max_nodes from a full-suite fallback when the test cannot load the edit.
 
@@ -1055,7 +1063,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
         # the edited word. Do not intersect those away, and do not pay the
         # mention-index build.
         if import_failure_narrowed or _IMPORTER_HIT:
-            return out
+            return _drop_max_nodes(maps, out)
         # A plain KEYWORDS key is looked up by that word. Tests that never spell
         # it (and never open a fixture that does) cannot observe the entry.
         # Space and symbol keys also rebuild the token trie, so they are not narrowed.
@@ -1090,7 +1098,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                 out &= _tests_mentioning_full(vocab, maps)
         except Exception as e:
             log("vocab skip:", repr(e))
-        return out
+        return _drop_max_nodes(maps, out)
     except All as e:
         log("ALL:", e)
         nums = set(all_tests)
