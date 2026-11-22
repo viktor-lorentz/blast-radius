@@ -485,6 +485,86 @@ def _region_leaks(path: str, old: str, new: str, start: int, end: int) -> bool:
         return True
 
 
+def _call_attr(node: ast.AST) -> str:
+    f = getattr(node, "func", None)
+    if isinstance(f, ast.Attribute):
+        return f.attr
+    if isinstance(f, ast.Name):
+        return f.id
+    return ""
+
+
+def _sqlglotc_leak_call(node: ast.AST) -> bool:
+    """Calls in the pinned test_sqlglotc.py that can write outside the test's temp dir."""
+    if not isinstance(node, ast.Call):
+        return False
+    attr = _call_attr(node)
+    if attr in {"run_path", "copy_extensions_to_source", "chdir"}:
+        return True
+    f = node.func
+    return (
+        isinstance(f, ast.Attribute)
+        and f.attr == "dict"
+        and isinstance(f.value, ast.Attribute)
+        and f.value.attr == "patch"
+    )
+
+
+def _sqlglotc_payload_only(old: str, new: str) -> bool:
+    """True when old and new differ only by constants outside the cross-test writes.
+
+    Those writes are run_path(setup.py), os.chdir, mock.patch.dict (the SQLGLOT_SRC
+    global and the setuptools env), and copy_extensions_to_source. A constant that
+    is not inside one of them, and not the value of a name they load, cannot
+    redirect the write onto the real tree.
+    """
+    try:
+        ot, nt = ast.parse(old), ast.parse(new)
+    except (SyntaxError, ValueError, RecursionError):
+        return False
+    leak_ids: set[int] = set()
+    loaded: set[str] = set()
+    for node in ast.walk(ot):
+        if not _sqlglotc_leak_call(node):
+            continue
+        for sub in ast.walk(node):
+            leak_ids.add(id(sub))
+            if isinstance(sub, ast.Name) and isinstance(sub.ctx, ast.Load):
+                loaded.add(sub.id)
+    if loaded:
+        for node in ast.walk(ot):
+            target = None
+            value = None
+            if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+                target, value = node.targets[0].id, node.value
+            elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+                target, value = node.target.id, node.value
+            if target in loaded and value is not None:
+                for sub in ast.walk(value):
+                    leak_ids.add(id(sub))
+    changed = False
+
+    def same(a, b) -> bool:
+        nonlocal changed
+        if a is None or b is None:
+            return a is b
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y) for x, y in zip(a, b))
+        if not isinstance(a, ast.AST):
+            return a == b
+        if isinstance(a, ast.Constant):
+            if a.value != b.value:
+                if id(a) in leak_ids:
+                    return False
+                changed = True
+            return True
+        return all(same(getattr(a, f), getattr(b, f)) for f in a._fields)
+
+    return same(ot, nt) and changed
+
+
 def tests_module_tests(maps, path: str) -> set:
     """Tests affected by an import-time change in a tests/ module: its own tests, plus (for helper modules)
     every test in any tests/ file that imports it, transitively."""
@@ -1445,6 +1525,38 @@ def canary_sources(text: str) -> "dict | None":
     return out
 
 
+def narrow_sqlglotc_payload(rows, id_to_number):
+    """After the plan checks, keep only test_sqlglotc's own tests when the edit
+    cannot redirect that file's cross-test writes. Doing it here leaves the
+    shared plan-check budget on the same commits."""
+    own = {n for i, n in id_to_number.items() if i.startswith("tests/test_sqlglotc.py::")}
+    if not own:
+        return {}
+    updates = {}
+    for stem, text, _nums in rows:
+        if "tests/test_sqlglotc.py" not in text:
+            continue
+        try:
+            files = P.parse(text)
+        except P.PatchError:
+            continue
+        if len(files) != 1:
+            continue
+        fp = files[0]
+        if fp.path != "tests/test_sqlglotc.py" or fp.old_path != fp.new_path or fp.binary:
+            continue
+        try:
+            old = (SRC / fp.path).read_text()
+            new = P.apply(old, fp)
+        except (P.PatchError, OSError, UnicodeError):
+            continue
+        if _sqlglotc_payload_only(old, new):
+            updates[stem] = set(own)
+    if updates:
+        log(f"sqlglotc payload narrowed {len(updates)}")
+    return updates
+
+
 def narrow_heavy(rows, id_to_number, number_to_id, ms, maps=None):
     """Drop a heavy test when its canaries all pass under the patched tree.
     Biggest makespan gain first, inside a CPU budget."""
@@ -1636,6 +1748,12 @@ def main() -> None:
                 log(f"max_nodes dropped {len(updates)}")
         except Exception as e:
             log("maxnodes skip:", repr(e))
+    try:
+        updates = narrow_sqlglotc_payload(rows, id_to_number)
+        if updates:
+            rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+    except Exception as e:
+        log("sqlglotc payload skip:", repr(e))
     if os.environ.get("BR_CANARY", "0") != "0":
         try:
             updates = narrow_heavy(rows, id_to_number, number_to_id, ms, maps)
