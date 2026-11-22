@@ -55,7 +55,7 @@
 ## STATE (2026-11-21 ~18:45 PST) — A2g not submitted; merging EQUIV
 - A2g submit at 18:30 hit a full window (0 of 2); at 18:35 a slot was free but the submit command was blocked by the local permission classifier. Waiting on the user to allow submissions. No new receipts since A2 (BB-87155FD8).
 - A3 fixed (e8d5aa3) gains ~0 on c1-c5: every corpus narrowing was a side-effecting test module, which the fix keeps as ALL. Not merged: inside the EQUIV merge it would also narrow filelevel NeedAll cases (pytest.ini, conftest, new __init__, .pth). Kept as a standalone hidden-set probe only.
-- Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Corpus eval running (meq_*). If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
+- Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
 - A2 (cbc7b7e, BB-87155FD8, 415.3): dropping test_execute_tpcds outside ALL cuts hidden sim 167.914 -> 111.101 (-56.8s) but misses 1 hidden commit. tpcds IS the hidden waste; ship it only behind a canary (HEAVY). Sample also misses 2jrq/3utz, where tpcds co-fails with 7 and 36 other selected tests.
