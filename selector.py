@@ -21,6 +21,7 @@ sys.path.insert(0, str(HERE))
 from blast import astdiff  # noqa: E402
 from blast import canary  # noqa: E402
 from blast import patch as P  # noqa: E402
+from blast import genmem  # noqa: E402
 from blast import maxnodes  # noqa: E402
 from blast import plans  # noqa: E402
 from blast import runner  # noqa: E402
@@ -1636,6 +1637,16 @@ def main() -> None:
                 log(f"max_nodes dropped {len(updates)}")
         except Exception as e:
             log("maxnodes skip:", repr(e))
+    # test_generator_memory: drop when every edited line sits in a sqlglot function
+    # body the test never enters at the pinned tree (static map, no child).
+    if os.environ.get("BR_GENMEM", "1") != "0":
+        try:
+            updates = genmem.narrow_genmem(SRC, rows, id_to_number, FP_DIR / "genmem_map.json")
+            if updates:
+                rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
+                log(f"genmem dropped {len(updates)}")
+        except Exception as e:
+            log("genmem skip:", repr(e))
     if os.environ.get("BR_CANARY", "0") != "0":
         try:
             updates = narrow_heavy(rows, id_to_number, number_to_id, ms, maps)

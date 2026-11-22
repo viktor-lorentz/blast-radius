@@ -14,11 +14,12 @@ RUN pip install --no-cache-dir duckdb==2.0.0 numpy==2.5.5 pandas==3.1.1
 COPY selector.py /app/selector.py
 COPY blast /app/blast
 COPY maps /app/maps
-COPY tools/fp_baseline.py tools/plan_golden.py tools/plan_qmap.py /app/tools/
+COPY tools/fp_baseline.py tools/plan_golden.py tools/plan_qmap.py tools/genmem_map.py /app/tools/
 # Precompile everything, then fingerprint the pristine import in THIS environment (seconds).
 RUN python -m compileall -q /app /opt/sqlglot/sqlglot /opt/sqlglot/tests \
  && python /app/tools/fp_baseline.py /opt/sqlglot /app/fp \
  && python /app/tools/plan_golden.py /opt/sqlglot /app/fp \
- && PYTHONHASHSEED=0 python /app/tools/plan_qmap.py /opt/sqlglot /app/fp/tpcds_qmap.json
+ && PYTHONHASHSEED=0 python /app/tools/plan_qmap.py /opt/sqlglot /app/fp/tpcds_qmap.json \
+ && python /app/tools/genmem_map.py /opt/sqlglot /app/fp/genmem_map.json
 ENV PYTHONDONTWRITEBYTECODE=1
 CMD ["python", "/app/selector.py"]
