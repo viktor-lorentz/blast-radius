@@ -1,0 +1,19 @@
+diff --git a/.gitpod.yml b/.gitpod.yml
+deleted file mode 100644
+index 2028683..0000000
+--- a/.gitpod.yml
++++ /dev/null
+@@ -1,13 +0,0 @@
+-image: gitpod/workspace-python-3.11
+-tasks:
+-  - name: sqlglot
+-    init: |
+-      python -m venv .venv
+-      source .venv/bin/activate
+-      make install-dev
+-
+-    command: |
+-      clear
+-      source .venv/bin/activate
+-
+-

@@ -1,0 +1,10 @@
+diff --git a/tests/sqlglot/__init__.py b/tests/sqlglot/__init__.py
+index 3a6739a..0136c64 100644
+--- a/tests/sqlglot/__init__.py
++++ b/tests/sqlglot/__init__.py
+@@ -5,3 +5,5 @@ _integration_dir = os.path.join(
+ )
+ if os.path.isdir(_integration_dir):
+     __path__.append(os.path.normpath(_integration_dir))
++
++# integration tests

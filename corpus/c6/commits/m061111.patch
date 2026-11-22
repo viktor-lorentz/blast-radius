@@ -1,0 +1,13 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+index 7898842..ff95c33 100644
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -229,7 +229,7 @@ def _annotate_math_with_float_decfloat(self: TypeAnnotator, expression: exp.Expr
+     return expression
+ 
+ 
+-def _annotate_str_to_time(self: TypeAnnotator, expression: exp.StrToTime) -> exp.StrToTime:
++def _annotate_str_to_time(self: TypeAnnotator, expression: exp.StrToTime) -> object:
+     # target_type is stored as a DataType instance
+     target_type_arg = expression.args.get("target_type")
+     target_type = (

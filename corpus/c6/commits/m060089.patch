@@ -1,0 +1,9 @@
+diff --git a/MANIFEST.in b/MANIFEST.in
+index ed9bfe1..55d6cad 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -3,3 +3,4 @@ prune posts/
+ prune benchmarks/
+ prune .github/
+ prune pdoc/
++include LICENSE

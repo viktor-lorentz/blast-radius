@@ -1,0 +1,14 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+index a7a0c01..7ae22e0 100644
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -18,8 +18,8 @@ from sqlglot.optimizer.scope import (
+     traverse_scope,
+     walk_in_scope,
+ )
+-from sqlglot.optimizer.simplify import simplify_parens
+ from sqlglot.schema import Schema, ensure_schema
++from sqlglot.optimizer.simplify import simplify_parens
+ 
+ if t.TYPE_CHECKING:
+     from sqlglot._typing import E

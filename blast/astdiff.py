@@ -254,7 +254,141 @@ class _VersionNorm(ast.NodeTransformer):
         return node
 
 
-def diff(old_src: str, new_src: str, version_norm: bool = True) -> Optional[List[Region]]:
+
+_DYNAMIC = {"locals", "vars", "eval", "exec", "dir", "currentframe", "_getframe", "getframeinfo"}
+_SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)
+
+
+def _own_nodes(fn):
+    """Nodes in fn's own scope (comprehensions included; nested def/lambda/class bodies excluded)."""
+    own, nested = [], []
+    stack = list(fn.body)
+    while stack:
+        x = stack.pop()
+        if isinstance(x, _SCOPES):
+            nested.append(x)
+            continue
+        own.append(x)
+        stack.extend(ast.iter_child_nodes(x))
+    return own, nested
+
+
+class _LocalNorm(ast.NodeVisitor):
+    """Give each function's private locals canonical names in order of first use.
+
+    A local is a name the function binds (assignment, for/with target, walrus, comprehension
+    target) that is not a parameter, not declared global/nonlocal, and never appears inside a
+    nested def/lambda/class. Functions that can see their own frame (locals(), eval, ...) are
+    left alone. Two functions whose canonical forms match differ only by a bijective rename of
+    names nothing else can observe, so they run the same.
+    """
+
+    def visit_FunctionDef(self, fn):
+        self._norm(fn)
+        self.generic_visit(fn)
+
+    visit_AsyncFunctionDef = visit_FunctionDef
+
+    def _norm(self, fn):
+        own, nested = _own_nodes(fn)
+        bound, blocked = set(), set()
+        a = fn.args
+        for arg in a.posonlyargs + a.args + a.kwonlyargs + [a.vararg, a.kwarg]:
+            if arg is not None:
+                blocked.add(arg.arg)
+        for x in own:
+            if isinstance(x, (ast.Global, ast.Nonlocal)):
+                blocked.update(x.names)
+            elif isinstance(x, ast.Name):
+                if isinstance(x.ctx, (ast.Store, ast.Del)):
+                    bound.add(x.id)
+                if x.id in _DYNAMIC:
+                    return
+            elif isinstance(x, ast.Attribute) and x.attr in _DYNAMIC:
+                return
+            elif isinstance(x, (ast.ExceptHandler,)) and x.name:
+                blocked.add(x.name)
+            elif isinstance(x, ast.alias):
+                blocked.add((x.asname or x.name).split(".")[0])
+            elif type(x).__name__ in ("MatchAs", "MatchStar") and x.name:
+                blocked.add(x.name)
+            elif type(x).__name__ == "MatchMapping" and x.rest:
+                blocked.add(x.rest)
+        for sub in nested:
+            for y in ast.walk(sub):
+                if isinstance(y, ast.Name):
+                    blocked.add(y.id)
+                elif isinstance(y, ast.arg):
+                    blocked.add(y.arg)
+        names = bound - blocked
+        if not names:
+            return
+        mapping = {}
+        for x in sorted((y for y in own if isinstance(y, ast.Name) and y.id in names),
+                        key=lambda y: (y.lineno, y.col_offset)):
+            if x.id not in mapping:
+                mapping[x.id] = "\x00L%d" % len(mapping)
+        for x in own:
+            if isinstance(x, ast.Name) and x.id in mapping:
+                x.id = mapping[x.id]
+
+
+
+def _future_annotations(tree) -> bool:
+    return any(isinstance(s, ast.ImportFrom) and s.module == "__future__"
+               and any(a.name == "annotations" for a in s.names) for s in tree.body)
+
+
+class _AnnNorm(ast.NodeTransformer):
+    """Drop annotations that are never evaluated.
+
+    Under `from __future__ import annotations` a function's parameter and return annotations
+    are stored as strings and evaluated only on request (nothing in the target asks for them);
+    a local variable's annotation inside a function body is never evaluated. Redundant `pass`
+    statements next to other statements are dropped too.
+    """
+
+    def __init__(self, future: bool):
+        self.future = future
+        self.depth = 0
+
+    def _fn(self, node):
+        if self.future:
+            node.returns = None
+            a = node.args
+            for arg in a.posonlyargs + a.args + a.kwonlyargs + [a.vararg, a.kwarg]:
+                if arg is not None:
+                    arg.annotation = None
+        self.depth += 1
+        self.generic_visit(node)
+        self.depth -= 1
+        return node
+
+    visit_FunctionDef = visit_AsyncFunctionDef = _fn
+
+    def visit_ClassDef(self, node):
+        d, self.depth = self.depth, 0
+        self.generic_visit(node)
+        self.depth = d
+        return node
+
+    def visit_AnnAssign(self, node):
+        self.generic_visit(node)
+        if self.depth and isinstance(node.target, ast.Name):
+            node.annotation = ast.Constant(value=None)
+        return node
+
+    def generic_visit(self, node):
+        super().generic_visit(node)
+        for f in _STMT_LISTS:
+            body = getattr(node, f, None)
+            if isinstance(body, list) and len(body) > 1 and any(isinstance(x, ast.Pass) for x in body):
+                kept = [x for x in body if not isinstance(x, ast.Pass)]
+                setattr(node, f, kept or body[:1])
+        return node
+
+
+def diff(old_src: str, new_src: str, version_norm: bool = True, code_norm: bool = True) -> Optional[List[Region]]:
     """Regions of the old file that changed, [] if ASTs are identical, None if either side is unparsable."""
     try:
         o = ast.parse(old_src)
@@ -268,6 +402,13 @@ def diff(old_src: str, new_src: str, version_norm: bool = True) -> Optional[List
     ):
         o = _VersionNorm().visit(o)
         n = _VersionNorm().visit(n)
+    if code_norm:
+        # these keep behaviour but change code objects (co_varnames, co_code)
+        _LocalNorm().visit(o)
+        _LocalNorm().visit(n)
+        fut = _future_annotations(o) and _future_annotations(n)
+        o = _AnnNorm(fut).visit(o)
+        n = _AnnNorm(fut).visit(n)
     if ENUM_CLASSES:
         o = _EqNorm().visit(o)
         n = _EqNorm().visit(n)

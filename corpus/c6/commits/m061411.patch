@@ -1,0 +1,15 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+index e39f408..6dc940e 100644
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -90,7 +90,9 @@ class DrillGenerator(generator.Generator):
+             [transforms.eliminate_distinct_on, transforms.eliminate_semi_and_anti_joins]
+         ),
+         exp.StrPosition: strposition_sql,
+-        exp.StrToTime: lambda self, e: self.func("TO_TIMESTAMP", e.this, self.format_time(e)),
++        exp.StrToTime: lambda self, e: self.func("TO_TIMESTAMP", e.this, self.format_time(
++            e,
++        )),
+         exp.TimeStrToDate: lambda self, e: self.sql(exp.cast(e.this, exp.DType.DATE)),
+         exp.TimeStrToTime: timestrtotime_sql,
+         exp.TimeStrToUnix: rename_func("UNIX_TIMESTAMP"),

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/oracle.py b/sqlglot/generators/oracle.py
+index cc2c2a5..0e68859 100644
+--- a/sqlglot/generators/oracle.py
++++ b/sqlglot/generators/oracle.py
+@@ -20,7 +20,7 @@ def _trim_sql(self: OracleGenerator, expression: exp.Trim) -> str:
+     if position and position.upper() in ("LEADING", "TRAILING"):
+         return self.trim_sql(expression)
+ 
+-    return trim_sql(self, expression)
++    return (trim_sql(self, expression))
+ 
+ 
+ class OracleGenerator(generator.Generator):

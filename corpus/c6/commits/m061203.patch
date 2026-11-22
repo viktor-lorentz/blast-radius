@@ -1,0 +1,13 @@
+diff --git a/sqlglot/trie.py b/sqlglot/trie.py
+index 3b99d14..6daaba6 100644
+--- a/sqlglot/trie.py
++++ b/sqlglot/trie.py
+@@ -41,7 +41,7 @@ def new_trie(keywords: Iterable[key], trie: t.Optional[dict] = None) -> dict:
+     return trie
+ 
+ 
+-def in_trie(trie: dict, key: key) -> tuple[TrieResult, dict]:
++def in_trie(trie: dict, key: key) -> tuple[TrieResult, dict] | None:
+     """
+     Checks whether a key is in a trie.
+ 

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+index bfe8b15..d91a739 100644
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -473,4 +473,4 @@ def _lcs(
+                     else lcs_result[i][j - 1]
+                 )
+ 
+-    return lcs_result[len_a][len_b]  # type: ignore
++    return lcs_result[len_a][len_b]  # type: ignore
+\ No newline at end of file

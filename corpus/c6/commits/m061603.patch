@@ -1,0 +1,17 @@
+diff --git a/tests/test_sqlglotc.py b/tests/test_sqlglotc.py
+index 9267f3c..0584b5e 100644
+--- a/tests/test_sqlglotc.py
++++ b/tests/test_sqlglotc.py
+@@ -27,9 +27,9 @@ class TestSQLGlotC(unittest.TestCase):
+             )["build_ext"]
+ 
+     def setUp(self):
+-        temporary = tempfile.TemporaryDirectory()
+-        self.addCleanup(temporary.cleanup)
+-        self.root = Path(temporary.name)
++        temporary_local = tempfile.TemporaryDirectory()
++        self.addCleanup(temporary_local.cleanup)
++        self.root = Path(temporary_local.name)
+         self.source = self.root / "sqlglot"
+         self.source.mkdir()
+ 

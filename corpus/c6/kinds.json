@@ -1,0 +1,762 @@
+{
+"m060001": {
+"kind": "new_file",
+"detail": "sqlglot/helpers_extra.py"
+},
+"m060002": {
+"kind": "new_file",
+"detail": "sqlglot/optimizer/fold_noop.py"
+},
+"m060003": {
+"kind": "new_file",
+"detail": "sqlglot/dialects/newdb.py"
+},
+"m060004": {
+"kind": "new_file",
+"detail": "sqlglot/typing/newdb.py"
+},
+"m060005": {
+"kind": "new_file",
+"detail": "sqlglot/executor/util.py"
+},
+"m060006": {
+"kind": "new_file",
+"detail": "sqlglot/parsers/newdb.py"
+},
+"m060007": {
+"kind": "new_file",
+"detail": "sqlglot/_compat.py"
+},
+"m060008": {
+"kind": "new_file",
+"detail": "sqlglot/generators/newdb.py"
+},
+"m060009": {
+"kind": "new_file",
+"detail": "sqlglot/optimizer/broken_rule.py"
+},
+"m060010": {
+"kind": "new_file",
+"detail": "sqlglot/typing/brokendb.py"
+},
+"m060011": {
+"kind": "new_file",
+"detail": "tests/test_chunks.py"
+},
+"m060012": {
+"kind": "new_file",
+"detail": "tests/dialects/test_newdb.py"
+},
+"m060013": {
+"kind": "new_file",
+"detail": "tests/conftest.py"
+},
+"m060014": {
+"kind": "new_file",
+"detail": "tests/test_broken_import.py"
+},
+"m060015": {
+"kind": "new_file",
+"detail": "tests/optimizer_helpers.py"
+},
+"m060016": {
+"kind": "new_file",
+"detail": "docs/dialects.md"
+},
+"m060017": {
+"kind": "new_file",
+"detail": "tests/fixtures/optimizer/new_rule.sql"
+},
+"m060018": {
+"kind": "new_file",
+"detail": ".github/workflows/lint.yml"
+},
+"m060019": {
+"kind": "new_file",
+"detail": "sqlglot/data/keywords.json"
+},
+"m060020": {
+"kind": "new_file",
+"detail": "benchmarks/tokenize.py"
+},
+"m060021": {
+"kind": "new_file",
+"detail": "SECURITY.md"
+},
+"m060022": {
+"kind": "new_file",
+"detail": "sqlglot/README.txt"
+},
+"m060023": {
+"kind": "new_file",
+"detail": "tests/fixtures/notes.txt"
+},
+"m060024": {
+"kind": "new_file+edit",
+"detail": "helpers_extra imported by serde"
+},
+"m060025": {
+"kind": "delete_file",
+"detail": "sqlglot/dialects/athena.py"
+},
+"m060026": {
+"kind": "delete_file",
+"detail": "sqlglot/optimizer/eliminate_ctes.py"
+},
+"m060027": {
+"kind": "delete_file",
+"detail": "sqlglot/serde.py"
+},
+"m060028": {
+"kind": "delete_file",
+"detail": "sqlglot/anonymize.py"
+},
+"m060029": {
+"kind": "delete_file",
+"detail": "sqlglot/lineage.py"
+},
+"m060030": {
+"kind": "delete_file",
+"detail": "sqlglot/typing/snowflake.py"
+},
+"m060031": {
+"kind": "delete_file",
+"detail": "sqlglot/diff.py"
+},
+"m060032": {
+"kind": "delete_file",
+"detail": "sqlglot/executor/table.py"
+},
+"m060033": {
+"kind": "delete_file",
+"detail": "sqlglot/planner.py"
+},
+"m060034": {
+"kind": "delete_file",
+"detail": "sqlglot/py.typed"
+},
+"m060035": {
+"kind": "delete_file",
+"detail": "tests/test_time.py"
+},
+"m060036": {
+"kind": "delete_file",
+"detail": "tests/dialects/test_athena.py"
+},
+"m060037": {
+"kind": "delete_file",
+"detail": "tests/helpers.py"
+},
+"m060038": {
+"kind": "delete_file",
+"detail": "tests/gen_fixtures.py"
+},
+"m060039": {
+"kind": "delete_file",
+"detail": "tests/fixtures/identity.sql"
+},
+"m060040": {
+"kind": "delete_file",
+"detail": "tests/fixtures/jsonpath/LICENSE"
+},
+"m060041": {
+"kind": "delete_file",
+"detail": "tests/leakcheck.py"
+},
+"m060042": {
+"kind": "delete_file",
+"detail": "benchmarks/parse.py"
+},
+"m060043": {
+"kind": "delete_file",
+"detail": "posts/ast_primer.md"
+},
+"m060044": {
+"kind": "delete_file",
+"detail": "CHANGELOG.md"
+},
+"m060045": {
+"kind": "delete_file",
+"detail": ".gitpod.yml"
+},
+"m060046": {
+"kind": "delete_file",
+"detail": "pdoc/cli.py"
+},
+"m060047": {
+"kind": "delete_file",
+"detail": "sqlglot.png"
+},
+"m060048": {
+"kind": "delete_file",
+"detail": "sqlglotc/MANIFEST.in"
+},
+"m060049": {
+"kind": "delete_file",
+"detail": "AGENTS.md"
+},
+"m060050": {
+"kind": "rename",
+"detail": "sqlglot/anonymize.py -> sqlglot/anon.py"
+},
+"m060051": {
+"kind": "rename",
+"detail": "sqlglot/serde.py -> sqlglot/serialize.py"
+},
+"m060052": {
+"kind": "rename",
+"detail": "sqlglot/dialects/athena.py -> sqlglot/dialects/athena_dialect.py"
+},
+"m060053": {
+"kind": "rename+edit",
+"detail": "sqlglot/optimizer/eliminate_ctes.py -> sqlglot/optimizer/remove_ctes.py"
+},
+"m060054": {
+"kind": "rename",
+"detail": "tests/test_time.py -> tests/test_time_format.py"
+},
+"m060055": {
+"kind": "rename+edit",
+"detail": "tests/test_serde.py -> tests/test_serialize.py"
+},
+"m060056": {
+"kind": "rename",
+"detail": "tests/fixtures/partial.sql -> tests/fixtures/partial_queries.sql"
+},
+"m060057": {
+"kind": "rename",
+"detail": "tests/fixtures/identity.sql -> tests/fixtures/identities.sql"
+},
+"m060058": {
+"kind": "rename",
+"detail": "benchmarks/compare.py -> benchmarks/compare_dialects.py"
+},
+"m060059": {
+"kind": "rename",
+"detail": "CONTRIBUTING.md -> docs/CONTRIBUTING.md"
+},
+"m060060": {
+"kind": "rename+edit",
+"detail": "pdoc/cli.py -> pdoc/build_docs.py"
+},
+"m060061": {
+"kind": "rename",
+"detail": "tests/helpers.py -> tests/test_helpers_util.py"
+},
+"m060062": {
+"kind": "rename+importers",
+"detail": "anonymize -> anon (1 importers)"
+},
+"m060063": {
+"kind": "copy",
+"detail": "sqlglot/dialects/athena.py -> sqlglot/dialects/athena2.py"
+},
+"m060064": {
+"kind": "copy",
+"detail": "tests/fixtures/partial.sql -> tests/fixtures/partial2.sql"
+},
+"m060065": {
+"kind": "copy",
+"detail": "tests/test_time.py -> tests/test_time2.py"
+},
+"m060066": {
+"kind": "mode",
+"detail": "sqlglot/serde.py"
+},
+"m060067": {
+"kind": "mode",
+"detail": "tests/test_time.py"
+},
+"m060068": {
+"kind": "mode",
+"detail": "setup.py"
+},
+"m060069": {
+"kind": "mode",
+"detail": "tests/fixtures/identity.sql"
+},
+"m060070": {
+"kind": "mode",
+"detail": "benchmarks/parse.py"
+},
+"m060071": {
+"kind": "mode+edit",
+"detail": "sqlglot/__main__.py shebang"
+},
+"m060072": {
+"kind": "binary",
+"detail": "docs/logo.png"
+},
+"m060073": {
+"kind": "binary",
+"detail": "docs/logo2.png --binary"
+},
+"m060074": {
+"kind": "binary",
+"detail": "sqlglot.png"
+},
+"m060075": {
+"kind": "binary",
+"detail": "sqlglot.png --binary"
+},
+"m060076": {
+"kind": "binary",
+"detail": "tests/fixtures/blob.bin"
+},
+"m060077": {
+"kind": "quoted_new",
+"detail": "docs/release notes.md"
+},
+"m060078": {
+"kind": "quoted_new",
+"detail": "tests/fixtures/caf\u00e9.sql"
+},
+"m060079": {
+"kind": "quoted_new",
+"detail": "benchmarks/old bench.py"
+},
+"m060080": {
+"kind": "quoted_rename",
+"detail": "CONTRIBUTING.md -> CONTRIBUTING guide.md"
+},
+"m060081": {
+"kind": "config",
+"detail": "pyproject.toml"
+},
+"m060082": {
+"kind": "config",
+"detail": "pyproject.toml"
+},
+"m060083": {
+"kind": "config",
+"detail": "pyproject.toml"
+},
+"m060084": {
+"kind": "config",
+"detail": "pyproject.toml"
+},
+"m060085": {
+"kind": "config",
+"detail": "pyproject.toml"
+},
+"m060086": {
+"kind": "config",
+"detail": "setup.cfg"
+},
+"m060087": {
+"kind": "config",
+"detail": "setup.py"
+},
+"m060088": {
+"kind": "config",
+"detail": "setup.py"
+},
+"m060089": {
+"kind": "config",
+"detail": "MANIFEST.in"
+},
+"m060090": {
+"kind": "config",
+"detail": "Makefile"
+},
+"m060091": {
+"kind": "config",
+"detail": ".pre-commit-config.yaml"
+},
+"m060092": {
+"kind": "config",
+"detail": ".gitignore"
+},
+"m060093": {
+"kind": "config",
+"detail": ".gitpod.yml"
+},
+"m060094": {
+"kind": "config",
+"detail": "sqlglotc/setup.py"
+},
+"m060095": {
+"kind": "config",
+"detail": "sqlglotc/setup.py"
+},
+"m060096": {
+"kind": "config",
+"detail": "sqlglotc/pyproject.toml"
+},
+"m060097": {
+"kind": "config",
+"detail": "README.md"
+},
+"m060098": {
+"kind": "config",
+"detail": "CHANGELOG.md"
+},
+"m060099": {
+"kind": "config",
+"detail": "AGENTS.md"
+},
+"m060100": {
+"kind": "config",
+"detail": "tests/__init__.py"
+},
+"m060101": {
+"kind": "config",
+"detail": "tests/sqlglot/__init__.py"
+},
+"m060102": {
+"kind": "config",
+"detail": "pdoc/cli.py"
+},
+"m060103": {
+"kind": "config",
+"detail": "LICENSE"
+},
+"m060104": {
+"kind": "config",
+"detail": "benchmarks/__init__.py"
+},
+"m060105": {
+"kind": "config",
+"detail": ".github/workflows/benchmark-sqlglot.yml"
+},
+"m060106": {
+"kind": "config",
+"detail": "sqlglot/py.typed"
+},
+"m060107": {
+"kind": "config",
+"detail": "tests/fixtures/jsonpath/LICENSE"
+},
+"m060108": {
+"kind": "config",
+"detail": "sqlglot/dialects/__init__.py"
+},
+"m060109": {
+"kind": "noeol",
+"detail": "sqlglot/serde.py"
+},
+"m060110": {
+"kind": "noeol",
+"detail": "tests/fixtures/partial.sql"
+},
+"m060111": {
+"kind": "noeol",
+"detail": "sqlglot/diff.py"
+},
+"m060112": {
+"kind": "noeol",
+"detail": "README.md"
+},
+"m060113": {
+"kind": "noeol+code",
+"detail": "sqlglot/time.py"
+},
+"m060114": {
+"kind": "crlf_file",
+"detail": "sqlglot/serde.py"
+},
+"m060115": {
+"kind": "crlf_file",
+"detail": "tests/fixtures/partial.sql"
+},
+"m060116": {
+"kind": "crlf_file",
+"detail": "sqlglot/trie.py"
+},
+"m061000": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/snowflake.py _unnest_generate_date_array:number_sequence->number_sequence_val"
+},
+"m061001": {
+"kind": "rename_local",
+"detail": "sqlglot/expressions/ddl.py kind:kind->kind2"
+},
+"m061002": {
+"kind": "rename_local",
+"detail": "sqlglot/optimizer/scope.py _traverse_subqueries:top->top_val"
+},
+"m061003": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/sqlite.py groupconcat_sql:node->node_tmp"
+},
+"m061004": {
+"kind": "rename_local",
+"detail": "sqlglot/parsers/duckdb.py _builder:orders->orders_tmp"
+},
+"m061005": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/spark.py ifblock_sql:drop->drop_val"
+},
+"m061006": {
+"kind": "rename_local",
+"detail": "sqlglot/parsers/mysql.py _parse_show_mysql:json->json_val"
+},
+"m061007": {
+"kind": "rename_local",
+"detail": "sqlglot/optimizer/qualify_columns.py replace_columns:is_group_by->is_group_by2"
+},
+"m061008": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/redshift.py _unix_to_time_sql:scale->scale_val"
+},
+"m061009": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/databricks.py columndef_sql:kind->kind_val"
+},
+"m061010": {
+"kind": "rename_local",
+"detail": "sqlglot/generators/doris.py partitionbyrangepropertydynamic_sql:start->start_local"
+},
+"m061011": {
+"kind": "rename_local",
+"detail": "sqlglot/planner.py extract_agg_operands:target->target_tmp"
+},
+"m061012": {
+"kind": "rename_local",
+"detail": "sqlglot/trie.py in_trie:current->current_val"
+},
+"m061013": {
+"kind": "rename_local",
+"detail": "sqlglot/optimizer/qualify_columns.py _expand_order_by_and_distinct_on:precedence->precedence2"
+},
+"m061014": {
+"kind": "rename_local",
+"detail": "sqlglot/optimizer/__init__.py __getattr__:target->target_val"
+},
+"m061015": {
+"kind": "rename_local",
+"detail": "sqlglot/tokenizer_core.py _scan_number:end->end_val"
+},
+"m061100": {
+"kind": "annot",
+"detail": "sqlglot/generators/tsql.py arg:exp.TimeFromParts->object"
+},
+"m061101": {
+"kind": "annot",
+"detail": "sqlglot/parsers/databricks.py ret:exp.CurrentDate->object"
+},
+"m061102": {
+"kind": "annot",
+"detail": "sqlglot/expressions/json.py ret:str->t.Optional[str]"
+},
+"m061103": {
+"kind": "annot",
+"detail": "sqlglot/generators/drill.py arg:exp.Expr | None->object"
+},
+"m061104": {
+"kind": "annot",
+"detail": "sqlglot/optimizer/pushdown_projections.py local:list[tuple[exp.Literal, exp.Expr]]->list[tuple[exp.Literal, exp.Expr]] | None"
+},
+"m061105": {
+"kind": "annot",
+"detail": "sqlglot/parsers/bigquery.py arg:list->object"
+},
+"m061106": {
+"kind": "annot",
+"detail": "sqlglot/optimizer/canonicalize.py ret:exp.Expr->object"
+},
+"m061107": {
+"kind": "annot",
+"detail": "sqlglot/generators/dremio.py arg:exp.Version->object"
+},
+"m061108": {
+"kind": "annot",
+"detail": "sqlglot/executor/context.py ret:None->t.Any"
+},
+"m061109": {
+"kind": "annot",
+"detail": "sqlglot/errors.py arg:str | None->object"
+},
+"m061110": {
+"kind": "annot",
+"detail": "sqlglot/parsers/sqlite.py ret:exp.Expr->t.Optional[exp.Expr]"
+},
+"m061111": {
+"kind": "annot",
+"detail": "sqlglot/typing/snowflake.py ret:exp.StrToTime->object"
+},
+"m061112": {
+"kind": "annot",
+"detail": "sqlglot/optimizer/eliminate_subqueries.py arg:ExistingCTEsMapping->object"
+},
+"m061113": {
+"kind": "annot",
+"detail": "sqlglot/diff.py ret:int->int | None"
+},
+"m061200": {
+"kind": "annot_nofuture",
+"detail": "sqlglot/trie.py arg:Iterable[key]->t.Optional[Iterable[key]]"
+},
+"m061201": {
+"kind": "annot_nofuture",
+"detail": "sqlglot/trie.py ret:tuple[TrieResult, dict]->object"
+},
+"m061202": {
+"kind": "annot_nofuture",
+"detail": "sqlglot/trie.py ret:tuple[TrieResult, dict]->object"
+},
+"m061203": {
+"kind": "annot_nofuture",
+"detail": "sqlglot/trie.py ret:tuple[TrieResult, dict]->tuple[TrieResult, dict] | None"
+},
+"m061300": {
+"kind": "import_reorder",
+"detail": "sqlglot/optimizer/qualify_tables.py swap L6"
+},
+"m061301": {
+"kind": "import_reorder",
+"detail": "sqlglot/optimizer/eliminate_joins.py swap L6"
+},
+"m061302": {
+"kind": "import_reorder",
+"detail": "sqlglot/planner.py swap L6"
+},
+"m061303": {
+"kind": "import_reorder",
+"detail": "sqlglot/helper.py swap L11"
+},
+"m061304": {
+"kind": "import_reorder",
+"detail": "sqlglot/__main__.py swap L6"
+},
+"m061305": {
+"kind": "import_reorder",
+"detail": "sqlglot/dialects/postgres.py swap L4"
+},
+"m061306": {
+"kind": "import_reorder",
+"detail": "sqlglot/executor/python.py swap L8"
+},
+"m061307": {
+"kind": "import_reorder",
+"detail": "sqlglot/optimizer/qualify_columns.py swap L21"
+},
+"m061308": {
+"kind": "import_reorder",
+"detail": "sqlglot/dialects/presto.py swap L12"
+},
+"m061309": {
+"kind": "import_reorder",
+"detail": "sqlglot/expressions/functions.py swap L20"
+},
+"m061400": {
+"kind": "reformat",
+"detail": "sqlglot/dialects/__init__.py wrap"
+},
+"m061401": {
+"kind": "reformat",
+"detail": "sqlglot/executor/__init__.py wrap"
+},
+"m061402": {
+"kind": "reformat",
+"detail": "sqlglot/parsers/spark2.py wrap"
+},
+"m061403": {
+"kind": "reformat",
+"detail": "sqlglot/parsers/spark2.py wrap"
+},
+"m061404": {
+"kind": "reformat",
+"detail": "sqlglot/dialects/duckdb.py paren"
+},
+"m061405": {
+"kind": "reformat",
+"detail": "sqlglot/parsers/mysql.py wrap"
+},
+"m061406": {
+"kind": "reformat",
+"detail": "sqlglot/optimizer/eliminate_joins.py pass"
+},
+"m061407": {
+"kind": "reformat",
+"detail": "sqlglot/parsers/sqlite.py wrap"
+},
+"m061408": {
+"kind": "reformat",
+"detail": "sqlglot/optimizer/qualify.py wrap"
+},
+"m061409": {
+"kind": "reformat",
+"detail": "sqlglot/generators/teradata.py wrap"
+},
+"m061410": {
+"kind": "reformat",
+"detail": "sqlglot/expressions/__init__.py comma"
+},
+"m061411": {
+"kind": "reformat",
+"detail": "sqlglot/generators/drill.py wrap"
+},
+"m061412": {
+"kind": "reformat",
+"detail": "sqlglot/parsers/mysql.py wrap"
+},
+"m061413": {
+"kind": "reformat",
+"detail": "sqlglot/generators/oracle.py paren"
+},
+"m061414": {
+"kind": "reformat",
+"detail": "sqlglot/typing/postgres.py wrap"
+},
+"m061415": {
+"kind": "reformat",
+"detail": "sqlglot/expressions/functions.py wrap"
+},
+"m061500": {
+"kind": "quotes",
+"detail": "sqlglot/generators/hive.py quotes x1"
+},
+"m061501": {
+"kind": "quotes",
+"detail": "sqlglot/generators/mysql.py quotes x1"
+},
+"m061502": {
+"kind": "quotes",
+"detail": "sqlglot/generators/starrocks.py quotes x3"
+},
+"m061503": {
+"kind": "quotes",
+"detail": "sqlglot/generators/oracle.py quotes x4"
+},
+"m061504": {
+"kind": "quotes",
+"detail": "sqlglot/generators/clickhouse.py quotes x3"
+},
+"m061505": {
+"kind": "quotes",
+"detail": "sqlglot/generators/trino.py quotes x3"
+},
+"m061600": {
+"kind": "rename_local_test",
+"detail": "tests/dialects/test_starrocks.py test_aggregate_key:agg->agg_tmp"
+},
+"m061601": {
+"kind": "rename_local_test",
+"detail": "tests/dialects/test_clickhouse.py test_signed_and_unsigned_types:data_types->data_types2"
+},
+"m061602": {
+"kind": "rename_local_test",
+"detail": "tests/test_typing.py test_no_redundant_expression_metadata:child->child_tmp"
+},
+"m061603": {
+"kind": "rename_local_test",
+"detail": "tests/test_sqlglotc.py setUp:temporary->temporary_local"
+},
+"m061700": {
+"kind": "reformat_test",
+"detail": "tests/dialects/test_teradata.py wrap"
+},
+"m061701": {
+"kind": "reformat_test",
+"detail": "tests/test_executor.py wrap"
+},
+"m061702": {
+"kind": "reformat_test",
+"detail": "tests/dialects/test_druid.py wrap"
+},
+"m061703": {
+"kind": "reformat_test",
+"detail": "tests/dialects/test_hive.py pass"
+}
+}

@@ -1,0 +1,8 @@
+diff --git a/sqlglot/executor/util.py b/sqlglot/executor/util.py
+new file mode 100644
+index 0000000..e639b9f
+--- /dev/null
++++ b/sqlglot/executor/util.py
+@@ -0,0 +1,2 @@
++def first(rows):
++    return next(iter(rows), None)

@@ -178,11 +178,7 @@ def _without_unloaded_max_nodes(files, reason, maps, nums: set) -> set:
     return set(nums) - {number}
 
 
-CONFIG_BASENAMES = {
-    "pyproject.toml", "setup.cfg", "setup.py", "conftest.py", "pytest.ini", "tox.ini", "MANIFEST.in",
-    "Makefile", "requirements.txt", "requirements-dev.txt", "__init__.py",
-}
-INERT_PREFIXES = ("benchmarks/", "posts/", "docs/", ".github/")
+INERT_PREFIXES = ("benchmarks/", "posts/", "docs/", ".github/", "pdoc/")  # no scored test imports or reads these
 
 
 def log(*a):
@@ -326,23 +322,57 @@ def tests_module_tests(maps, path: str) -> set:
     return out
 
 
+_FL = None
+
+
+def _level_call(maps, fn) -> set:
+    """Run a FileLevel rule; its NeedAll becomes All."""
+    global _FL
+    from blast import filelevel
+    if maps is None:
+        raise All("no maps")
+    if _FL is None:
+        _FL = filelevel.FileLevel(SRC, maps, lambda p: _importers_of(p, maps), tests_module_tests,
+                                  lambda w: _tests_mentioning_full(w, maps), log)
+    try:
+        return set(fn(_FL))
+    except filelevel.NeedAll as e:
+        raise All(str(e))
+
+
+def _file_level(fp, maps) -> set:
+    """New, deleted, renamed, copied or binary file."""
+    if fp.new_path and fp.new_path != fp.old_path and (SRC / fp.new_path).exists():
+        raise All(f"patch creates an existing path: {fp.new_path}")
+
+    def new_text(f):
+        base = "" if f.old_path is None else (SRC / f.old_path).read_text()
+        return P.apply(base, f)
+
+    out = _level_call(maps, lambda fl: fl.select(fp, new_text))
+    log("file-level", fp.old_path, "->", fp.new_path, len(out))
+    return out
+
+
 def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: bool = True) -> set:
     path = fp.path
-    if fp.special or fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
-        raise All(f"special/new/deleted/renamed: {path}")
+    if fp.special and not (fp.binary or fp.copy):
+        raise All(f"unreadable patch header: {path}")
+    if fp.binary or fp.copy or fp.old_path is None or fp.new_path is None or fp.old_path != fp.new_path:
+        return _file_level(fp, maps)
     base = path.rsplit("/", 1)[-1]
     if not path.endswith(".py"):
-        opened = maps.opened_by(path) if maps else None
-        if opened is not None:
-            return opened
-        if base in CONFIG_BASENAMES or path.startswith(("sqlglot", "tests/sqlglot")):
-            raise All(f"config/unknown data file: {path}")
-        if path.startswith("tests/fixtures/") or path.startswith(INERT_PREFIXES) or "/" not in path:
-            return set()  # never opened by any test
-        raise All(f"unknown file: {path}")
+        if maps is None:
+            raise All("no maps")
+        old = (SRC / path).read_text()
+        return _level_call(maps, lambda fl: fl.data_changed(path, old, P.apply(old, fp)))
 
-    if base in CONFIG_BASENAMES and base != "__init__.py":
+    if base == "conftest.py":
         raise All(f"config py: {path}")
+    if path == "setup.py":
+        return set()  # packaging only; sqlglot is imported from the tree, and no test runs it
+    if path.startswith("sqlglotc/"):
+        return _level_call(maps, lambda fl: fl._sqlglotc())
     is_tests = path.startswith("tests/")
     is_pkg = path.startswith("sqlglot/")
     if not (is_tests or is_pkg):
@@ -356,7 +386,9 @@ def select_file(fp, maps, all_tests: set, semantic_needed: dict, version_norm: b
 
     old = (SRC / path).read_text()
     new = P.apply(old, fp)
-    regions = astdiff.diff(old, new, version_norm=version_norm)
+    # tests/test_typing.py compares the code objects (co_varnames, co_code) of sqlglot/typing/ functions
+    regions = astdiff.diff(old, new, version_norm=version_norm,
+                           code_norm=not path.startswith("sqlglot/typing/"))
     if regions is None:
         # A syntax error fails the tests that import the module, not every test.
         loaded = _importers_of(path, maps)
@@ -1038,7 +1070,8 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
             # every patched sqlglot module must be seen by the patched import, not only the import-time ones
             patched = {}
             for fp in files:
-                if fp.path.endswith(".py") and fp.path.startswith("sqlglot/"):
+                if (fp.path.endswith(".py") and fp.path.startswith("sqlglot/")
+                        and fp.old_path == fp.new_path and not fp.binary):
                     patched[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
             try:
                 out |= sem.tests_for(patched)

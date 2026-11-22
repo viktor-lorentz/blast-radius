@@ -1,0 +1,9 @@
+diff --git a/docs/dialects.md b/docs/dialects.md
+new file mode 100644
+index 0000000..add572a
+--- /dev/null
++++ b/docs/dialects.md
+@@ -0,0 +1,3 @@
++# Dialects
++
++Notes on dialect support.

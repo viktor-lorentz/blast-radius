@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+index 0611a74..39dfc89 100644
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -569,7 +569,7 @@ def _group_by_ordinal_refs(
+ 
+     selects = select.selects
+     n = len(selects)
+-    refs: list[tuple[exp.Literal, exp.Expr]] = []
++    refs: list[tuple[exp.Literal, exp.Expr]] | None = []
+ 
+     def collect(nodes: t.Iterable[exp.Expr]) -> None:
+         for node in nodes:

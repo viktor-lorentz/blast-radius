@@ -1,0 +1,4 @@
+diff --git a/sqlglot/dialects/athena.py b/sqlglot/dialects/athena2.py
+similarity index 100%
+copy from sqlglot/dialects/athena.py
+copy to sqlglot/dialects/athena2.py

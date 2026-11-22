@@ -1,0 +1,14 @@
+diff --git a/sqlglot/optimizer/fold_noop.py b/sqlglot/optimizer/fold_noop.py
+new file mode 100644
+index 0000000..6e6a319
+--- /dev/null
++++ b/sqlglot/optimizer/fold_noop.py
+@@ -0,0 +1,8 @@
++from __future__ import annotations
++
++from sqlglot import exp
++
++
++def fold_noop(expression: exp.Expr) -> exp.Expr:
++    """Placeholder rule that returns the expression unchanged."""
++    return expression

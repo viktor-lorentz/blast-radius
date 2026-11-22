@@ -1,0 +1,4 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anon.py
+similarity index 100%
+rename from sqlglot/anonymize.py
+rename to sqlglot/anon.py

@@ -1,0 +1,10 @@
+diff --git a/.github/workflows/benchmark-sqlglot.yml b/.github/workflows/benchmark-sqlglot.yml
+index 6769d0e..d3f567f 100644
+--- a/.github/workflows/benchmark-sqlglot.yml
++++ b/.github/workflows/benchmark-sqlglot.yml
+@@ -75,3 +75,5 @@ jobs:
+         with:
+           issue-number: ${{ github.event.issue.number }}
+           body-path: benchmark_comment.md
++
++# ci

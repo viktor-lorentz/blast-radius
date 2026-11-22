@@ -1,0 +1,18 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+index c224f5f..d84d852 100644
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -122,11 +122,11 @@ def _unnest_generate_date_array(unnest: exp.Unnest) -> None:
+     )
+ 
+     # We use DATEDIFF to compute the number of sequence values needed
+-    number_sequence = SnowflakeParser.FUNCTIONS["ARRAY_GENERATE_RANGE"](
++    number_sequence_val = SnowflakeParser.FUNCTIONS["ARRAY_GENERATE_RANGE"](
+         [exp.Literal.number(0), _build_datediff([unit, start, end]) + 1]
+     )
+ 
+-    unnest.set("expressions", [number_sequence])
++    unnest.set("expressions", [number_sequence_val])
+ 
+     unnest_parent = unnest.parent
+     if isinstance(unnest_parent, exp.Join):

@@ -1,0 +1,4 @@
+diff --git a/benchmarks/compare.py b/benchmarks/compare_dialects.py
+similarity index 100%
+rename from benchmarks/compare.py
+rename to benchmarks/compare_dialects.py

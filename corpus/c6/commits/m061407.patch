@@ -1,0 +1,16 @@
+diff --git a/sqlglot/parsers/sqlite.py b/sqlglot/parsers/sqlite.py
+index 7ce5673..ac3d0a3 100644
+--- a/sqlglot/parsers/sqlite.py
++++ b/sqlglot/parsers/sqlite.py
+@@ -189,7 +189,10 @@ class SQLiteParser(parser.Parser):
+         # Keep the marker on anonymous calls without moving comments on keyword IF.
+         self._match(
+             TokenType.R_PAREN,
+-            expression=expression if isinstance(expression, exp.Anonymous) else None,
++            expression=expression if isinstance(
++                expression,
++                exp.Anonymous,
++            ) else None,
+         )
+         return expression
+ 

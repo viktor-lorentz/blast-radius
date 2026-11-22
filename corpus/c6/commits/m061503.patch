@@ -1,0 +1,22 @@
+diff --git a/sqlglot/generators/oracle.py b/sqlglot/generators/oracle.py
+index cc2c2a5..37f0ec8 100644
+--- a/sqlglot/generators/oracle.py
++++ b/sqlglot/generators/oracle.py
+@@ -106,7 +106,7 @@ class OracleGenerator(generator.Generator):
+         exp.Substring: rename_func("SUBSTR"),
+         exp.Table: lambda self, e: self.table_sql(e, sep=" "),
+         exp.TableSample: lambda self, e: self.tablesample_sql(e),
+-        exp.TemporaryProperty: lambda _, e: f"{e.name or 'GLOBAL'} TEMPORARY",
++        exp.TemporaryProperty: lambda _, e: f"{e.name or "GLOBAL"} TEMPORARY",
+         exp.TimeToStr: lambda self, e: self.func("TO_CHAR", e.this, self.format_time(e)),
+         exp.ToChar: lambda self, e: self.function_fallback_sql(e),
+         exp.Trim: _trim_sql,
+@@ -198,7 +198,7 @@ class OracleGenerator(generator.Generator):
+         return f"NVL(REGEXP_LIKE({self.sql(expression.this)}, '^[' || CHR(1) || '-' || CHR(127) || ']*$'), TRUE)"
+ 
+     def interval_sql(self, expression: exp.Interval) -> str:
+-        return f"{'INTERVAL ' if isinstance(expression.this, exp.Literal) else ''}{self.sql(expression, 'this')} {self.sql(expression, 'unit')}"
++        return f"{"INTERVAL " if isinstance(expression.this, exp.Literal) else ""}{self.sql(expression, 'this')} {self.sql(expression, "unit")}"
+ 
+     def tonumber_sql(self, expression: exp.ToNumber) -> str:
+         this = self.sql(expression, "this")

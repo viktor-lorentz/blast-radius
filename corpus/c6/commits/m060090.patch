@@ -1,0 +1,11 @@
+diff --git a/Makefile b/Makefile
+index 1f026ac..36e2eea 100644
+--- a/Makefile
++++ b/Makefile
+@@ -146,3 +146,6 @@ resolve-integration-conflicts:
+ 
+ update-fixtures:
+ 	python sqlglot-integration-tests/scripts/update_dbt_fixtures.py
++
++clean:
++	rm -rf build dist

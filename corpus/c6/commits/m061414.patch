@@ -1,0 +1,16 @@
+diff --git a/sqlglot/typing/postgres.py b/sqlglot/typing/postgres.py
+index 18fd768..a97f1e5 100644
+--- a/sqlglot/typing/postgres.py
++++ b/sqlglot/typing/postgres.py
+@@ -12,7 +12,10 @@ if t.TYPE_CHECKING:
+ def _annotate_math_function(self: TypeAnnotator, expression: exp.Expr) -> exp.Expr:
+     if expression.this.is_type(exp.DType.FLOAT):
+         return self._set_type(expression, exp.DType.DOUBLE)
+-    return annotate_int_as_double(self, expression)
++    return annotate_int_as_double(
++        self,
++        expression,
++    )
+ 
+ 
+ def _annotate_add_sub(self: TypeAnnotator, expression: exp.Add | exp.Sub) -> exp.Expr:

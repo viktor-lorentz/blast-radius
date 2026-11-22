@@ -1,0 +1,15 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+index 16bcf6c..d7cf9e4 100644
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -118,7 +118,9 @@ _import_lock = threading.RLock()
+ 
+ 
+ def __getattr__(name):
+-    module_name = MODULE_BY_ATTRIBUTE.get(name)
++    module_name = MODULE_BY_ATTRIBUTE.get(
++        name,
++    )
+     if module_name:
+         with _import_lock:
+             module = importlib.import_module(f"sqlglot.dialects.{module_name}")

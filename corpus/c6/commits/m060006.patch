@@ -1,0 +1,13 @@
+diff --git a/sqlglot/parsers/newdb.py b/sqlglot/parsers/newdb.py
+new file mode 100644
+index 0000000..27c8075
+--- /dev/null
++++ b/sqlglot/parsers/newdb.py
+@@ -0,0 +1,7 @@
++from __future__ import annotations
++
++from sqlglot import parser
++
++
++class NewDBParser(parser.Parser):
++    pass

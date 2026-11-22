@@ -1,0 +1,11 @@
+diff --git a/sqlglot/typing/newdb.py b/sqlglot/typing/newdb.py
+new file mode 100644
+index 0000000..f3e9e82
+--- /dev/null
++++ b/sqlglot/typing/newdb.py
+@@ -0,0 +1,5 @@
++from __future__ import annotations
++
++from sqlglot.typing import EXPRESSION_METADATA as BASE
++
++EXPRESSION_METADATA = {**BASE}

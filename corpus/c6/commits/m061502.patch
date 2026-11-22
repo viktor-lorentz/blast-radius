@@ -1,0 +1,31 @@
+diff --git a/sqlglot/generators/starrocks.py b/sqlglot/generators/starrocks.py
+index 8640977..80d1678 100644
+--- a/sqlglot/generators/starrocks.py
++++ b/sqlglot/generators/starrocks.py
+@@ -360,7 +360,7 @@ class StarRocksGenerator(MySQLGenerator):
+     def clusterproperty_sql(self, expression: exp.ClusterProperty) -> str:
+         """Generate StarRocks ORDER BY clause for clustering."""
+         if expression.this:
+-            self.unsupported(f"Unsupported CLUSTER BY {self.sql(expression, 'this')}")
++            self.unsupported(f"Unsupported CLUSTER BY {self.sql(expression, "this")}")
+             return ""
+         expressions = self.expressions(expression, flat=True)
+         return f"ORDER BY ({expressions})"
+@@ -383,7 +383,7 @@ class StarRocksGenerator(MySQLGenerator):
+ 
+     def refresh_sql(self, expression: exp.Refresh) -> str:
+         this = self.sql(expression, "this")
+-        kind = "" if isinstance(expression.this, exp.Literal) else f"{expression.text('kind')} "
++        kind = "" if isinstance(expression.this, exp.Literal) else f"{expression.text("kind")} "
+         partition_start = self.sql(expression, "partition_start")
+         partition_end = self.sql(expression, "partition_end")
+         partition = (
+@@ -422,7 +422,7 @@ class StarRocksGenerator(MySQLGenerator):
+             return f"MAP {self.sql(struct)}"
+ 
+         entries = ", ".join(
+-            f"{self.sql(e, 'this')}:{self.sql(e, 'expression')}" for e in struct.expressions
++            f"{self.sql(e, "this")}:{self.sql(e, 'expression')}" for e in struct.expressions
+         )
+         return f"MAP{{{entries}}}"
+ 

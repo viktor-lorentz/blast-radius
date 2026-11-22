@@ -1,0 +1,13 @@
+diff --git a/sqlglot/trie.py b/sqlglot/trie.py
+index 3b99d14..dc5d347 100644
+--- a/sqlglot/trie.py
++++ b/sqlglot/trie.py
+@@ -11,7 +11,7 @@ class TrieResult(Enum):
+     EXISTS = auto()
+ 
+ 
+-def new_trie(keywords: Iterable[key], trie: t.Optional[dict] = None) -> dict:
++def new_trie(keywords: t.Optional[Iterable[key]], trie: t.Optional[dict] = None) -> dict:
+     """
+     Creates a new trie out of a collection of keywords.
+ 

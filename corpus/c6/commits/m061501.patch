@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+index 91c1fef..9ccd718 100644
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -710,7 +710,7 @@ class MySQLGenerator(generator.Generator):
+         return result
+ 
+     def jsonarraycontains_sql(self, expression: exp.JSONArrayContains) -> str:
+-        return f"{self.sql(expression, 'this')} MEMBER OF({self.sql(expression, 'expression')})"
++        return f"{self.sql(expression, 'this')} MEMBER OF({self.sql(expression, "expression")})"
+ 
+     def cast_sql(self, expression: exp.Cast, safe_prefix: str | None = None) -> str:
+         if expression.to.this in self.TIMESTAMP_FUNC_TYPES:

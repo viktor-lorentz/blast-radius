@@ -1,0 +1,15 @@
+diff --git a/tests/dialects/test_teradata.py b/tests/dialects/test_teradata.py
+index aee960c..b53d8ea 100644
+--- a/tests/dialects/test_teradata.py
++++ b/tests/dialects/test_teradata.py
+@@ -241,7 +241,9 @@ class TestTeradata(Validator):
+             this=exp.to_table("example_macro"),
+             return_status=exp.Parameter(this=exp.Var(this="status")),
+         )
+-        with self.assertRaises(UnsupportedError):
++        with self.assertRaises(
++            UnsupportedError,
++        ):
+             expression.sql("teradata", unsupported_level=ErrorLevel.RAISE)
+ 
+     def test_execute_parse_errors(self):

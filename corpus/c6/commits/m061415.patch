@@ -1,0 +1,16 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+index 8607ab2..b1cc3c5 100644
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -120,7 +120,10 @@ class Case(Expression, Func):
+ 
+     def else_(self, condition: ExpOrStr, copy: bool = True, **opts: Unpack[ParserArgs]) -> Case:
+         instance = maybe_copy(self, copy)
+-        instance.set("default", maybe_parse(condition, copy=copy, **opts))
++        instance.set(
++            "default",
++            maybe_parse(condition, copy=copy, **opts),
++        )
+         return instance
+ 
+ 

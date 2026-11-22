@@ -1,0 +1,21 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+index b46c7ae..85207bf 100644
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -401,13 +401,13 @@ class SQLiteGenerator(generator.Generator):
+         return f"CAST({sql} AS INTEGER)"
+ 
+     def groupconcat_sql(self, expression: exp.GroupConcat) -> str:
+-        node = expression.parent if isinstance(expression.parent, exp.Filter) else expression
+-        window = node.parent
++        node_tmp = expression.parent if isinstance(expression.parent, exp.Filter) else expression
++        window = node_tmp.parent
+ 
+         if (
+             isinstance(expression.this, exp.Order)
+             and isinstance(window, exp.Window)
+-            and window.this is node
++            and window.this is node_tmp
+         ):
+             self.unsupported(
+                 "SQLite GROUP_CONCAT window functions do not support argument ORDER BY"

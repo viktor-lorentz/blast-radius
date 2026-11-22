@@ -1,0 +1,16 @@
+diff --git a/tests/test_serde.py b/tests/test_serialize.py
+similarity index 98%
+rename from tests/test_serde.py
+rename to tests/test_serialize.py
+index 23fb0e4..5b8229b 100644
+--- a/tests/test_serde.py
++++ b/tests/test_serialize.py
+@@ -2,6 +2,8 @@ import json
+ import pickle
+ import unittest
+ 
++# Moved from tests/test_serde.py
++
+ from sqlglot import exp, parse_one
+ from sqlglot.optimizer.annotate_types import annotate_types
+ from tests.helpers import is_compiled, load_sql_fixtures

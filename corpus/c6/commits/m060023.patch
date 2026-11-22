@@ -1,0 +1,7 @@
+diff --git a/tests/fixtures/notes.txt b/tests/fixtures/notes.txt
+new file mode 100644
+index 0000000..1c1ed65
+--- /dev/null
++++ b/tests/fixtures/notes.txt
+@@ -0,0 +1 @@
++fixtures notes

@@ -1,0 +1,7 @@
+diff --git a/benchmarks/old bench.py b/benchmarks/old bench.py
+new file mode 100644
+index 0000000..b917a72
+--- /dev/null
++++ b/benchmarks/old bench.py	
+@@ -0,0 +1 @@
++print(1)
