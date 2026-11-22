@@ -110,6 +110,24 @@ def _importers_of(path: str, maps):
         return None
 
 
+def _failed_importers(mods, maps):
+    """Tests that import every module that stopped importing, or None if any is unknown.
+
+    A module that raises at import fails every test that imports it, and only
+    those; the static import closure names them.
+    """
+    acc: set = set()
+    for mod in mods:
+        got = _importers_of(mod.replace(".", "/") + ".py", maps)
+        if not got:
+            got = _importers_of(mod.replace(".", "/") + "/__init__.py", maps)
+        if not got:
+            return None
+        acc |= got
+    log("import failure narrowed:", list(mods)[:3], len(acc))
+    return acc
+
+
 def _unrun_main(path: str) -> bool:
     """True for a package's __main__.py that no test can run.
 
@@ -1259,7 +1277,7 @@ def select(patch_text: str, maps, all_tests: set, sem) -> set:
                         and fp.old_path == fp.new_path and not fp.binary):
                     patched[fp.path] = P.apply((SRC / fp.path).read_text(), fp)
             try:
-                out |= sem.tests_for(patched)
+                out |= sem.tests_for(patched, lambda mods: _failed_importers(mods, maps))
             except (NeedAll, RuntimeError, ValueError, OSError) as e:
                 # An import failure is observed by the tests that load the module.
                 # The dialect trace is that set for a leaf dialect module. A core
