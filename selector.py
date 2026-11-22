@@ -55,6 +55,33 @@ def load_dialect_tests(id_to_number: dict) -> None:
         got = {nums[i] for i in idxs if 0 <= i < len(nums) and nums[i] >= 0}
         if got:
             DIALECT_TESTS[mod] = got
+    global _HELPER_IDS
+    _HELPER_IDS = id_to_number
+
+
+_HELPER_IDS = None
+
+
+def _with_helper_dialects() -> dict:
+    """DIALECT_TESTS plus the tests that name each dialect through a helper of their file.
+
+    The load trace misses a test that reaches a dialect only inside a helper (the optimizer
+    fixture runner executes queries via .sql(dialect="duckdb")). Built once, on first use.
+    """
+    global _HELPER_IDS
+    if _HELPER_IDS is None:
+        return DIALECT_TESTS
+    ids, _HELPER_IDS = _HELPER_IDS, None
+    try:
+        from blast.helper_dialects import build
+        named = build(SRC)
+    except Exception as e:
+        log("helper dialects skip:", repr(e))
+        return DIALECT_TESTS
+    for mod, got in DIALECT_TESTS.items():
+        extra = {ids[t] for t in named.get(mod.rsplit(".", 1)[-1], ()) if t in ids}
+        got |= extra
+    return DIALECT_TESTS
 
 
 def _module_name(path: str) -> str:
@@ -72,7 +99,7 @@ def _importers_of(path: str, maps):
     """
     if not path.startswith("sqlglot/"):
         return None
-    dial = DIALECT_TESTS.get(_module_name(path))
+    dial = _with_helper_dialects().get(_module_name(path))
     if dial:
         return set(dial)
     try:
@@ -137,7 +164,7 @@ def _dialect_load_union(files):
             return None
         if not path.startswith("sqlglot/"):
             return None
-        dial = DIALECT_TESTS.get(_module_name(path))
+        dial = _with_helper_dialects().get(_module_name(path))
         if not dial:
             return None
         acc |= set(dial)
