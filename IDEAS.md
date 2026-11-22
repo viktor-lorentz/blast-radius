@@ -1,5 +1,7 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
+VERDICT 04:18 PT: BB-62A9FF8C 476b711 = 154.8 (6.92 cpu, 0 miss), WORSE than 154.4. FINAL PICK (Phase 3): d9fe067 / BB-AF8AB844 154.4, 0 misses on practice + c1-c6, earliest of the ties; it stays "Entered in the final". FROZEN: no more submissions.
+
 ## HANDOFF
 ### HEAVY (2026-11-22 01:05): READY FOR A SLOT: heavy-s a0a3bfe (pushed) = fa0acf4 (below) merged with main f7cd994 (heavy-c3). Submit this, not fa0acf4.
 - The only conflict was blast/plans.py.
