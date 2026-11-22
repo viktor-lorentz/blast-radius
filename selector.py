@@ -1418,7 +1418,8 @@ def main() -> None:
     # after a few seconds of CPU. A failure of the check keeps the static set.
     if os.environ.get("BR_TPCDS", "1") != "0":
         try:
-            updates = plans.narrow_tpcds(SRC, rows, id_to_number, ms)
+            updates = plans.narrow_tpcds(SRC, rows, id_to_number, ms,
+                                           golden_path=FP_DIR / "tpcds_golden.json")
             if updates:
                 rows = [(stem, text, updates.get(stem, nums)) for stem, text, nums in rows]
                 log(f"tpcds dropped {len(updates)}")
