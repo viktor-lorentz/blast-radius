@@ -1,6 +1,11 @@
 # Ranked experiment backlog (re-read after any context compaction)
 
 ## HANDOFF
+### HEAVY (2026-11-21 ~23:20): WARNING: the shared pristine tree `.cache/src` was polluted at 23:10:49
+Someone wrote `json.py` (`X = 1`), `mytool.py` and `scripts/runit.py` into `.cache/src`. These look like new-file test stubs.
+The `json.py` shadows the stdlib in every subprocess that runs with cwd=src, so the tpcds plan check and the max_nodes proof silently returned "keep" (c1: tpcds drops 35→4, max_nodes 6→0, sim +~800 s).
+I removed the stubs at 23:20. **Any local run between 23:10 and 23:20 that uses BR_SRC=.cache/src is invalid. Rerun it.** Please test new-file shapes on a copy of the tree, never on `.cache/src`.
+The image's /opt/sqlglot is unaffected, so submitted commits are fine.
 ### HEAVY (2026-11-21 ~20:00): READY FOR A SLOT: heavy-merge 8ac54a9 (pushed), the tpcds plan check runs the differing queries. 0 misses on sample and c1–c5, local sim+CPU 7785.6 vs HEAD 8255.0
 - **Update ~20:20: heavy-merge is now 920a533 = 8ac54a9 merged with main ad14fd1** (clean). It builds, and the golden has 57 rows. 0 misses on s, c5, c3 and c6: sim s 108.5, c5 12.7, c3 1833.1, c6 395.7. LEAD FYI: main ad14fd1 alone also gives c3 1833.1 (it was 1757.1 at 53c2f06), so an EQUIV merge regressed c3 by +76 s. That is not from HEAVY.
 - Branch heavy-merge = main 53c2f06 + blast/plans.py, selector.py, tools/plan_golden.py, Dockerfile. The merge was clean. The image builds, and the golden has 57 rows.
@@ -103,6 +108,7 @@
 - Merge candidate: branch merge-eq = origin/equiv 3bdc6ba (EQUIV a+b+c) + main, no A3. Sample 108.5/0, c6 582.4/0 (main 3713.4); c1-c5 eval running (meq_*), bench 44976709470. If it is 0 misses on sample + c1-c5 and bench is green, it goes to main and becomes the Phase 3 candidate (main lineage, file-level rules for unseen kinds of change).
 
 ## VERDICTS (Phase 1 ablations)
+- HEAVY config D (23:19): BB-6B8EA1BC 243de96 = 173.1 (sim 167.914 unchanged, CPU 5.16, 0 miss). The plan check never fires on the practice tpcds commits. It is CPU-cheaper than A3m (-0.5 s) but saves no sim. Next probe: heavy-merge 920a533 defaults (MAXQ 20, QCPU 1.7, budget 20). If sim is still 167.914, the practice tpcds commits hit the guard, so a plan check cannot get the A2 gap.
 - A3 (23:17): BB-F1AB4F28 273dd1f = 173.6 (sim 167.914 unchanged, CPU 5.64, 0 miss). ALL fallbacks hide nothing on practice. The tpcds waste A2 found is in normal selections, so heavy-d (BB-6B8EA1BC, queued) is the lever. Main CPU is now ~5.6s, near the ~6s cap.
 - MERGED (23:10): EQUIV (i) 4496618 + (j) 0488b2b + (k) e89679c -> main (828b279). Sample 108.5/0; c1-c5 8037.6/0; c6 395.7/0. Bench 44980193134 green. (i) closes the latent duckdb-import miss.
 - MERGED (19:14): EQUIV (f) 72bd437 + (g) 01e287c -> main (7bf6b9e). Sample 108.5/0; c1-c5 8113.5/0 (noise); c6 395.7/0 (was 491.4). Bench 44979040461 green; prior main 53c2f06 bench 44978380359 green. Submit main when submits are unblocked.
